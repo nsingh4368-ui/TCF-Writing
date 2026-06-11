@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<title>TCF EE Studio X — Expression Écrite</title>
+<style>
+:root{--bg:#eef1f7;--panel:#fff;--panel2:#f6f8fc;--text:#0f172a;--sub:#64748b;--accent:#1d4ed8;--accent2:#3b82f6;--border:#e2e8f0;--danger:#dc2626;--success:#16a34a;--warn:#d97706;--shadow:0 1px 3px rgba(15,23,42,.07),0 8px 24px rgba(15,23,42,.06);--grad:linear-gradient(135deg,#1d4ed8,#7c3aed)}
+body.dark{--bg:#0b0e14;--panel:#161a23;--panel2:#1f2430;--text:#f1f5f9;--sub:#94a3b8;--border:#2b3242;--shadow:0 1px 3px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.55;transition:background .3s,color .3s}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:264px;min-width:264px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:opacity .25s,width .25s,min-width .25s}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:14px}
+.sidebar-scroll::-webkit-scrollbar{width:4px}.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.main{flex:1;overflow-y:auto;padding:20px 96px 120px 24px}
+.main::-webkit-scrollbar{width:6px}.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 14px 12px;border-bottom:1px solid var(--border)}
+.brand-icon{width:36px;height:36px;background:var(--grad);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
+.brand h1{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.brand .b-sub{font-size:11px;color:var(--sub)}.brand .b-name{font-size:11px;color:var(--accent);font-weight:700}
+.streak-strip{background:var(--grad);color:#fff;font-size:11.5px;font-weight:700;text-align:center;padding:7px 10px}
+.nav-label{font-size:10px;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.9px;margin:10px 4px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;cursor:pointer;color:var(--sub);font-size:13px;font-weight:600;transition:.15s;user-select:none}
+.nav-item:hover{background:var(--panel2);color:var(--text)}.nav-item.active{background:var(--accent);color:#fff}
+.nav-item .ni{width:20px;text-align:center;font-size:15px}
+.nav-badge{margin-left:auto;background:var(--accent2);color:#fff;font-size:10px;font-weight:800;padding:1px 7px;border-radius:20px;min-width:20px;text-align:center}
+.ctrl-group{margin-bottom:12px}
+.ctrl-group label{font-size:10.5px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
+select,.ipt{width:100%;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;color:var(--text);font:inherit;font-size:13px;outline:none}
+select:focus,.ipt:focus{border-color:var(--accent2)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.slider-row{display:flex;align-items:center;gap:8px}
+.slider-val{font-size:12px;font-weight:800;color:var(--accent);min-width:46px;text-align:right}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;transition:.15s;width:100%;margin-bottom:6px;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#1e40af}
+.btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--border)}
+.btn-exam{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff}.btn-exam:hover{filter:brightness(1.1)}
+.btn-sm{padding:7px 10px;font-size:11.5px;width:auto;flex:1;margin:0}
+.btn-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.section-title{font-size:19px;font-weight:800;margin-bottom:14px}
+.h3{font-size:15px;font-weight:800;margin-bottom:10px}
+.muted{color:var(--sub);font-size:12.5px}
+.empty-state{color:var(--sub);font-size:13px;text-align:center;padding:18px 0}
+.timer-card{text-align:center}
+.timer-display{font-size:54px;font-weight:800;letter-spacing:-2px;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1;margin:6px 0}
+.timer-display.warning{color:var(--warn)}.timer-display.danger{color:var(--danger)}
+.timer-sub{font-size:12px;color:var(--sub);margin-bottom:10px}
+.timer-bar-wrap{background:var(--panel2);border-radius:99px;height:6px;overflow:hidden;margin:10px 0 14px}
+.timer-bar{height:100%;background:var(--accent2);border-radius:99px;transition:width .5s linear,background .5s}
+.timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.timer-btn{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text)}
+.timer-btn:hover{background:var(--border)}.timer-btn.start{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sujet-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px}
+.combo-badge{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:20px;font-size:11px;font-weight:800;padding:3px 10px}
+body.dark .combo-badge{background:#1e3a5f;color:#93c5fd;border-color:#1d4ed8}
+.task-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.task-tab{padding:6px 14px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--sub)}
+.task-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.task-tab.missing{opacity:.4;pointer-events:none;text-decoration:line-through}
+.task-content{background:var(--panel2);border-radius:13px;padding:14px 16px;font-size:13px;line-height:1.7;min-height:60px}
+.task-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:6px}
+.task-text{white-space:pre-wrap}
+.task-limit{font-size:11px;color:var(--accent);font-weight:700;margin-top:8px;font-style:italic}
+.doc-block{margin-bottom:12px}
+.doc-title{font-size:11px;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.combo-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.combo-pill{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;font-weight:600}
+.combo-pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.combo-pill.done{border-color:var(--success)}
+.done-row{display:flex;gap:8px;align-items:center;margin-top:12px;color:var(--sub);font-size:12px}
+.done-row input{width:16px;height:16px;accent-color:var(--success)}
+.editor-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.editor-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.word-counter{font-size:12px;font-weight:800;color:var(--sub)}
+.word-counter.ok{color:var(--success)}.word-counter.warn{color:var(--warn)}.word-counter.over{color:var(--danger)}
+.autosave-label{font-size:11px;color:var(--sub);font-style:italic}
+textarea.editor-area{width:100%;min-height:260px;resize:vertical;background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:14px;color:var(--text);font-size:15px;font-family:inherit;line-height:1.75;outline:none;transition:border .15s}
+textarea.editor-area:focus{border-color:var(--accent2)}
+.editor-footer{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.analysis-panel{background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:14px 16px;margin-top:12px;display:none}
+.analysis-panel.open{display:block}
+.an-title{font-size:13px;font-weight:800;margin:12px 0 6px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px}
+.an-title:first-child{margin-top:0}
+.an-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px dashed var(--border);font-size:12.5px}
+.an-item:last-child{border:none}
+.an-badge{flex-shrink:0;margin-top:1px}
+.an-text strong{display:block;font-weight:700}.an-text span{color:var(--sub)}
+.errors-panel{background:#fff7ed;border:1px solid #fed7aa;border-radius:13px;padding:12px 14px;margin-bottom:16px}
+body.dark .errors-panel{background:#2d1e0e;border-color:#7c4a12}
+.errors-panel h4{font-size:12px;font-weight:800;color:var(--warn);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.err-chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:3px 10px;font-size:11.5px;margin:2px;font-weight:600}
+.accent-dock{position:fixed;right:14px;bottom:14px;z-index:20;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+body.exam-active .accent-dock{z-index:70}
+.accent-page{display:grid;grid-template-columns:repeat(4,34px);gap:5px}
+.accent-nav{display:flex;gap:5px}
+.accent-nav button,.accent-page button{background:var(--panel2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font:inherit;font-weight:700;min-height:32px;font-size:14px}
+.accent-page button:hover,.accent-nav button:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.accent-nav button{flex:1}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat-val{font-size:27px;font-weight:800;line-height:1}
+.stat-label{font-size:11px;color:var(--sub);margin-top:4px;font-weight:600}
+.hist-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px}
+.hist-item:last-child{border:none}
+.hist-time{color:var(--sub);white-space:nowrap;min-width:60px}
+.hist-date-group{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;padding:12px 0 4px}
+.list-item{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:11px;background:var(--panel2);margin-bottom:6px;font-size:12px}
+.list-item-text{flex:1}
+.del-x{color:var(--danger);font-size:16px;line-height:1;cursor:pointer;opacity:.6;flex-shrink:0}.del-x:hover{opacity:1}
+.month-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.month-card{background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:12px 14px;cursor:pointer;text-align:center;transition:.15s}
+.month-card:hover{background:var(--accent);color:#fff}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form-grid .full{grid-column:1/-1}
+.bank-form input,.bank-form textarea,.bank-form select{width:100%;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:9px 10px;color:var(--text);font:inherit;outline:none}
+.bank-form textarea{min-height:74px;resize:vertical}
+.bank-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.prod-card{background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:13px 15px;margin-bottom:8px;font-size:12.5px}
+.prod-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:5px}
+.prod-topic{font-weight:800;color:var(--accent)}
+.prod-text{color:var(--sub);max-height:64px;overflow:hidden;white-space:pre-wrap;cursor:pointer}
+.prod-text.open{max-height:none}
+.conf-pick{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.conf-pick button{font-size:26px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:8px 16px;cursor:pointer}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.bar-row .lbl{min-width:110px;font-weight:600}
+.bar-wrap{flex:1;background:var(--border);border-radius:99px;height:8px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent2);border-radius:99px}
+.flashcard{cursor:pointer;min-height:170px;margin-bottom:12px;perspective:700px}
+.flash-inner{position:relative;width:100%;height:170px;transform-style:preserve-3d;transition:transform .5s}
+.flashcard.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-f,.flash-b{position:absolute;inset:0;border-radius:15px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;padding:18px;text-align:center;flex-direction:column;gap:6px}
+.flash-f{background:var(--grad);color:#fff;font-size:23px;font-weight:800}
+.flash-b{background:var(--panel2);border:1px solid var(--border);transform:rotateY(180deg);font-size:15px}
+.srs-actions{display:flex;gap:8px}
+.word-chip{display:inline-flex;background:var(--accent2);color:#fff;border-radius:20px;padding:4px 11px;margin:2px;cursor:pointer;font-size:12px;font-weight:600}
+.word-chip:hover{background:var(--accent)}
+.conn-cat{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 5px}
+.conn-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--border);font-size:12.5px}
+.view-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.view-tab{padding:7px 15px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--sub)}
+.view-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.profile-banner{background:var(--grad);color:#fff;border-radius:16px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.profile-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0}
+.profile-banner .pb-name{font-size:17px;font-weight:800}.profile-banner .pb-sub{font-size:12px;opacity:.85}
+.exam-overlay{position:fixed;inset:0;background:rgba(8,12,22,.92);backdrop-filter:blur(18px);z-index:60;display:none;overflow-y:auto;padding:16px 96px 16px 16px}
+.exam-overlay.active{display:block}
+.exam-shell{max-width:880px;margin:0 auto}
+.exam-top{position:sticky;top:0;z-index:5;background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;border-radius:15px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.exam-timer{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.exam-leave{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:9px;padding:7px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.exam-card{background:var(--panel);border-radius:18px;padding:18px 20px;margin-bottom:14px;color:var(--text)}
+.exam-launch{max-width:520px;margin:10vh auto;background:var(--panel);border:2px solid #dc2626;border-radius:20px;padding:28px;text-align:center;color:var(--text)}
+.focus-toolbar{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:29;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;display:none;flex-direction:column;gap:8px;max-width:min(860px,calc(100vw - 24px));width:min(860px,calc(100vw - 24px));pointer-events:none}
+.focus-toolbar-top{display:flex;align-items:center;gap:12px}
+.focus-toolbar .f-timer{font-size:18px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;flex-shrink:0}
+.focus-toolbar .f-info{font-size:12px;font-weight:700;color:var(--sub);flex:1}
+.focus-toolbar .f-wc{font-size:12px;font-weight:800;flex-shrink:0}
+.focus-toolbar button{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:7px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.focus-tasks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:13.8px;line-height:1.6}
+.focus-task-block{background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;max-height:160px;overflow-y:auto;font-size:13.8px;line-height:1.6}
+.focus-task-block::-webkit-scrollbar{width:3px}.focus-task-block::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.focus-task-block .ftb-label{display:block;color:var(--accent);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.focus-task-tabs{display:flex;gap:6px;align-items:center}
+.focus-task-tab{padding:5px 13px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--sub);position:relative}
+.focus-task-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.focus-task-tab.done-tab::after{content:"✓";position:absolute;top:-5px;right:-5px;background:var(--success,#16a34a);color:#fff;border-radius:50%;width:14px;height:14px;font-size:9px;display:flex;align-items:center;justify-content:center;line-height:14px}
+body.focus-mode .sidebar{opacity:0;width:0;min-width:0;border:0;pointer-events:none}
+body.focus-mode .main{max-width:960px;margin:0 auto;padding:240px 96px 140px 24px}
+body.focus-mode #timerCard,body.focus-mode #sujetCard,body.focus-mode #errorsPanel{display:none!important}
+body.focus-mode .focus-toolbar{display:flex;pointer-events:all}
+body.focus-mode textarea.editor-area{min-height:380px}
+.focus-toggle{position:fixed;right:14px;top:14px;z-index:30;width:auto;margin:0;padding:8px 13px;box-shadow:var(--shadow);display:none}
+body:not(.focus-mode) .focus-toggle.ready{display:flex}
+body.focus-mode .focus-toggle{display:none}
+.freeze-overlay{position:fixed;inset:0;background:rgba(10,15,25,.75);backdrop-filter:blur(16px);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
+.freeze-card{width:min(560px,100%);background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:22px;color:var(--text)}
+.freeze-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+@media(max-width:900px){.main{padding:16px 16px 140px}.exam-overlay{padding:12px 12px 140px}}
+@media(max-width:700px){
+ .app{flex-direction:column;height:auto;min-height:100vh}
+ .sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border)}
+ .sidebar-scroll{max-height:280px}
+ .main{padding:14px 12px 150px;overflow:visible}
+ .timer-display{font-size:38px}
+ .form-grid,.bank-tools,.freeze-actions{grid-template-columns:1fr}
+ .accent-dock{right:8px;bottom:10px}.accent-page{grid-template-columns:repeat(4,32px)}
+ .focus-toolbar{left:8px;right:8px;transform:none;max-width:none;flex-wrap:wrap}
+ .focus-toggle{right:8px;top:8px}
+ body.focus-mode .main{padding:96px 12px 150px}
+ .stats-grid{grid-template-columns:repeat(2,1fr)}.exam-timer{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<div class="sidebar">
+ <div class="brand">
+  <div class="brand-icon">✍</div>
+  <div><h1>TCF EE Studio X</h1><span class="b-name" id="brandName" style="display:none"></span><span class="b-sub">Expression Écrite</span></div>
+  <button onclick="toggleTheme()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;color:var(--sub)">🌓</button>
+ </div>
+ <div class="streak-strip" id="streakStrip">🔥 Série : 0 jour</div>
+ <div class="sidebar-scroll">
+  <div class="nav-label">Pratique</div>
+  <div class="nav-item active" onclick="showView('studio')" id="nav-studio"><span class="ni">📝</span> Studio</div>
+  <div class="nav-item" onclick="showView('browse')" id="nav-browse"><span class="ni">📚</span> Banque de sujets</div>
+  <div class="nav-item" onclick="showView('productions')" id="nav-productions"><span class="ni">📄</span> Productions <span class="nav-badge" id="prod-badge">0</span></div>
+  <div class="nav-label">Apprentissage</div>
+  <div class="nav-item" onclick="showView('connectors')" id="nav-connectors"><span class="ni">🔗</span> Connecteurs B1/B2</div>
+  <div class="nav-item" onclick="showView('vocab')" id="nav-vocab"><span class="ni">📖</span> Vocabulaire <span class="nav-badge" id="vocab-badge">0</span></div>
+  <div class="nav-item" onclick="showView('errors')" id="nav-errors"><span class="ni">♻️</span> Erreurs recyclées <span class="nav-badge" id="err-badge">0</span></div>
+  <div class="nav-label">Suivi</div>
+  <div class="nav-item" onclick="showView('favorites')" id="nav-favorites"><span class="ni">⭐</span> Favoris <span class="nav-badge" id="fav-badge">0</span></div>
+  <div class="nav-item" onclick="showView('revisit')" id="nav-revisit"><span class="ni">🔄</span> À réviser <span class="nav-badge" id="rev-badge">0</span></div>
+  <div class="nav-item" onclick="showView('history')" id="nav-history"><span class="ni">🕒</span> Historique <span class="nav-badge" id="hist-badge">0</span></div>
+  <div class="nav-item" onclick="showView('stats')" id="nav-stats"><span class="ni">📊</span> Statistiques</div>
+  <div class="nav-item" onclick="showView('profile')" id="nav-profile"><span class="ni">👤</span> Profil</div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+  <div class="ctrl-group"><label>Mois</label><select id="monthSel" onchange="onMonthChange()"></select></div>
+  <div class="ctrl-group"><label>Tâche active</label>
+   <select id="taskActive" onchange="switchTask(parseInt(this.value))">
+    <option value="1">Tâche 1 (60–120 mots)</option><option value="2">Tâche 2 (120–150 mots)</option><option value="3">Tâche 3 (180 mots max.)</option>
+   </select></div>
+  <button class="btn btn-primary" onclick="loadSujets()">⬇ Charger dans le studio</button>
+  <button class="btn btn-ghost" onclick="randomCombo()">🎲 Aléatoire</button>
+  <button class="btn btn-ghost" onclick="toggleFocusMode()">🎯 Mode focus</button>
+  <button class="btn btn-exam" onclick="launchExamDay()">🎓 Mode Examen</button>
+  <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+  <div class="ctrl-group"><label>⏱ Minuteur</label><div class="slider-row"><input type="range" id="timerSlider" min="5" max="180" value="60" step="5" oninput="onSlider()"><span class="slider-val" id="sliderVal">60 min</span></div></div>
+  <div class="ctrl-group"><label>🔤 Taille de police</label><div class="slider-row"><input type="range" id="fontSlider" min="12" max="24" value="15" step="1" oninput="onFontSlider()"><span class="slider-val" id="fontVal">15px</span></div></div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+  <button class="btn btn-ghost" onclick="addFav()">⭐ Ajouter aux favoris</button>
+  <button class="btn btn-ghost" onclick="addRevisit()">🔄 À réviser</button>
+  <div class="btn-row">
+   <button class="btn btn-ghost btn-sm" onclick="saveAsTXT()">⬇ TXT</button>
+   <button class="btn btn-ghost btn-sm" onclick="saveAsDOC()">⬇ DOC</button>
+   <button class="btn btn-ghost btn-sm" onclick="exportJSON()">⬇ JSON</button>
+  </div>
+ </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+<!-- STUDIO -->
+<div id="view-studio">
+ <div id="studioGreeting"></div>
+ <div class="errors-panel" id="errorsPanel" style="display:none">
+  <h4>♻️ Mes erreurs recyclées <span style="cursor:pointer;font-size:14px" onclick="showView('errors')">⚙</span></h4>
+  <div id="errorsPanelChips"></div>
+ </div>
+ <div class="card timer-card" id="timerCard">
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--sub)">Minuteur de séance</div>
+  <div class="timer-display" id="timerDisplay">60:00</div>
+  <div class="timer-sub" id="timerSub">Prêt · Appuyez sur Démarrer</div>
+  <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
+  <div class="timer-controls">
+   <button class="timer-btn start" onclick="startTimer()">▶ Démarrer</button>
+   <button class="timer-btn" onclick="pauseTimer()">⏸ Pause</button>
+   <button class="timer-btn" onclick="resumeTimer()">⏵ Reprendre</button>
+   <button class="timer-btn" onclick="resetTimer()">⟲ Reset</button>
+  </div>
+ </div>
+ <div class="card" id="sujetCard">
+  <div class="sujet-header"><h3 class="h3" style="margin:0">Sujet du jour</h3><span class="combo-badge" id="comboBadge">—</span></div>
+  <div id="sujetEmpty" class="muted" style="padding:6px 0">Sélectionnez un mois puis <strong>Charger dans le studio</strong>. Parcourez les combinaisons librement, puis cliquez <strong>🚀 Commencer</strong> pour lancer le minuteur et le mode focus.</div>
+  <div id="sujetContent" style="display:none">
+   <div class="combo-list" id="comboList"></div>
+   <div class="task-tabs" id="taskTabs"></div>
+   <div class="task-content" id="taskContent"></div>
+   <label class="done-row"><input type="checkbox" id="doneToggle" onchange="toggleDone(this.checked)"> Combinaison terminée</label>
+  </div>
+ </div>
+ <div class="card" id="editorCard">
+  <div class="editor-header">
+   <h3 class="h3" style="margin:0">Votre réponse <span class="muted" id="editorTaskLabel">(Tâche 1)</span></h3>
+   <div class="editor-meta"><span class="autosave-label" id="autosaveLabel"></span><span class="word-counter" id="wordCounter">0 mots</span></div>
+  </div>
+  <textarea id="editor" class="editor-area" placeholder="Rédigez votre réponse ici… (chaque tâche garde son propre texte)" oninput="onEditorInput()"></textarea>
+  <div class="editor-footer">
+   <button class="btn btn-ghost btn-sm" onclick="runAnalysis()">🔍 Analyser</button>
+   <button class="btn btn-primary btn-sm" onclick="finishProduction()">✅ Terminer la production</button>
+   <button class="btn btn-ghost btn-sm" onclick="saveAsTXT()">💾 TXT</button>
+   <button class="btn btn-ghost btn-sm" onclick="saveAsDOC()">📄 DOC</button>
+  </div>
+  <div id="editorFooterDoneMsg" style="display:none;margin-top:8px;padding:8px 12px;background:#dcfce7;color:#15803d;border-radius:9px;font-size:12px;font-weight:700;border:1px solid #86efac"></div>
+  <div class="analysis-panel" id="analysisPanel">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <strong style="font-size:14px">Analyse adaptée à la tâche (sans note)</strong>
+    <button style="background:none;border:none;cursor:pointer;color:var(--sub);font-size:16px" onclick="document.getElementById('analysisPanel').classList.remove('open')">✕</button>
+   </div>
+   <div id="analysisContent"></div>
+  </div>
+ </div>
+</div>
+
+<!-- BROWSE -->
+<div id="view-browse" style="display:none">
+ <div class="section-title">📚 Banque de sujets</div>
+ <p class="muted" style="margin-bottom:14px">Ajoutez une combinaison complète <strong>ou une seule tâche</strong>. Pour travailler un seul sujet avec un temps personnalisé : chargez le mois, choisissez la combinaison et la tâche, puis ▶ Commencer.</p>
+ <div class="card bank-form">
+  <div class="editor-header"><h3 class="h3" style="margin:0">Ajouter un sujet</h3><span class="word-counter" id="bankCount">0 sujets</span></div>
+  <div class="form-grid">
+   <select id="bankMonth" class="full"></select>
+   <input id="bankNum" type="number" min="1" placeholder="Combinaison n° (optionnel)">
+   <input id="bankTitle" placeholder="Titre tâche 3 / thème">
+   <textarea id="bankT1" class="full" placeholder="Tâche 1 : consigne (optionnel)"></textarea>
+   <textarea id="bankT2" class="full" placeholder="Tâche 2 : consigne (optionnel)"></textarea>
+   <textarea id="bankDoc1" class="full" placeholder="Tâche 3 — Document 1 (optionnel)"></textarea>
+   <textarea id="bankDoc2" class="full" placeholder="Tâche 3 — Document 2 (optionnel)"></textarea>
+  </div>
+  <div class="bank-tools">
+   <button class="btn btn-primary" onclick="saveCustomSujet()">➕ Ajouter à la banque</button>
+   <button class="btn btn-ghost" style="background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none" onclick="practiceCustomDirect()">🚀 Pratiquer directement</button>
+   <button class="btn btn-ghost" onclick="exportBank()">⬇ Banque JSON</button>
+   <button class="btn btn-ghost" onclick="importBank()">⬆ Import JSON</button>
+  </div>
+ </div>
+ <div class="month-grid" id="monthGrid"></div>
+</div>
+
+<!-- PRODUCTIONS -->
+<div id="view-productions" style="display:none">
+ <div class="section-title">📄 Mes productions</div>
+ <div class="card"><input class="ipt" id="prodSearch" placeholder="🔎 Rechercher (mot, thème, connecteur…)" oninput="buildProductions()"></div>
+ <div class="card"><h3 class="h3">⚖️ Équilibre des thèmes</h3><div id="topicBalance"></div></div>
+ <div class="card"><h3 class="h3">😬🙂😎 Confiance</h3><div id="confTable"></div></div>
+ <div id="prodList"></div>
+</div>
+
+<!-- CONNECTORS -->
+<div id="view-connectors" style="display:none">
+ <div class="section-title">🔗 100 connecteurs B1/B2</div>
+ <div class="view-tabs">
+  <div class="view-tab active" onclick="switchConnTab('review')" id="ctab-b-review">🧠 Révision espacée</div>
+  <div class="view-tab" onclick="switchConnTab('list')" id="ctab-b-list">📋 Liste complète</div>
+ </div>
+ <div class="tab-pane active" id="ctab-review"><div class="card" id="srsArea"></div></div>
+ <div class="tab-pane" id="ctab-list"><div class="card" id="connListArea"></div></div>
+</div>
+
+<!-- VOCAB -->
+<div id="view-vocab" style="display:none">
+ <div class="section-title">📖 Vocabulaire personnel</div>
+ <div class="view-tabs">
+  <div class="view-tab active" onclick="switchVocabTab('list')" id="vtab-b-list">📋 Liste</div>
+  <div class="view-tab" onclick="switchVocabTab('flash')" id="vtab-b-flash">🃏 Flashcards</div>
+  <div class="view-tab" onclick="switchVocabTab('sent')" id="vtab-b-sent">✍️ Phrases</div>
+  <div class="view-tab" onclick="switchVocabTab('b2')" id="vtab-b-b2">🧠 Vocab B2</div>
+ </div>
+ <div class="tab-pane active" id="vtab-list">
+  <div class="card">
+   <div class="form-grid">
+    <input id="vocabWord" placeholder="Mot / expression" onkeydown="if(event.key==='Enter')addVocabWord()">
+    <input id="vocabDef" placeholder="Définition / exemple" onkeydown="if(event.key==='Enter')addVocabWord()">
+    <select id="vocabTheme" class="full"></select>
+   </div>
+   <div class="btn-row" style="margin-top:10px">
+    <button class="btn btn-primary btn-sm" onclick="addVocabWord()">➕ Ajouter</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportVocabTXT()">⬇ Exporter TXT</button>
+   </div>
+   <div id="vocabList" style="margin-top:10px"></div>
+   <div id="vocabThemeBalance" style="margin-top:14px"></div>
+  </div>
+ </div>
+ <div class="tab-pane" id="vtab-flash"><div class="card" id="flashArea"></div></div>
+ <div class="tab-pane" id="vtab-sent">
+  <div class="card">
+   <p class="muted" style="margin-bottom:8px">Cliquez un mot puis écrivez une phrase avec :</p>
+   <div id="sentenceChips" style="margin-bottom:10px"></div>
+   <textarea id="sentenceArea" class="editor-area" style="min-height:80px" placeholder="Écrivez une phrase…"></textarea>
+   <div class="btn-row" style="margin-top:8px"><button class="btn btn-primary btn-sm" onclick="saveSentencePractice()">💾 Sauvegarder la phrase</button></div>
+   <div id="savedSentences" style="margin-top:10px"></div>
+  </div>
+ </div>
+ <div class="tab-pane" id="vtab-b2"><div class="card" id="srsVArea"></div></div>
+</div>
+
+<!-- ERRORS -->
+<div id="view-errors" style="display:none">
+ <div class="section-title">♻️ Erreurs recyclées</div>
+ <div class="card">
+  <p class="muted" style="margin-bottom:10px">Ajoutées manuellement OU automatiquement après chaque analyse. Toujours visibles dans le Studio.</p>
+  <div class="form-grid">
+   <input id="errWrong" placeholder="❌ Erreur (ex : apprendre français)">
+   <input id="errRight" placeholder="✅ Correction (ex : apprendre le français)">
+  </div>
+  <div class="btn-row" style="margin-top:10px"><button class="btn btn-primary btn-sm" onclick="addError()">➕ Ajouter</button></div>
+  <div id="errorsList" style="margin-top:12px"></div>
+ </div>
+</div>
+
+<div id="view-favorites" style="display:none"><div class="section-title">⭐ Favoris</div><div id="favList"></div></div>
+<div id="view-revisit" style="display:none"><div class="section-title">🔄 À réviser</div><div id="revList"></div></div>
+<div id="view-history" style="display:none"><div class="section-title">🕒 Historique</div><div id="histList"></div></div>
+
+<!-- STATS -->
+<div id="view-stats" style="display:none">
+ <div class="section-title">📊 Statistiques</div>
+ <div class="stats-grid">
+  <div class="stat-card"><div class="stat-val" id="statProd">0</div><div class="stat-label">📄 Productions</div></div>
+  <div class="stat-card"><div class="stat-val" id="statWords">0</div><div class="stat-label">📝 Mots rédigés</div></div>
+  <div class="stat-card"><div class="stat-val" id="statStreak">0</div><div class="stat-label">🔥 Série actuelle</div></div>
+  <div class="stat-card"><div class="stat-val" id="statBest">0</div><div class="stat-label">🏆 Meilleure série</div></div>
+  <div class="stat-card"><div class="stat-val" id="statVocab">0</div><div class="stat-label">📖 Mots vocab</div></div>
+  <div class="stat-card"><div class="stat-val" id="statConn">0</div><div class="stat-label">🔗 Connecteurs maîtrisés</div></div>
+  <div class="stat-card"><div class="stat-val" id="statFav">0</div><div class="stat-label">⭐ Favoris</div></div>
+  <div class="stat-card"><div class="stat-val" id="statHist">0</div><div class="stat-label">🕒 Sessions</div></div>
+ </div>
+</div>
+
+<!-- PROFILE -->
+<div id="view-profile" style="display:none">
+ <div class="section-title">👤 Profil étudiant</div>
+ <div class="profile-banner" id="profileBanner" style="display:none">
+  <div class="profile-avatar" id="profileAvatar">?</div>
+  <div><div class="pb-name" id="pbName"></div><div class="pb-sub" id="pbSub"></div></div>
+ </div>
+ <div class="card bank-form">
+  <h3 class="h3">Informations (sauvegardées localement, conservées même PC éteint)</h3>
+  <div class="form-grid">
+   <input id="profPrenom" placeholder="Prénom"><input id="profNom" placeholder="Nom">
+   <select id="profObjectif"><option value="B1">Objectif B1</option><option value="B2" selected>Objectif B2</option><option value="C1">Objectif C1</option></select>
+   <input id="profDate" type="date">
+  </div>
+  <button class="btn btn-primary" style="margin-top:10px" onclick="saveProfile()">💾 Enregistrer le profil</button>
+ </div>
+ <div class="card"><h3 class="h3">📋 Rapport de progression</h3><div id="reportContent"></div>
+  <button class="btn btn-ghost" style="margin-top:10px" onclick="exportReport()">⬇ Exporter rapport TXT</button>
+ </div>
+</div>
+</div><!-- /main -->
+</div><!-- /app -->
+
+<button class="btn btn-primary focus-toggle" id="focusToggle" onclick="toggleFocusMode()">🎯 Focus</button>
+<div class="focus-toolbar" id="focusToolbar">
+ <div class="focus-toolbar-top">
+  <span class="f-timer" id="focusTimer">60:00</span>
+  <span class="f-info" id="focusInfo">—</span>
+  <div class="focus-task-tabs" id="focusTaskTabs"></div>
+  <span class="f-wc" id="focusWC">0 mots</span>
+  <button onclick="toggleFocusMode()">Quitter</button>
+ </div>
+ <div class="focus-tasks" id="focusTopics"></div>
+</div>
+
+<div class="accent-dock" aria-label="Accents">
+ <div class="accent-page" id="accentBar"></div>
+ <div class="accent-nav"><button onclick="prevAccentPage()">&lt;</button><button onclick="nextAccentPage()">&gt;</button></div>
+</div>
+
+<!-- EXAM -->
+<div class="exam-overlay" id="examOverlay">
+ <div class="exam-launch" id="examLaunch">
+  <h2 style="font-size:24px;margin-bottom:8px">🎓 Mode Examen</h2>
+  <p class="muted" style="margin-bottom:16px">Combinaison aléatoire, 60 minutes. Vous pouvez naviguer entre les 3 tâches : chaque réponse est mémorisée. Le clavier d'accents reste sur le côté. Quitter exige une double confirmation.</p>
+  <button class="btn btn-exam" onclick="startExamDay()">🚀 Démarrer l'examen</button>
+  <button class="btn btn-ghost" onclick="closeExamLaunch()">Annuler</button>
+ </div>
+ <div class="exam-shell" id="examShell" style="display:none">
+  <div class="exam-top">
+   <div><div style="font-size:12px;font-weight:800">🎓 MODE EXAMEN</div><div style="font-size:11px;opacity:.85" id="examComboLabel">—</div></div>
+   <div class="exam-timer" id="examTimer">60:00</div>
+   <button class="exam-leave" onclick="confirmLeaveExam()">🚪 Quitter</button>
+  </div>
+  <div class="exam-card">
+   <div class="task-tabs" id="examTaskTabs"></div>
+   <div class="task-content" id="examTaskContent"></div>
+  </div>
+  <div class="exam-card" id="examEditorCard">
+   <div class="editor-header"><h3 class="h3" style="margin:0">Réponse — <span id="examTaskName">Tâche 1</span></h3><span class="word-counter" id="examWC">0 mots</span></div>
+   <textarea id="examEditor" class="editor-area" style="min-height:300px" placeholder="Rédigez ici… (chaque tâche est mémorisée)" oninput="onExamInput()"></textarea>
+   <div class="btn-row" style="margin-top:10px">
+    <button class="btn btn-primary btn-sm" onclick="endExam()">🏁 Terminer l'examen + analyse</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveExamTXT()">💾 Tout en TXT</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveExamDOC()">📄 Tout en DOC</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="freeze-overlay" id="confOverlay">
+ <div class="freeze-card">
+  <h2 style="font-size:20px">Comment vous sentez-vous ?</h2>
+  <p class="muted">Évaluez votre confiance sur cette production.</p>
+  <div class="conf-pick">
+   <button onclick="setConfidence('😬')">😬</button><button onclick="setConfidence('🙂')">🙂</button><button onclick="setConfidence('😎')">😎</button>
+  </div>
+ </div>
+</div>
+
+<div class="freeze-overlay" id="freezeOverlay">
+ <div class="freeze-card">
+  <h2>⏰ Temps écoulé</h2><p class="muted">Sauvegardez votre travail avant de continuer.</p>
+  <div class="freeze-actions">
+   <button class="btn btn-primary" onclick="copyCurrentWork()">📋 Copier</button>
+   <button class="btn btn-ghost" onclick="saveAsTXT()">⬇ TXT</button>
+   <button class="btn btn-ghost" onclick="saveAsDOC()">⬇ DOC</button>
+   <button class="btn btn-ghost" onclick="unfreezeSession()">▶ Continuer</button>
+  </div>
+ </div>
+</div>
+
+<script>
+/* ═══ HELPERS ═══ */
+function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function LS(k,d){try{return JSON.parse(localStorage.getItem(k))??d;}catch(e){return d;}}
+function SV(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function wcOf(t){return t.trim()?t.trim().split(/\s+/).length:0;}
+
+/* ═══ MONTHS + SUJETS BANK ═══ */
+const allMonths=[
+ {slug:'juin-2026',label:'Juin 2026'},
+ {slug:'mai-2026',label:'Mai 2026'},
+ {slug:'avril-2026',label:'Avril 2026'}
+];
+const DEFAULT_SUBJECT_BANK={
+"juin-2026":[
+{num:1,t1:{consigne:"Vous avez vu une annonce en ligne offrant de l'aide aux personnes qui veulent apprendre le français, en les mettant en contact avec des partenaires pour pratiquer et améliorer leur niveau. Vous rédigez un courriel pour répondre, en vous présentant et en disant pourquoi vous voulez pratiquer le français."},t2:{consigne:"Vous avez assisté à une fête de famille. Vous envoyez un message à vos amis pour leur parler de cette fête et expliquer ce que vous avez préféré."},t3:{titre:"Villes sans voitures : avantages et précautions",doc1:"En raison de la pollution importante observée dans de nombreuses régions, certaines villes ont choisi d'interdire les voitures dans les zones urbaines. La ville d'Oslo, en Norvège, a appliqué cette mesure récemment et constate des effets positifs pour tous. Avec le temps, les accidents diminuent, la dépendance au pétrole est réduite et l'air devient plus sain.",doc2:"Beaucoup de villes lancent des projets visant à interdire la circulation automobile en centre-ville sans préparer les infrastructures indispensables. Certes, diminuer le trafic permettrait de réduire les bouchons, le stress et la pollution de l'air. Mais il est également important de prévoir de grands parkings, de renforcer les transports publics, et de donner des autorisations particulières à certains professionnels, comme les services d'urgence, la police ou les livreurs."}},
+{num:2,t1:{consigne:"Un de vos proches souhaite partir en voyage pour découvrir un nouveau pays. Vous lui envoyez un message pour lui présenter votre pays et ses traditions (lieux à visiter, sites touristiques, monuments, etc.)."},t2:{consigne:"Vous avez commencé un nouvel emploi. Vous envoyez un courriel à vos proches pour leur raconter votre première semaine (entreprise, poste, missions, etc.)."},t3:{titre:"Femmes et hommes au travail",doc1:"Dans certaines régions, comme le Québec, l'égalité entre les femmes et les hommes est une réalité. Beaucoup de femmes occupent désormais des postes à responsabilité et travaillent dans des domaines traditionnellement masculins, tels que le bâtiment ou la gestion d'entreprise. Avec les lois sur l'égalité et le changement des mentalités, les femmes ont aujourd'hui accès aux mêmes métiers que les hommes, sans subir de discrimination.",doc2:"Même si des efforts sont faits pour atteindre la parité, des inégalités demeurent. Par exemple, certains métiers sont encore très féminisés, comme celui de sage-femme ou d'assistante maternelle. De plus, certaines personnes estiment que les femmes doivent rester à la maison pour s'occuper des enfants plutôt que travailler dans des métiers exigeants ou à responsabilité. Il reste donc beaucoup à faire pour changer les mentalités et garantir les mêmes chances aux femmes et aux hommes."}},
+{num:3,t1:{consigne:"Vous rédigez un message à vos amis pour les convier à une fête d'anniversaire surprise organisée pour votre meilleur(e) ami(e). Indiquez le lieu, la date et l'heure, etc."},t2:{consigne:"Vous avez pris part à un marché d'occasion dans votre ville. Rédigez un article sur votre blog pour raconter cette activité et dire pourquoi elle vous a plu."},t3:{titre:"Les vols low-cost : avantages et limites",doc1:"Je voyage souvent avec des compagnies aériennes à petit prix. Les compagnies low-cost proposent des billets beaucoup moins chers que les compagnies classiques. Parfois, cela me revient même moins cher que de voyager en voiture ou en train. Mais avec ces tarifs très bas, il y a forcément un inconvénient : aucun service n'est inclus à bord (pas de repas ni de boissons). À mon avis, ce type de vol n'est donc pas adapté aux longs trajets.",doc2:"Dernièrement, j'ai décidé d'arrêter de voyager avec les compagnies aériennes low-cost. Après mûre réflexion, ce choix m'a paru évident : les sièges sont inconfortables, les employés travaillent dans des conditions difficiles et les avions semblent parfois trop vieux pour garantir une bonne sécurité. Désormais, pour mes déplacements, je préfère utiliser la voiture ou le train, qui permet d'admirer de beaux paysages. Pour les longs trajets, je choisirai plutôt une compagnie aérienne classique."}},
+{num:4,t1:{consigne:"Écrire un message à un(e) ami(e) pour raconter son week-end à la campagne en détaillant les événements qui se sont déroulés."},t2:{consigne:"Rédiger un message à la direction pour informer qu'un lieu a été trouvé pour la fête de fin d'année, en précisant le lieu, les tarifs, les services et autres informations pertinentes."},t3:{titre:"Utilisation des nouvelles technologies dans les écoles : pour ou contre ?",doc1:"Adam : Je suis persuadé que l'intégration des nouvelles technologies dans les écoles est essentielle pour préparer les élèves à l'avenir numérique. L'utilisation des tablettes et ordinateurs motive les élèves et enrichit leur expérience d'apprentissage en leur donnant accès à diverses ressources, favorisant ainsi leur créativité et leur autonomie.",doc2:"Inès : Je reste dubitative face à l'utilisation excessive des technologies dans l'éducation. Cela peut limiter les interactions humaines et entraîner une dépendance aux écrans. À mon avis, les méthodes traditionnelles et le contact direct entre enseignants et élèves sont essentiels pour un développement équilibré des compétences des jeunes."}},
+{num:5,t1:{consigne:"Dans le cadre d'un reportage sur les activités sportives amateurs, France Télévisions souhaite recueillir des témoignages. Et vous, quelle place occupe le sport dans votre vie ? Envoyez votre témoignage sur francetelevision.fr."},t2:{consigne:"Vous avez séjourné dans une magnifique région de votre pays pendant vos vacances. Vous rédigez un message à vos amis dans lequel vous racontez votre séjour et les raisons pour lesquelles cette expérience vous a beaucoup plu."},t3:{titre:"École privée : quels enjeux ?",doc1:"En France, les écoles privées ont accueilli un nombre plus important d'élèves lors de la dernière rentrée. Leur popularité n'est pas uniquement due aux résultats obtenus par les élèves. C'est surtout leur réputation qui attire les familles. De nombreux parents considèrent que l'encadrement y est meilleur, que les élèves sont davantage surveillés et que les enseignants sont plus impliqués. Ils sont aussi rassurés par la composition des classes, souvent constituées d'élèves provenant de milieux favorisés. Cela s'explique notamment par le coût des études dans ces établissements, alors que l'enseignement public est gratuit.",doc2:"Les collèges privés accueillent peu d'élèves provenant de milieux défavorisés. Les frais de scolarité représentent un obstacle pour une partie de la population. Cette distinction entre écoles publiques et privées limite la diversité sociale au sein des établissements. Ainsi, les jeunes scolarisés dans le privé ont peu de contacts avec des élèves ayant des conditions de vie différentes. Ce système tend à reproduire les inégalités existantes et à renforcer le sentiment d'être mis à l'écart chez certains jeunes."}}
+]
+/* ▼▼▼ mai-2026 ▼▼▼ */
+,"mai-2026":[
+{num:1,t1:{consigne:"Vous rédigez un message à vos amis pour les convier à une fête d'anniversaire surprise organisée pour votre meilleur(e) ami(e). Indiquez le lieu, la date et l'heure, etc."},t2:{consigne:"Vous avez pris part à un marché d'occasion dans votre ville. Rédigez un article sur votre blog pour raconter cette activité et dire pourquoi elle vous a plu."},t3:{titre:"Les vols low-cost : avantages et limites",doc1:"Je voyage souvent avec des compagnies aériennes à petit prix. Les compagnies low-cost proposent des billets beaucoup moins chers que les compagnies classiques. Parfois, cela me revient même moins cher que de voyager en voiture ou en train. Mais avec ces tarifs très bas, il y a forcément un inconvénient : aucun service n'est inclus à bord (pas de repas ni de boissons). À mon avis, ce type de vol n'est donc pas adapté aux longs trajets.",doc2:"Dernièrement, j'ai décidé d'arrêter de voyager avec les compagnies aériennes low-cost. Après mûre réflexion, ce choix m'a paru évident : les sièges sont inconfortables, les employés travaillent dans des conditions difficiles et les avions semblent parfois trop vieux pour garantir une bonne sécurité. Désormais, pour mes déplacements, je préfère utiliser la voiture ou le train, qui permet d'admirer de beaux paysages. Pour les longs trajets, je choisirai plutôt une compagnie aérienne classique."}},
+{num:2,t1:{consigne:"Rédigez un courriel en réponse à une annonce de recherche de vélo. Présentez votre vélo, décrivez son état, proposez un prix et fixez un rendez-vous pour un essai."},t2:{consigne:"Rédigez un message sur un forum pour partager votre expérience d'une journée à la campagne avec vos amis. Décrivez les moments marquants, les activités réalisées et ce que vous avez particulièrement apprécié."},t3:{titre:"La sévérité des parents envers les enfants",doc1:"À 22 ans, je vis toujours chez mes parents, qui restent très stricts avec moi malgré mon âge. Plus jeune, il m'était interdit de dormir à l'extérieur ou de rentrer après 21h. Aujourd'hui, bien que je puisse sortir plus tard, ma mère m'appelle sans cesse jusqu'à mon retour à la maison.",doc2:"Certains parents hésitent à être trop stricts, de peur que cela freine l'épanouissement et la personnalité de leurs enfants. Toutefois, céder à toutes leurs demandes peut avoir des conséquences négatives à l'âge adulte. Vivre en société implique le respect de certaines règles essentielles."}},
+{num:3,t1:{consigne:"Un de vos proches souhaite partir en voyage pour découvrir un nouveau pays. Vous lui envoyez un message pour lui présenter votre pays et ses traditions (lieux à visiter, sites touristiques, monuments, etc.)."},t2:{consigne:"Vous avez commencé un nouvel emploi. Vous envoyez un courriel à vos proches pour leur raconter votre première semaine (entreprise, poste, missions, etc.)."},t3:{titre:"Femmes et hommes au travail",doc1:"Dans certaines régions, comme le Québec, l'égalité entre les femmes et les hommes est une réalité. Beaucoup de femmes occupent désormais des postes à responsabilité et travaillent dans des domaines traditionnellement masculins, tels que le bâtiment ou la gestion d'entreprise. Avec les lois sur l'égalité et le changement des mentalités, les femmes ont aujourd'hui accès aux mêmes métiers que les hommes, sans subir de discrimination.",doc2:"Même si des efforts sont faits pour atteindre la parité, des inégalités demeurent. Par exemple, certains métiers sont encore très féminisés, comme celui de sage-femme ou d'assistante maternelle. De plus, certaines personnes estiment que les femmes doivent rester à la maison pour s'occuper des enfants plutôt que travailler dans des métiers exigeants ou à responsabilité. Il reste donc beaucoup à faire pour changer les mentalités et garantir les mêmes chances aux femmes et aux hommes."}},
+{num:4,t1:{consigne:"Vous souhaitez organiser un week-end avec vos proches le mois prochain. Vous envoyez un message pour leur expliquer votre plan, en décrivant le lieu, le moyen de transport et les activités prévues."},t2:{consigne:"COURRIER DES LECTEURS\nPartir un an à l'étranger et tout quitter : est-ce une bonne ou une mauvaise idée ?\nExprimez votre opinion sur le site voyage.internaute.fr avec des exemples tirés de votre expérience personnelle."},t3:{titre:"Le rôle du travail",doc1:"Le travail occupe une place importante dans notre vie : dès l'enfance, on nous demande : « Que veux-tu devenir plus tard ? ». Même s'il peut apporter de la satisfaction, il est souvent source de fatigue et peut donner l'impression d'être coincé dans une routine. Aujourd'hui, beaucoup de personnes constatent un déséquilibre entre leur vie professionnelle et leur vie personnelle. Il devient nécessaire de réfléchir à la place du travail dans notre société. Certains pensent qu'en travaillant moins, on pourrait profiter de davantage de temps libre, être plus heureux et mieux vivre.",doc2:"Le travail fait partie de notre identité sociale. Lorsqu'on rencontre quelqu'un pour la première fois, on demande souvent : « Que faites-vous dans la vie ? », ce qui montre l'importance du travail dans la perception de soi. Selon le spécialiste Jean-Daniel Remond, la vie professionnelle contribue à se construire : elle permet de rencontrer des gens, de créer des réseaux personnels et professionnels, de se sentir utile et même de se faire des amis. Même si certains décident de quitter leur emploi, pour la plupart, travailler est essentiel pour exister. Le travail reste donc crucial pour l'équilibre personnel et collectif."}},
+{num:5,t1:{consigne:"Vous préparez la célébration de votre anniversaire. Vous écrivez à vos amis pour les inviter. Vous leur présentez le déroulement de la soirée et leur demandez de participer à l'organisation."},t2:{consigne:"Vous avez pris part à une compétition culinaire. Sur votre site web, vous rédigez un petit article pour décrire le déroulement de la journée. Vous précisez les raisons pour lesquelles cette expérience vous a plu ou non."},t3:{titre:"Étudiants et travail saisonnier",doc1:"Après une longue période à l'université, les vacances permettent aux jeunes de se détendre. Ils partent en voyage et profitent de l'été. Pourtant, certains étudiants préfèrent travailler au lieu de partir en vacances : garde d'enfants, service en restauration ou cueillette de fruits. Bien que ces emplois saisonniers aient des points positifs, ils limitent le temps libre des jeunes, qui manquent de repos, de loisirs et de moments en famille ou entre amis. De plus, ces travaux sont parfois difficiles, ennuyeux ou mal payés.",doc2:"Pour quelles raisons de nombreux étudiants travaillent-ils durant les vacances ? Cette expérience représente souvent une entrée dans la vie professionnelle : elle leur permet de développer le sens des responsabilités et de connaître un métier. Gagner de l'argent est aussi motivant. Certains étudiants travaillent pour ne plus dépendre financièrement de leurs parents et pour financer des loisirs ou des voyages. Pour d'autres, travailler l'été est indispensable pour payer les frais d'études ou le loyer."}},
+{num:6,t1:{consigne:"Votre ami Cédric ne connaît pas le Château de Chombony, où aura lieu votre mariage. Décrivez-lui ce lieu en précisant son emplacement, ses caractéristiques et les moyens de transport pour s'y rendre."},t2:{consigne:"Partagez votre expérience d'apprentissage d'une langue étrangère sur un forum en ligne, en évoquant les difficultés rencontrées, les progrès réalisés et les stratégies qui vous ont aidé."},t3:{titre:"Cuisinier amateur ou cuisinier professionnel ?",doc1:"Réussir des recettes ne suffit pas pour être un véritable cuisinier. Une formation et une expérience approfondie sont essentielles pour maîtriser les techniques du métier.",doc2:"Certains passionnés de cuisine se forment grâce à internet et deviennent populaires sur les réseaux sociaux. L'histoire d'une amatrice devenue chef et auteure de livres de cuisine illustre ce parcours."}},
+{num:7,t1:{consigne:"Vous avez vu une annonce en ligne offrant de l'aide aux personnes qui veulent apprendre le français, en les mettant en contact avec des partenaires pour pratiquer et améliorer leur niveau. Vous rédigez un courriel pour répondre, en vous présentant et en disant pourquoi vous voulez pratiquer le français."},t2:{consigne:"Vous avez assisté à une fête de famille. Vous envoyez un message à vos amis pour leur parler de cette fête et expliquer ce que vous avez préféré."},t3:{titre:"Villes sans voitures : avantages et précautions",doc1:"En raison de la pollution importante observée dans de nombreuses régions, certaines villes ont choisi d'interdire les voitures dans les zones urbaines. La ville d'Oslo, en Norvège, a appliqué cette mesure récemment et constate des effets positifs pour tous. Avec le temps, les accidents diminuent, la dépendance au pétrole est réduite et l'air devient plus sain.",doc2:"Beaucoup de villes lancent des projets visant à interdire la circulation automobile en centre-ville sans préparer les infrastructures indispensables. Certes, diminuer le trafic permettrait de réduire les bouchons, le stress et la pollution de l'air. Mais il est également important de prévoir de grands parkings, de renforcer les transports publics, et de donner des autorisations particulières à certains professionnels, comme les services d'urgence, la police ou les livreurs."}},
+{num:8,t1:{consigne:"« Je souhaite acheter un vélo en bon état à un prix abordable. Contactez-moi par mail : [email protected] »\nVous possédez un vélo à vendre. Vous rédigez un courriel pour présenter votre vélo et proposer votre prix. Vous fixez aussi un moment pour que l'acheteur puisse le tester."},t2:{consigne:"Vous rédigez un message à vos amis pour partager votre expérience d'emploi saisonnier réalisé pendant les vacances d'été."},t3:{titre:"Transports en commun : bénéfices et contraintes",doc1:"La gratuité des transports en commun est une initiative très positive. Elle permet de réduire le trafic automobile et de limiter les bouchons. Elle contribue aussi à diminuer la pollution et les risques pour la santé liés à l'air. Dans ma ville, où les transports sont gratuits, on constate une hausse de leur utilisation. Cette mesure a également favorisé le commerce local, car les habitants se rendent plus facilement au centre-ville pour leurs achats.",doc2:"À mon avis, cette mesure n'est pas appropriée. D'abord, la gratuité des transports représente un coût élevé pour les villes, et certaines, comme Toulouse, ont d'autres priorités, par exemple l'aménagement des espaces verts. Ensuite, il vaudrait mieux améliorer la desserte des transports publics plutôt que de les rendre gratuits, car certains quartiers en sont mal équipés. Enfin, garder les transports payants encourage les usagers à mieux respecter les installations, puisqu'ils financent leur fonctionnement."}},
+{num:9,t1:{consigne:"Rédigez un message afin de convier vos amis à une célébration de fin d'année."},t2:{consigne:"Vous avez effectué un séjour au Canada grâce à une agence de voyages. Rédigez un commentaire pour décrire l'expérience que vous avez vécue pendant ce voyage."},t3:{titre:"L'interdiction des voitures en ville",doc1:"Face à des niveaux de pollution très élevés observés dans plusieurs régions du monde, certaines villes ont décidé d'interdire la circulation des voitures dans les centres urbains. La capitale norvégienne, Oslo, a récemment choisi cette mesure et en tire un bilan positif, estimant qu'elle profite à tous. Avec le temps, les accidents diminueront, la consommation de pétrole reculera et la qualité de l'air s'améliorera.",doc2:"De nombreuses villes lancent des projets visant à interdire les voitures en milieu urbain sans disposer des moyens et des infrastructures indispensables pour assurer la réussite de ce changement. Certes, la réduction du nombre de voitures permet de diminuer la pollution, mais en contrepartie, il est nécessaire de prévoir de grands parkings, de développer davantage les transports en commun (métros et bus) et d'accorder des autorisations spéciales à certains professionnels (police, services d'urgence, livreurs, etc.)."}},
+{num:10,t1:{consigne:"Vous souhaitez organiser une fête et souhaitez inviter vos amis tout en leur demandant un coup de main pour la préparation (lieu, date, thème, etc.). Rédigez un message en ce sens."},t2:{consigne:"Vous avez participé à une compétition sportive et souhaitez partager votre expérience sur un site internet. Décrivez le déroulement de l'événement (lieu, date, organisation) et donnez votre avis sur votre participation."},t3:{titre:"Les menus sans viande dans les cantines scolaires",doc1:"De plus en plus d'établissements scolaires intègrent des repas sans viande dans leurs menus, au moins deux fois par semaine. Certaines études ont démontré que les enfants consomment une quantité excessive de protéines animales. Pour des raisons de santé, les écoles privilégient des alternatives comme le soja, les céréales et les légumes, qui sont plus sains et bénéfiques pour la croissance des enfants. En outre, ces repas sont souvent plus économiques pour les familles. Cette mesure est généralement bien accueillie par les parents et les élèves.",doc2:"La suppression de la viande dans les menus scolaires ne fait pas l'unanimité. Pour certaines familles en difficulté, la cantine représente la seule opportunité pour leurs enfants de consommer de la viande, qui reste un aliment coûteux. Par ailleurs, les producteurs locaux de viande sont affectés économiquement par cette mesure. Enfin, bon nombre d'enfants préfèrent encore les plats à base de viande, trouvant que les steaks de soja manquent de saveur."}},
+{num:11,t1:{consigne:"Votre ami(e) veut visiter la région où vous vivez. Écrivez-lui un message pour lui proposer quelques lieux intéressants à découvrir."},t2:{consigne:"Vous avez assisté récemment à un cours de sport dans une salle de votre ville. Écrivez un article sur votre blog afin de partager votre expérience et donner votre opinion sur cette salle."},t3:{titre:"Repas livrés au bureau : avantages et limites",doc1:"Se faire livrer un repas au bureau est un moyen pratique de gagner du temps. On n'a pas besoin de sortir pendant la pause déjeuner, ce qui aide à finir le travail plus tôt. Chacun peut également choisir le repas qu'il souhaite, selon ses envies. Enfin, ce service est accessible à toute heure grâce à des restaurants ouverts en continu.",doc2:"Néanmoins, ce système présente des limites. En cas de nombreuses commandes, les livreurs peuvent être débordés, ce qui cause des retards et du stress. Pour vous, rester assis sans prendre une vraie pause peut fatiguer. Il est donc conseillé de faire une coupure, même brève, afin de rester performant."}}
+]
+/* ▼▼▼ avril-2026 ▼▼▼ */
+,"avril-2026":[
+{num:1,t1:{consigne:"Vous souhaitez organiser un week-end avec vos proches le mois prochain. Vous envoyez un message pour leur expliquer votre plan, en décrivant le lieu, le moyen de transport et les activités prévues."},t2:{consigne:"COURRIER DES LECTEURS\nPartir un an à l'étranger et tout quitter : est-ce une bonne ou une mauvaise idée ?\nExprimez votre opinion sur le site voyage.internaute.fr avec des exemples tirés de votre expérience personnelle."},t3:{titre:"Le rôle du travail",doc1:"Le travail occupe une place importante dans notre vie : dès l'enfance, on nous demande : « Que veux-tu devenir plus tard ? ». Même s'il peut apporter de la satisfaction, il est souvent source de fatigue et peut donner l'impression d'être coincé dans une routine. Aujourd'hui, beaucoup de personnes constatent un déséquilibre entre leur vie professionnelle et leur vie personnelle. Il devient nécessaire de réfléchir à la place du travail dans notre société. Certains pensent qu'en travaillant moins, on pourrait profiter de davantage de temps libre, être plus heureux et mieux vivre.",doc2:"Le travail fait partie de notre identité sociale. Lorsqu'on rencontre quelqu'un pour la première fois, on demande souvent : « Que faites-vous dans la vie ? », ce qui montre l'importance du travail dans la perception de soi. Selon le spécialiste Jean-Daniel Remond, la vie professionnelle contribue à se construire : elle permet de rencontrer des gens, de créer des réseaux personnels et professionnels, de se sentir utile et même de se faire des amis. Même si certains décident de quitter leur emploi, pour la plupart, travailler est essentiel pour exister. Le travail reste donc crucial pour l'équilibre personnel et collectif."}},
+{num:2,t1:{consigne:"« Bonjour, Je souhaite commencer le sport dans une salle. Est-ce que tu pourrais me donner des informations sur les salles de sport près de chez nous ? Merci d'avance. Bisous, Laura. »\nVous écrivez une réponse à Laura dans laquelle vous décrivez une salle de sport que vous connaissez et vous précisez les renseignements utiles (lieu, types de cours, prix, etc.)."},t2:{consigne:"Un concours en ligne invite les participants à raconter leur plus belle fête. Vous participez à ce concours. Dans votre texte, vous racontez comment cette fête s'est déroulée (anniversaire, fête culturelle, etc.) et vous précisez ce que vous en retenez."},t3:{titre:"Lecture et enfants : encourager sans forcer",doc1:"Obliger les enfants à lire n'est pas une bonne solution. Lire est une pratique particulière. Quand un enfant aime le sport, on ne le contraint pas, on essaie de le motiver. Il en va de même pour la lecture, selon Laurence T., pédopsychiatre et experte de l'enfance. Elle affirme que « l'amour de la lecture ne peut pas être imposé ».",doc2:"Lire avec ses enfants est une activité agréable et bénéfique. Elle contribue au développement des enfants, car une lecture régulière leur permet d'apprendre de nouveaux mots. Elle les aide également à mieux écouter et à se familiariser avec les mots écrits. Ce moment est idéal pour partager du plaisir en famille, de manière détendue et ludique. Les parents doivent essayer de lire des histoires à leurs enfants dès leur jeune âge, même après une journée fatigante. Cinq à dix minutes par jour sont suffisantes pour leur donner le goût de la lecture durablement."}},
+{num:3,t1:{consigne:"Rédigez un message destiné à vos amis afin de les convier à votre anniversaire et de leur présenter le programme de la fête."},t2:{consigne:"Donnez votre avis en commentaire sous une publication Facebook concernant les études à l'étranger en mentionnant les points positifs et négatifs de cette expérience."},t3:{titre:"Technologie et enfants",doc1:"Les élèves du primaire ont la possibilité d'utiliser la technologie pour chercher des vidéos liées à leurs leçons étudiés en classe ou pour s'exercer avec des jeux qui développent leurs compétences en mathématiques, en lecture et en saisie au clavier.",doc2:"Aujourd'hui, les technologies poussent les enfants à rester inactifs, ce qui inquiète beaucoup les parents. Cela limite les jeux créatifs, les échanges sociaux directs et l'activité physique. Pourquoi ne pas encourager vos enfants à poser leurs appareils en essayant des activités ludiques ?"}},
+{num:4,t1:{consigne:"Votre ami(e) veut visiter la région où vous vivez. Écrivez-lui un message pour lui proposer quelques lieux intéressants à découvrir."},t2:{consigne:"Vous avez assisté récemment à un cours de sport dans une salle de votre ville. Écrivez un article sur votre blog afin de partager votre expérience et donner votre opinion sur cette salle."},t3:{titre:"Repas livrés au bureau : avantages et limites",doc1:"Se faire livrer un repas au bureau est un moyen pratique de gagner du temps. On n'a pas besoin de sortir pendant la pause déjeuner, ce qui aide à finir le travail plus tôt. Chacun peut également choisir le repas qu'il souhaite, selon ses envies. Enfin, ce service est accessible à toute heure grâce à des restaurants ouverts en continu.",doc2:"Néanmoins, ce système présente des limites. En cas de nombreuses commandes, les livreurs peuvent être débordés, ce qui cause des retards et du stress. Pour vous, rester assis sans prendre une vraie pause peut fatiguer. Il est donc conseillé de faire une coupure, même brève, afin de rester performant."}},
+{num:5,t1:{consigne:"Vous prévoyez de vous déménager à Nice. Vous envoyez un message à une agence immobilière afin de trouver un appartement. Précisez vos besoins (surface, budget, nombre de pièces, quartier, etc.)."},t2:{consigne:"Vous avez récemment entamé des cours dans une école de langues. Rédigez un message à vos amis pour leur parler de votre première semaine et partager vos impressions sur les cours, les enseignants et l'atmosphère."},t3:{titre:"Caméras de surveillance : sécurité ou limites ?",doc1:"De nos jours, les caméras de surveillance se multiplient dans les villes. Elles sont appréciées par de nombreux Français, car elles apportent plus de sécurité. Selon une enquête, 75 % des personnes sont pour leur utilisation. La majorité accepte d'être filmée dans les espaces publics, mais pas dans les entreprises.",doc2:"Selon certaines recherches, la vidéosurveillance est onéreuse et peu performante. Les caméras sont souvent repérées, ce qui limite leur efficacité contre les infractions comme le vol ou la violence. En plus, leur utilisation demande des ressources humaines importantes. Une étude en Allemagne montre qu'il faut jusqu'à sept personnes pour surveiller une seule caméra."}},
+{num:6,t1:{consigne:"« Bonjour,\nOn m'a dit que tu t'es inscrit dans une salle de sport intéressante.\nPeux-tu m'en dire plus ? »\nVous lui répondez en décrivant cette salle (ambiance, matériel, prix, etc.)."},t2:{consigne:"Vous avez consulté une discussion sur Internet à propos des formations en ligne. Rédigez un message pour partager votre expérience personnelle (cours de langue, formation professionnelle, etc.) et exprimer ce que vous avez aimé et moins apprécié."},t3:{titre:"Les produits faits maison : pour ou contre ?",doc1:"Fabriquer vos propres produits biologiques à la maison offre un contrôle total sur les ingrédients, garantissant des options plus saines et personnalisées. Cela contribue également à réduire les déchets plastiques grâce à des emballages réutilisables. De plus, vous économiserez de l'argent à long terme et développerez des compétences créatives, favorisant ainsi un mode de vie plus durable.",doc2:"Cependant, la fabrication de produits biologiques à domicile comporte des risques. Les erreurs de formulation peuvent entraîner des produits inefficaces ou irritants. De plus, le temps et les efforts nécessaires pour trouver et préparer les ingrédients peuvent être contraignants. Il y a également un manque de garantie de sécurité et de stabilité des produits faits maison, avec un risque accru de contamination bactérienne si les produits ne sont pas correctement conservés."}},
+{num:7,t1:{consigne:"Invitez votre ami(e) à venir passer les vacances chez vous. Dans votre message, décrivez les sites touristiques et les endroits intéressants à découvrir dans votre ville."},t2:{consigne:"Vous avez été sélectionné(e) pour un concours où le prix est un séjour de deux semaines dans votre ville favorite. Le thème du concours était \"Mon artiste préféré\". Rédigez un article de blog pour parler de l'artiste que vous aimez le plus."},t3:{titre:"Chasse aux animaux : une pratique à soutenir ou à rejeter ?",doc1:"Sophie (28 ans) : « Je fais partie de ceux qui ne parviennent pas à comprendre comment on peut prendre plaisir à tuer des animaux. Je fais aussi partie de ceux qui ne saisissent pas comment on peut prétendre aimer la nature tout en contribuant à sa destruction. »",doc2:"Bernard (Journaliste de la FRM) : « La chasse est pratiquée pour diverses raisons : qu'il s'agisse de se nourrir, de commercer, de gérer la faune, de protéger la propriété, de faire de l'exercice, de se divertir ou de chercher du prestige. »"}},
+{num:8,t1:{consigne:"Rédiger un message en réponse à un ami qui demande des informations sur une salle de sport réputée pour sa qualité."},t2:{consigne:"Rédiger un message décrivant une expérience avec les formations en ligne, en mettant en avant les points positifs et les éventuels défis rencontrés."},t3:{titre:"Produits faits maison : avantages et limites",doc1:"Produire ses propres produits biologiques à domicile permet de maîtriser entièrement les ingrédients utilisés, offrant ainsi des alternatives plus saines et adaptées aux besoins individuels. Cela participe également à la réduction des déchets plastiques grâce à l'utilisation d'emballages réutilisables. De plus, cette démarche permet de réaliser des économies sur le long terme tout en développant des compétences créatives, favorisant un mode de vie plus durable.",doc2:"La fabrication de produits biologiques à domicile présente certains défis. Des erreurs dans la formulation peuvent affecter leur efficacité ou provoquer des irritations. Le temps et les efforts nécessaires pour sélectionner et préparer les ingrédients peuvent également représenter une contrainte. De plus, l'absence de garantie sur la sécurité et la stabilité des produits maison augmente le risque de contamination si les règles de conservation ne sont pas respectées."}},
+{num:9,t1:{consigne:"Rédigez un courriel en réponse à une annonce de recherche de vélo. Présentez votre vélo, décrivez son état, proposez un prix et fixez un rendez-vous pour un essai."},t2:{consigne:"Rédigez un message sur un forum pour partager votre expérience d'une journée à la campagne avec vos amis. Décrivez les moments marquants, les activités réalisées et ce que vous avez particulièrement apprécié."},t3:{titre:"La sévérité des parents envers les enfants",doc1:"À 22 ans, je vis toujours chez mes parents, qui restent très stricts avec moi malgré mon âge. Plus jeune, il m'était interdit de dormir à l'extérieur ou de rentrer après 21h. Aujourd'hui, bien que je puisse sortir plus tard, ma mère m'appelle sans cesse jusqu'à mon retour à la maison.",doc2:"Certains parents hésitent à être trop stricts, de peur que cela freine l'épanouissement et la personnalité de leurs enfants. Toutefois, céder à toutes leurs demandes peut avoir des conséquences négatives à l'âge adulte. Vivre en société implique le respect de certaines règles essentielles."}},
+{num:10,t1:{consigne:"Envoyez un courriel à vos amis pour les inviter à fêter votre anniversaire dans un restaurant. Incluez toutes les informations nécessaires comme le lieu, la date, le menu, les prix, et demandez-leur de confirmer leur présence."},t2:{consigne:"Sur votre blog, expliquez les raisons qui vous ont poussé à quitter la ville pour vous installer à la campagne. Présentez les avantages de votre nouvelle vie rurale."},t3:{titre:"Caméras de surveillance à l'école : pour ou contre ?",doc1:"À l'école où je travaille à Montréal, les caméras de surveillance sont largement présentes. Leur objectif est de dissuader les élèves de commettre des actes de violence. Les enseignants, les parents et la majorité des élèves les accueillent favorablement, car cela renforce la sécurité des enfants et crée un environnement propice à l'enseignement. Cependant, certains élèves expriment des préoccupations quant à leur vie privée.",doc2:"Je m'oppose à l'installation des caméras de surveillance dans nos écoles à Montréal. Les résultats obtenus dans d'autres pays utilisant ce système ne sont pas convaincants. Les individus mal intentionnés peuvent facilement contourner ces caméras très visibles. Pour résoudre les problèmes de discipline à l'école, il est préférable d'améliorer la communication entre enseignants, administration et élèves, et de faire respecter les règles scolaires par tous, plutôt que de dépendre des caméras."}},
+{num:11,t1:{consigne:"Écrire un message à un(e) ami(e) pour raconter son week-end à la campagne en détaillant les événements qui se sont déroulés."},t2:{consigne:"Rédiger un message à la direction pour informer qu'un lieu a été trouvé pour la fête de fin d'année, en précisant le lieu, les tarifs, les services et autres informations pertinentes."},t3:{titre:"Utilisation des nouvelles technologies dans les écoles : pour ou contre ?",doc1:"Adam : Je suis persuadé que l'intégration des nouvelles technologies dans les écoles est essentielle pour préparer les élèves à l'avenir numérique. L'utilisation des tablettes et ordinateurs motive les élèves et enrichit leur expérience d'apprentissage en leur donnant accès à diverses ressources, favorisant ainsi leur créativité et leur autonomie.",doc2:"Inès : Je reste dubitative face à l'utilisation excessive des technologies dans l'éducation. Cela peut limiter les interactions humaines et entraîner une dépendance aux écrans. À mon avis, les méthodes traditionnelles et le contact direct entre enseignants et élèves sont essentiels pour un développement équilibré des compétences des jeunes."}}
+]
+};
+/* ═══ CONNECTEURS / ANALYSE DATA ═══ */
+const CONNECTORS=[
+["Opposition / Concession",[["cependant","however"],["pourtant","yet"],["néanmoins","nevertheless"],["toutefois","however"],["en revanche","on the other hand"],["par contre","on the other hand"],["malgré","despite"],["bien que","although (+subj.)"],["même si","even if"],["quoique","although (+subj.)"],["certes","admittedly"],["au contraire","on the contrary"],["à l'inverse","conversely"],["tandis que","whereas"],["alors que","while"],["en dépit de","in spite of"],["au lieu de","instead of"]]],
+["Addition",[["de plus","moreover"],["en outre","furthermore"],["par ailleurs","besides"],["également","also"],["d'ailleurs","besides"],["d'une part","on the one hand"],["d'autre part","on the other hand"],["non seulement… mais aussi","not only… but also"],["aussi","also"],["de même","likewise"]]],
+["Cause",[["car","because"],["parce que","because"],["puisque","since"],["comme","as"],["en raison de","due to"],["à cause de","because of"],["grâce à","thanks to"],["étant donné que","given that"],["vu que","seeing that"],["faute de","for lack of"],["du fait de","owing to"]]],
+["Conséquence",[["donc","therefore"],["par conséquent","consequently"],["ainsi","thus"],["c'est pourquoi","that's why"],["de ce fait","as a result"],["alors","so"],["si bien que","so that"],["en conséquence","accordingly"],["d'où","hence"],["du coup","as a result (fam.)"]]],
+["But",[["afin de","in order to"],["pour que","so that (+subj.)"],["de façon à","so as to"],["dans le but de","with the aim of"],["de manière à","in such a way as to"],["en vue de","with a view to"]]],
+["Condition",[["à condition que","provided that"],["pourvu que","provided that"],["à moins que","unless"],["en cas de","in case of"],["si jamais","if ever"],["au cas où","in case"]]],
+["Organisation",[["d'abord","first"],["tout d'abord","first of all"],["ensuite","then"],["puis","then"],["enfin","finally"],["premièrement","firstly"],["deuxièmement","secondly"],["en premier lieu","in the first place"],["en dernier lieu","lastly"],["finalement","in the end"]]],
+["Conclusion",[["en conclusion","in conclusion"],["pour conclure","to conclude"],["en résumé","in summary"],["en somme","in short"],["bref","in short"],["dans l'ensemble","overall"],["en définitive","ultimately"],["tout compte fait","all considered"]]],
+["Reformulation / Exemple",[["autrement dit","in other words"],["c'est-à-dire","that is"],["par exemple","for example"],["notamment","notably"],["en particulier","in particular"],["surtout","especially"],["en fait","in fact"],["en réalité","in reality"],["à vrai dire","to tell the truth"],["en d'autres termes","in other terms"]]],
+["Opinion",[["à mon avis","in my opinion"],["selon moi","according to me"],["d'après moi","in my view"],["il me semble que","it seems to me"],["je suis convaincu(e) que","I am convinced"],["il est évident que","it is obvious"],["on peut considérer que","one can consider"],["certains estiment que","some believe"],["il est probable que","it is likely"],["sans doute","probably"]]],
+["Temps / Cadre",[["de nos jours","nowadays"],["actuellement","currently"],["autrefois","formerly"],["désormais","from now on"],["à l'avenir","in the future"],["en ce qui concerne","regarding"],["quant à","as for"],["au sujet de","concerning"],["en général","in general"],["la plupart du temps","most of the time"],["dès que","as soon as"],["pendant que","while"]]]
+];
+const ALL_CONN=CONNECTORS.flatMap(([cat,l])=>l.map(([w,g])=>({w,g,cat})));
+const ALL_CONN_WORDS=ALL_CONN.map(c=>c.w);
+const STOPS=new Set(['le','la','les','de','du','des','un','une','et','est','en','il','elle','je','tu','vous','nous','on','que','qui','à','au','aux','ce','se','sa','son','ses','leur','leurs','y','ne','pas','plus','mais','ou','donc','or','ni','car','par','sur','dans','avec','pour','si','tout','cette','cet','ces','mon','ma','mes','votre','vos','notre','nos','lui','eux','elles','ils','me','te','où','dont','être','avoir','sont','ont','était','sera']);
+const NUANCE=['cependant','pourtant','toutefois','néanmoins','même si','malgré','bien que','en revanche','certes','quoique','en dépit de'];
+const OPINION_EXPR=['à mon avis','je pense que','selon moi','d\'après moi','je crois que','il faut','c\'est important'];
+const OPINION_ALTS=['Il me semble que…','On peut considérer que…','Certains estiment que…','Je suis convaincu(e) que…','Il est évident que…'];
+const OVERUSED_WORDS=['important','problème','solution','avantage','beaucoup','très','bien','vraiment','chose','faire','bon','mauvais','grand','petit'];
+const WORD_ALTS={important:'essentiel, majeur, crucial',problème:'difficulté, défi, enjeu',solution:'mesure, réponse, remède',avantage:'bénéfice, atout, intérêt',beaucoup:'de nombreux, une multitude de',très:'extrêmement, particulièrement',bien:'correctement, efficacement',vraiment:'véritablement, réellement',chose:'élément, aspect, phénomène',faire:'réaliser, effectuer, accomplir',bon:'bénéfique, favorable',mauvais:'néfaste, nuisible',grand:'considérable, majeur',petit:'limité, modeste'};
+const CONSEQ=['donc','par conséquent','ainsi','c\'est pourquoi','de ce fait','en conséquence'];
+const CONCL_M=['en conclusion','pour conclure','en somme','en résumé','bref','en définitive','finalement'];
+const ARG_M=['d\'une part','d\'autre part','premièrement','deuxièmement','de plus','en outre','ensuite','par ailleurs','tout d\'abord'];
+const TCF_THEMES=['Travail','Éducation','Environnement','Technologie','Santé','Société','Voyage','Logement','Alimentation','Culture','Autre'];
+const B2_VOCAB=[["enjeu","issue, stake"],["défi","challenge"],["atout","asset"],["essentiel","essential"],["majeur","major"],["considérable","considerable"],["bénéfique","beneficial"],["néfaste","harmful"],["susciter","to arouse"],["engendrer","to cause"],["favoriser","to promote"],["nuire à","to harm"],["constater","to observe"],["envisager","to consider"],["privilégier","to favour"],["renforcer","to strengthen"],["contribuer à","to contribute"],["entraîner","to lead to"],["démontrer","to demonstrate"],["aborder","to tackle"],["s'épanouir","to flourish"],["équilibre","balance"],["comportement","behaviour"],["consommation","consumption"],["mesure","measure"],["autonomie","autonomy"],["responsabilité","responsibility"],["dépendance","addiction"],["sensibiliser","to raise awareness"],["précarité","insecurity"],["mixité sociale","social diversity"],["durable","sustainable"],["accroître","to increase"],["diminuer","to decrease"],["remettre en question","to question"],["faire face à","to face"],["mettre en place","to implement"],["tenir compte de","to take into account"],["soutenir","to support"],["désormais","from now on"]];
+
+/* ═══ STATE (tout en localStorage → survit à l'extinction du PC) ═══ */
+function mergeBanks(b,s){const m={};Object.keys(b||{}).forEach(k=>m[k]=(b[k]||[]).map(c=>({...c})));Object.keys(s||{}).forEach(k=>{m[k]=m[k]||[];(s[k]||[]).forEach(i=>{const x=m[k].findIndex(c=>String(c.num)===String(i.num));if(x>=0)m[k][x]=i;else m[k].push(i);});m[k].sort((a,b)=>(a.num||0)-(b.num||0));});return m;}
+let customBank=mergeBanks(DEFAULT_SUBJECT_BANK,LS('tcf_custom_bank',{}));
+let favorites=LS('tcf_favorites',[]),revisits=LS('tcf_revisits',[]),history=LS('tcf_history',[]);
+let productions=LS('tcf_productions',[]);
+let vocabList=LS('tcf_vocab',[]),savedSentences=LS('tcf_sentences',[]);
+let myErrors=LS('tcf_errors',[]);
+let srs=LS('tcf_srs',{}),srsV=LS('tcf_srs_vocab',{});
+let streak=LS('tcf_streak',{lastDate:'',cur:0,best:0,days:[]});
+let profile=LS('tcf_profile',{});
+let doneCombos=LS('tcf_done_combos',{});
+let examAnswers=LS('tcf_exam_answers',{1:'',2:'',3:''});
+let combos=[],activeCombIdx=0,activeTask=1,activeMonthSlug='',focusMode=false,pendingProduction=null;
+
+/* ═══ VIEWS ═══ */
+const views=['studio','browse','productions','connectors','vocab','errors','favorites','revisit','history','stats','profile'];
+function showView(v){views.forEach(x=>{const e=document.getElementById('view-'+x);if(e)e.style.display=(x===v?'':'none');const n=document.getElementById('nav-'+x);if(n)n.classList.toggle('active',x===v);});
+ if(v==='browse')buildMonthGrid();if(v==='productions')buildProductions();
+ if(v==='connectors'){buildSRS();buildConnList();}
+ if(v==='vocab'){renderVocabList();renderSentenceChips();renderSavedSentences();renderThemeBalance();}
+ if(v==='errors')buildErrorsList();if(v==='favorites')buildFavList();if(v==='revisit')buildRevList();
+ if(v==='history')buildHistList();if(v==='stats')buildStats();if(v==='profile'){loadProfileForm();buildReport();}}
+function switchVocabTab(t){['list','flash','sent','b2'].forEach(x=>{document.getElementById('vtab-'+x).classList.toggle('active',x===t);document.getElementById('vtab-b-'+x).classList.toggle('active',x===t);});if(t==='flash')renderFlashcards();if(t==='b2')buildSRSV();}
+function switchConnTab(t){['review','list'].forEach(x=>{document.getElementById('ctab-'+x).classList.toggle('active',x===t);document.getElementById('ctab-b-'+x).classList.toggle('active',x===t);});}
+
+/* ═══ SUJETS ═══ */
+function populateMonthSelect(){document.getElementById('monthSel').innerHTML=allMonths.map(m=>`<option value="${m.slug}">${m.label}</option>`).join('');document.getElementById('bankMonth').innerHTML=allMonths.map(m=>`<option value="${m.slug}">${m.label}</option>`).join('');}
+function getMonth(s){return allMonths.find(m=>m.slug===s)||allMonths[0];}
+function availableTasks(c){return [c.t1&&c.t1.consigne?1:0,c.t2&&c.t2.consigne?2:0,(c.t3&&(c.t3.doc1||c.t3.doc2))?3:0].filter(Boolean);}
+function loadSujets(){const s=document.getElementById('monthSel').value;activeMonthSlug=s;
+ combos=(customBank[s]||[]).map((c,i)=>({...c,num:c.num||i+1}));
+ if(!combos.length){document.getElementById('sujetContent').style.display='none';document.getElementById('sujetEmpty').style.display='block';document.getElementById('comboBadge').textContent='—';document.getElementById('sujetEmpty').innerHTML=`Aucun sujet pour <strong>${escHtml(getMonth(s).label)}</strong>.`;setFocus(false);return;}
+ document.getElementById('sujetEmpty').style.display='none';document.getElementById('sujetContent').style.display='block';
+ activeCombIdx=0;const av=availableTasks(combos[0]);
+ activeTask=av.includes(parseInt(document.getElementById('taskActive').value))?parseInt(document.getElementById('taskActive').value):(av[0]||1);
+ renderSujet();loadDraft();updateFocusBar();saveHistory('Sujets chargés : '+getMonth(s).label+' ('+combos.length+')');}
+function onMonthChange(){setFocus(false);combos=[];document.getElementById('sujetContent').style.display='none';document.getElementById('sujetEmpty').style.display='block';document.getElementById('comboBadge').textContent='—';document.getElementById('sujetEmpty').innerHTML='Cliquez <strong>Charger dans le studio</strong> pour '+escHtml(getMonth(document.getElementById('monthSel').value).label)+'.';}
+function renderSujet(){if(!combos.length)return;const c=combos[activeCombIdx];const av=availableTasks(c);
+ if(!av.includes(activeTask))activeTask=av[0]||1;
+ document.getElementById('comboBadge').textContent='Combinaison '+c.num;
+ document.getElementById('comboList').innerHTML=combos.map((cc,i)=>`<button class="combo-pill ${i===activeCombIdx?'active':''} ${doneCombos[activeMonthSlug+':'+cc.num]?'done':''}" onclick="selectCombo(${i})">${doneCombos[activeMonthSlug+':'+cc.num]?'✓':'○'} Combinaison ${cc.num}</button>`).join('');
+ document.getElementById('taskTabs').innerHTML=[1,2,3].map(n=>`<div class="task-tab ${activeTask===n?'active':''}" onclick="switchTask(${n})">Tâche ${n}</div>`).join('')
+ +`<div style="margin-left:auto;display:flex;gap:6px;align-items:center"><button class="combo-pill" onclick="prevCombo()">‹</button><span class="muted">${activeCombIdx+1}/${combos.length}</span><button class="combo-pill" onclick="nextCombo()">›</button><button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,#16a34a,#15803d);padding:8px 16px;font-size:13px" onclick="startSujet()">🚀 Commencer</button></div>`;
+ renderTaskContent(c,document.getElementById('taskContent'),activeTask);
+ document.getElementById('doneToggle').checked=!!doneCombos[activeMonthSlug+':'+c.num];
+ document.getElementById('editorTaskLabel').textContent='(Tâche '+activeTask+')';
+ updateFocusBar();updateWordCounter();}
+function renderTaskContent(c,el,task){
+ if(task===1&&c.t1)el.innerHTML=`<div class="task-label">Tâche 1</div><div class="task-text">${escHtml(c.t1.consigne)}</div><div class="task-limit">60 mots min. / 120 mots max.</div>`;
+ else if(task===2&&c.t2)el.innerHTML=`<div class="task-label">Tâche 2</div><div class="task-text">${escHtml(c.t2.consigne)}</div><div class="task-limit">120 mots min. / 150 mots max.</div>`;
+ else if(c.t3)el.innerHTML=`<div class="task-label">Tâche 3 — ${escHtml(c.t3.titre||'')}</div><div class="doc-block"><div class="doc-title">Document 1</div><div class="task-text">${escHtml(c.t3.doc1||'')}</div></div><div class="doc-block"><div class="doc-title">Document 2</div><div class="task-text">${escHtml(c.t3.doc2||'')}</div></div><div class="task-limit">180 mots maximum</div>`;
+ else el.innerHTML='<div class="muted">Tâche non disponible.</div>';}
+function selectCombo(i){activeCombIdx=i;activeTask=1;document.getElementById('taskActive').value='1';renderSujet();loadDraft();unfreezeSession();saveHistory('👁 Combo '+combos[i].num+' prévisualisé');}
+function prevCombo(){activeCombIdx=Math.max(0,activeCombIdx-1);renderSujet();}
+function nextCombo(){activeCombIdx=Math.min(combos.length-1,activeCombIdx+1);renderSujet();}
+function randomCombo(){if(!combos.length){loadSujets();return;}activeCombIdx=Math.floor(Math.random()*combos.length);const av=availableTasks(combos[activeCombIdx]);activeTask=av[Math.floor(Math.random()*av.length)]||1;document.getElementById('taskActive').value=String(activeTask);renderSujet();loadDraft();}
+function toggleDone(ck){if(!combos.length)return;const k=activeMonthSlug+':'+combos[activeCombIdx].num;if(ck){doneCombos[k]={date:new Date().toISOString()};SV('tcf_done_combos',doneCombos);clearInterval(timerInterval);setFocus(false);const next=combos.findIndex((c,i)=>i>activeCombIdx&&!doneCombos[activeMonthSlug+':'+c.num]);if(next>=0){setTimeout(()=>selectCombo(next),400);}else{renderSujet();}}else{delete doneCombos[k];SV('tcf_done_combos',doneCombos);renderSujet();}}
+function getCurrentSujet(){if(!combos.length)return'';const c=combos[activeCombIdx];if(activeTask===1&&c.t1)return'[T1 — C'+c.num+'] '+c.t1.consigne;if(activeTask===2&&c.t2)return'[T2 — C'+c.num+'] '+c.t2.consigne;if(c.t3)return'[T3 — C'+c.num+'] '+c.t3.titre+'\nDoc 1: '+c.t3.doc1+'\nDoc 2: '+c.t3.doc2;return'';}
+function getCurrentTopic(){if(!combos.length)return'Libre';const c=combos[activeCombIdx];return activeTask===3?(c.t3?.titre||'T3'):'Tâche '+activeTask+' · C'+c.num;}
+function startSujet(){const v=parseInt(document.getElementById('timerSlider').value)||60;
+ timerTotal=v*60;timerRemain=timerTotal;clearInterval(timerInterval);unfreezeSession();runTimer();
+ setFocus(true);editor.focus();saveHistory('▶ Sujet démarré : '+getCurrentTopic()+' · '+v+' min');}
+
+/* ═══ BANQUE ═══ */
+function buildMonthGrid(){document.getElementById('monthGrid').innerHTML=allMonths.map(m=>{const n=(customBank[m.slug]||[]).length;return`<div class="month-card" onclick="loadFromBrowse('${m.slug}')"><div style="font-size:10px;color:var(--sub)">${m.label.split(' ')[1]}</div><div style="font-weight:800">${m.label.split(' ')[0]}</div><div style="font-size:10px;font-weight:700;margin-top:4px">${n} sujet${n>1?'s':''}</div></div>`;}).join('');updateBankCount();}
+function loadFromBrowse(s){document.getElementById('monthSel').value=s;showView('studio');loadSujets();}
+function saveCustomSujet(){const s=document.getElementById('bankMonth').value;
+ const t1=document.getElementById('bankT1').value.trim(),t2=document.getElementById('bankT2').value.trim(),d1=document.getElementById('bankDoc1').value.trim(),d2=document.getElementById('bankDoc2').value.trim();
+ if(!t1&&!t2&&!d1&&!d2){alert('Remplissez au moins une tâche.');return;}
+ const c={num:parseInt(document.getElementById('bankNum').value||'0')||((customBank[s]||[]).length+1),
+  t1:t1?{consigne:t1}:null,t2:t2?{consigne:t2}:null,
+  t3:(d1||d2)?{titre:document.getElementById('bankTitle').value.trim()||'Sujet',doc1:d1,doc2:d2}:null};
+ customBank[s]=customBank[s]||[];const x=customBank[s].findIndex(q=>String(q.num)===String(c.num));
+ if(x>=0)customBank[s][x]=c;else customBank[s].push(c);
+ customBank[s].sort((a,b)=>(a.num||0)-(b.num||0));SV('tcf_custom_bank',customBank);
+ ['bankNum','bankTitle','bankT1','bankT2','bankDoc1','bankDoc2'].forEach(i=>document.getElementById(i).value='');
+ buildMonthGrid();saveHistory('Sujet ajouté : '+getMonth(s).label);}
+function updateBankCount(){const n=Object.values(customBank).reduce((a,l)=>a+l.length,0);const e=document.getElementById('bankCount');if(e)e.textContent=n+' sujet'+(n>1?'s':'');}
+function practiceCustomDirect(){
+ const t1=document.getElementById('bankT1').value.trim(),t2=document.getElementById('bankT2').value.trim(),d1=document.getElementById('bankDoc1').value.trim(),d2=document.getElementById('bankDoc2').value.trim();
+ if(!t1&&!t2&&!d1&&!d2){alert('Remplissez au moins une tâche pour pratiquer.');return;}
+ const tempCombo={num:'perso',
+  t1:t1?{consigne:t1}:null,t2:t2?{consigne:t2}:null,
+  t3:(d1||d2)?{titre:document.getElementById('bankTitle').value.trim()||'Sujet personnalisé',doc1:d1,doc2:d2}:null};
+ activeMonthSlug='custom-direct';
+ combos=[tempCombo];activeCombIdx=0;
+ const av=availableTasks(tempCombo);activeTask=av[0]||1;
+ document.getElementById('monthSel').value=allMonths[0].slug;
+ document.getElementById('sujetEmpty').style.display='none';
+ document.getElementById('sujetContent').style.display='block';
+ document.getElementById('comboBadge').textContent='Sujet personnalisé';
+ renderSujet();loadDraft();updateFocusBar();
+ showView('studio');
+ saveHistory('▶ Sujet perso démarré directement');
+}
+function exportBank(){dl(new Blob([JSON.stringify({version:1,bank:customBank},null,2)],{type:'application/json'}),'TCF_banque.json');}
+function importBank(){const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const p=JSON.parse(r.result);const inc=p.bank||p;Object.keys(inc).forEach(s=>{customBank[s]=[...(customBank[s]||[]),...(inc[s]||[])];});SV('tcf_custom_bank',customBank);buildMonthGrid();}catch(e){alert('JSON invalide.');}};r.readAsText(f);};i.click();}
+
+/* ═══ EDITOR + PER-COMBO-PER-TASK DRAFTS ═══ */
+const editor=document.getElementById('editor');
+function draftKey(n){
+ if(combos.length&&activeMonthSlug){const c=combos[activeCombIdx];return 'tcf_draft_'+activeMonthSlug+'_c'+(c.num||activeCombIdx)+'_t'+n;}
+ return 'tcf_draft_t'+n;}
+function saveDraft(){localStorage.setItem(draftKey(activeTask),editor.value);}
+function loadDraft(){editor.value=localStorage.getItem(draftKey(activeTask))||'';updateWordCounter();}
+function onEditorInput(){saveDraft();updateWordCounter();}
+function switchTask(n){saveDraft();activeTask=n;document.getElementById('taskActive').value=String(n);if(combos.length)renderSujet();loadDraft();updateFocusBar();}
+function focusSwitchTask(n){
+ saveDraft();
+ activeTask=n;
+ document.getElementById('taskActive').value=String(n);
+ loadDraft();
+ document.getElementById('editorTaskLabel').textContent='(Tâche '+n+')';
+ const dm=document.getElementById('editorFooterDoneMsg');if(dm&&!isFocusDone(n))dm.style.display='none';
+ if(dm&&isFocusDone(n)){dm.textContent='✅ Tâche '+n+' déjà soumise — vous pouvez continuer à écrire ou passer à la suivante.';dm.style.display='block';}
+ updateWordCounter();
+ updateFocusBar();
+ editor.focus();
+}
+const savedFont=parseInt(localStorage.getItem('tcf_font')||'15');
+editor.style.fontSize=savedFont+'px';document.getElementById('fontSlider').value=savedFont;document.getElementById('fontVal').textContent=savedFont+'px';
+function onFontSlider(){const v=document.getElementById('fontSlider').value;document.getElementById('fontVal').textContent=v+'px';editor.style.fontSize=v+'px';const ex=document.getElementById('examEditor');if(ex)ex.style.fontSize=v+'px';localStorage.setItem('tcf_font',v);}
+function wordCount(){return wcOf(editor.value);}
+function updateWordCounter(){const w=wordCount();const el=document.getElementById('wordCounter');const L=[[60,120],[120,150],[0,180]];const[mn,mx]=L[(activeTask||1)-1];let c='';if(w>=mn&&w<=mx)c='ok';else if(w>mx)c='over';else if(w>=mn-20)c='warn';el.textContent=w+' mots'+(w>=mn&&w<=mx?' ✓':'');el.className='word-counter '+c;const f=document.getElementById('focusWC');if(f)f.textContent=w+' mots';}
+setInterval(()=>{saveDraft();const n=new Date();const l=document.getElementById('autosaveLabel');if(l)l.textContent='Sauvegardé à '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');if(wordCount()>=50)bumpStreak();},30000);
+
+/* ═══ ACCENTS (min + MAJ) ═══ */
+const accents=['é','è','ê','ë','à','â','ä','ç','ù','û','ü','î','ï','ô','œ','æ','É','È','Ê','Ë','À','Â','Ç','Ù','Û','Î','Ï','Ô','Œ','Æ','«','»','—','’'];
+let accentPage=0,PAGE=12;
+function renderAccentPage(){document.getElementById('accentBar').innerHTML=accents.slice(accentPage*PAGE,accentPage*PAGE+PAGE).map(a=>`<button onclick="insertAccent('${a==='\u2019'?'\\u2019':a}')">${a}</button>`).join('');}
+function nextAccentPage(){accentPage=(accentPage+1)%Math.ceil(accents.length/PAGE);renderAccentPage();}
+function prevAccentPage(){accentPage=(accentPage-1+Math.ceil(accents.length/PAGE))%Math.ceil(accents.length/PAGE);renderAccentPage();}
+function insertAccent(ch){if(ch==='\\u2019')ch='’';const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
+renderAccentPage();
+
+/* ═══ TIMER ═══ */
+let timerRemain=parseInt(localStorage.getItem('tcf_timer')||'3600'),timerTotal=timerRemain,timerInterval=null;
+function onSlider(){document.getElementById('sliderVal').textContent=document.getElementById('timerSlider').value+' min';}
+function startTimer(){timerTotal=parseInt(document.getElementById('timerSlider').value)*60;timerRemain=timerTotal;clearInterval(timerInterval);unfreezeSession();runTimer();}
+function runTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{if(timerRemain>0){timerRemain--;drawTimer();}else{clearInterval(timerInterval);freezeSession();}},1000);}
+function pauseTimer(){clearInterval(timerInterval);document.getElementById('timerSub').textContent='En pause';}
+function resumeTimer(){if(timerRemain>0)runTimer();}
+function resetTimer(){clearInterval(timerInterval);timerRemain=timerTotal;drawTimer();}
+function drawTimer(){const m=Math.floor(timerRemain/60),s=timerRemain%60;const str=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');const d=document.getElementById('timerDisplay');d.textContent=str;const f=document.getElementById('focusTimer');if(f)f.textContent=str;const p=timerTotal>0?timerRemain/timerTotal:1;const b=document.getElementById('timerBar');b.style.width=(p*100)+'%';d.className='timer-display';b.style.background='var(--accent2)';if(p<.25){d.classList.add('danger');b.style.background='#dc2626';}else if(p<.5){d.classList.add('warning');b.style.background='#d97706';}document.getElementById('timerSub').textContent=p>0?Math.round(p*100)+'% restant':'⏰ Temps écoulé !';localStorage.setItem('tcf_timer',timerRemain);}
+function freezeSession(){document.getElementById('freezeOverlay').style.display='flex';editor.readOnly=true;saveHistory('Temps écoulé · '+wordCount()+' mots');}
+function unfreezeSession(){document.getElementById('freezeOverlay').style.display='none';editor.readOnly=false;}
+function copyCurrentWork(){navigator.clipboard.writeText('SUJET\n'+getCurrentSujet()+'\n\nRÉPONSE\n'+editor.value).then(()=>unfreezeSession()).catch(()=>alert('Copie impossible.'));}
+drawTimer();
+
+/* ═══ EXPORTS ═══ */
+function getAllTaskTexts(){
+ if(!combos.length)return{t1:'',t2:'',t3:''};
+ const c=combos[activeCombIdx];
+ const mk=n=>'tcf_draft_'+activeMonthSlug+'_c'+(c.num||activeCombIdx)+'_t'+n;
+ // Save current editor state first
+ localStorage.setItem(mk(activeTask),editor.value);
+ return{t1:localStorage.getItem(mk(1))||'',t2:localStorage.getItem(mk(2))||'',t3:localStorage.getItem(mk(3))||''};
+}
+function saveAsTXT(){
+ const c=combos[activeCombIdx];
+ if(!combos.length){dl(new Blob([editor.value],{type:'text/plain;charset=utf-8'}),'TCF_EE.txt');return;}
+ const tx=getAllTaskTexts();
+ const combo=c;
+ let out='TCF EE — '+getMonth(activeMonthSlug).label+' · Combinaison '+combo.num+'\n';
+ out+='Généré le '+new Date().toLocaleString('fr-FR')+'\n\n';
+ if(combo.t1&&combo.t1.consigne){out+='=== TÂCHE 1 (60-120 mots) ===\n'+combo.t1.consigne+'\n\nRÉPONSE :\n'+(tx.t1||'(vide)')+'\n\n';}
+ if(combo.t2&&combo.t2.consigne){out+='=== TÂCHE 2 (120-150 mots) ===\n'+combo.t2.consigne+'\n\nRÉPONSE :\n'+(tx.t2||'(vide)')+'\n\n';}
+ if(combo.t3){out+='=== TÂCHE 3 (180 mots max.) — '+( combo.t3.titre||'')+'\n';if(combo.t3.doc1)out+='[Doc 1] '+combo.t3.doc1+'\n';if(combo.t3.doc2)out+='[Doc 2] '+combo.t3.doc2+'\n';out+='\nRÉPONSE :\n'+(tx.t3||'(vide)')+'\n';}
+ dl(new Blob([out],{type:'text/plain;charset=utf-8'}),'TCF_EE.txt');
+}
+function makeDocxParagraphs(label,consigne,reponse,limite){
+ const{Paragraph,TextRun,HeadingLevel,AlignmentType}=docx;
+ const paras=[];
+ paras.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(label)]}));
+ if(limite)paras.push(new Paragraph({children:[new TextRun({text:limite,italics:true,color:'1d4ed8',size:20})]}));
+ if(consigne){paras.push(new Paragraph({children:[new TextRun({text:'Sujet :',bold:true,size:22})]}));
+  consigne.split('\n').forEach(l=>paras.push(new Paragraph({children:[new TextRun({text:l,size:22})],spacing:{after:60}})));}
+ paras.push(new Paragraph({children:[new TextRun({text:'Réponse :',bold:true,size:22})],spacing:{before:200}}));
+ if(reponse&&reponse.trim()){reponse.split('\n').forEach(l=>paras.push(new Paragraph({children:[new TextRun({text:l,size:22})],spacing:{after:80}})));}
+ else paras.push(new Paragraph({children:[new TextRun({text:'(vide)',color:'94a3b8',italics:true,size:22})]}));
+ paras.push(new Paragraph({children:[new TextRun('')],border:{bottom:{style:'single',size:4,color:'e2e8f0',space:1}},spacing:{before:200,after:200}}));
+ return paras;
+}
+function saveAsDOC(){
+ if(!window.docx){alert('Chargement docx en cours, réessayez.');return;}
+ if(!combos.length){alert('Chargez un sujet d\'abord.');return;}
+ const tx=getAllTaskTexts();
+ const combo=combos[activeCombIdx];
+ const month=getMonth(activeMonthSlug).label;
+ const{Document,Packer,Paragraph,TextRun,HeadingLevel}=docx;
+ const children=[];
+ children.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun('TCF Expression Écrite')]}));
+ children.push(new Paragraph({children:[new TextRun({text:month+' · Combinaison '+combo.num+' · '+new Date().toLocaleDateString('fr-FR'),color:'64748b',size:20})],spacing:{after:300}}));
+ if(combo.t1&&combo.t1.consigne)children.push(...makeDocxParagraphs('Tâche 1',combo.t1.consigne,tx.t1,'60 mots min. / 120 mots max.'));
+ if(combo.t2&&combo.t2.consigne)children.push(...makeDocxParagraphs('Tâche 2',combo.t2.consigne,tx.t2,'120 mots min. / 150 mots max.'));
+ if(combo.t3){
+  let consigne3='';
+  if(combo.t3.doc1)consigne3+='Document 1 :\n'+combo.t3.doc1;
+  if(combo.t3.doc2)consigne3+=(consigne3?'\n\n':'')+'Document 2 :\n'+combo.t3.doc2;
+  children.push(...makeDocxParagraphs('Tâche 3 — '+(combo.t3.titre||''),consigne3,tx.t3,'180 mots maximum'));
+ }
+ const doc=new Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},children}]});
+ Packer.toBlob(doc).then(blob=>dl(blob,'TCF_EE_C'+combo.num+'.docx'));
+}
+function exportJSON(){dl(new Blob([JSON.stringify({sujet:getCurrentSujet(),reponse:editor.value,date:new Date().toISOString(),productions},null,2)],{type:'application/json'}),'TCF_EE.json');}
+
+/* ═══ FOCUS ═══ */
+function setFocus(on){focusMode=!!on&&!!combos.length;document.body.classList.toggle('focus-mode',focusMode);updateFocusBar();}
+function toggleFocusMode(){if(!combos.length){loadSujets();if(!combos.length){alert('Chargez un sujet d\'abord.');return;}}setFocus(!focusMode);if(focusMode)editor.focus();}
+function getFocusTopicLabel(){if(!combos.length)return'Mode focus';const c=combos[activeCombIdx];const month=getMonth(activeMonthSlug||document.getElementById('monthSel').value).label;return month+' · C'+c.num+' · Tâche '+activeTask;}
+function getFocusDoneKey(task){if(!combos.length||!activeMonthSlug)return null;const c=combos[activeCombIdx];return 'tcf_focus_done_'+activeMonthSlug+'_c'+(c.num||activeCombIdx)+'_t'+task;}
+function markFocusDone(task){const k=getFocusDoneKey(task);if(k)localStorage.setItem(k,'1');}
+function isFocusDone(task){const k=getFocusDoneKey(task);return k?!!localStorage.getItem(k):false;}
+function updateFocusBar(){
+ const b=document.getElementById('focusToggle');if(b)b.classList.toggle('ready',!!combos.length);
+ const i=document.getElementById('focusInfo');if(i)i.textContent=getFocusTopicLabel();
+ // Task tabs in focus toolbar
+ const tabs=document.getElementById('focusTaskTabs');
+ if(tabs&&combos.length){
+  const av=availableTasks(combos[activeCombIdx]);
+  tabs.innerHTML=[1,2,3].filter(n=>av.includes(n)).map(n=>`<button class="focus-task-tab${activeTask===n?' active':''}${isFocusDone(n)?' done-tab':''}" onclick="focusSwitchTask(${n})">${isFocusDone(n)?'✓ ':''}Tâche ${n}</button>`).join('');
+ }else if(tabs)tabs.innerHTML='';
+ const tp=document.getElementById('focusTopics');
+ if(tp&&combos.length){
+  const c=combos[activeCombIdx];
+  const t1html=c.t1&&c.t1.consigne
+   ?'<div class="focus-task-block"><span class="ftb-label">Tâche 1 — 60-120 mots</span>'+escHtml(c.t1.consigne)+'</div>'
+   :'<div class="focus-task-block"><span class="ftb-label">Tâche 1</span><span style="color:var(--sub)">Non disponible</span></div>';
+  const t2html=c.t2&&c.t2.consigne
+   ?'<div class="focus-task-block"><span class="ftb-label">Tâche 2 — 120-150 mots</span>'+escHtml(c.t2.consigne)+'</div>'
+   :'<div class="focus-task-block"><span class="ftb-label">Tâche 2</span><span style="color:var(--sub)">Non disponible</span></div>';
+  let t3html='<div class="focus-task-block"><span class="ftb-label">Tâche 3 — 180 mots max.'+(c.t3&&c.t3.titre?' — '+escHtml(c.t3.titre):'')+'</span>';
+  if(c.t3&&(c.t3.doc1||c.t3.doc2)){
+   if(c.t3.doc1)t3html+='<div style="margin-bottom:6px"><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 1</span><br>'+escHtml(c.t3.doc1)+'</div>';
+   if(c.t3.doc2)t3html+='<div><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 2</span><br>'+escHtml(c.t3.doc2)+'</div>';
+  }else t3html+='<span style="color:var(--sub)">Non disponible</span>';
+  t3html+='</div>';
+  tp.innerHTML=t1html+t2html+t3html;
+ }else if(tp)tp.innerHTML='';
+}
+
+/* ═══ PRODUCTIONS + CONFIANCE ═══ */
+function finishProduction(){const t=editor.value.trim();
+ if(wcOf(t)<10){alert('Production trop courte.');return;}
+ pendingProduction={date:todayStr(),time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),topic:getCurrentTopic(),task:activeTask,month:activeMonthSlug,text:t,words:wcOf(t),confidence:null};
+ document.getElementById('confOverlay').style.display='flex';}
+function setConfidence(c){
+ if(pendingProduction){
+  pendingProduction.confidence=c;
+  productions.unshift(pendingProduction);
+  if(productions.length>500)productions.pop();
+  SV('tcf_productions',productions);
+  saveHistory('Production : '+pendingProduction.topic+' ('+pendingProduction.words+' mots) '+c);
+  bumpStreak();
+  // Mark this task as done in focus mode
+  markFocusDone(pendingProduction.task);
+  // Clear the draft for this task (it's been submitted)
+  localStorage.removeItem(draftKey(pendingProduction.task));
+  // Show done confirmation in editor area
+  const footer=document.getElementById('editorFooterDoneMsg');
+  if(footer){footer.textContent='✅ Tâche '+pendingProduction.task+' soumise ('+pendingProduction.words+' mots) '+c;footer.style.display='block';}
+  pendingProduction=null;
+  refreshBadges();
+  updateFocusBar();
+  // Auto-switch to next undone task if in focus mode
+  if(focusMode&&combos.length){
+   const av=availableTasks(combos[activeCombIdx]);
+   const next=av.find(n=>n!==activeTask&&!isFocusDone(n));
+   if(next){setTimeout(()=>focusSwitchTask(next),600);}
+  }
+ }
+ document.getElementById('confOverlay').style.display='none';}
+function buildProductions(){const q=(document.getElementById('prodSearch').value||'').toLowerCase();
+ const list=productions.filter(p=>!q||p.text.toLowerCase().includes(q)||p.topic.toLowerCase().includes(q));
+ const topics={};productions.forEach(p=>topics[p.topic]=(topics[p.topic]||0)+1);
+ const mx=Math.max(1,...Object.values(topics));
+ document.getElementById('topicBalance').innerHTML=Object.keys(topics).length?Object.entries(topics).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<div class="bar-row"><span class="lbl">${escHtml(t)}</span><div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(n/mx*100)}%"></div></div><b>${n}</b></div>`).join(''):'<div class="empty-state">Aucune production.</div>';
+ document.getElementById('confTable').innerHTML=productions.length?'<table style="width:100%;font-size:12px;border-collapse:collapse">'+productions.slice(0,30).map(p=>`<tr style="border-bottom:1px dashed var(--border)"><td style="padding:5px 4px;color:var(--sub)">${p.date}</td><td style="padding:5px 4px;font-weight:600">${escHtml(p.topic)}</td><td style="padding:5px 4px;font-size:18px;text-align:right">${p.confidence||'—'}</td></tr>`).join('')+'</table>'+confInsight():'<div class="empty-state">Évaluez votre confiance après chaque production.</div>';
+ document.getElementById('prodList').innerHTML=list.length?list.map(p=>`<div class="prod-card"><div class="prod-head"><span class="prod-topic">${p.confidence||''} ${escHtml(p.topic)}</span><span class="muted">${p.date} ${p.time||''} · ${p.words} mots <b class="del-x" onclick="delProd(${productions.indexOf(p)})">×</b></span></div><div class="prod-text" onclick="this.classList.toggle('open')">${escHtml(p.text)}</div></div>`).join(''):'<div class="empty-state">'+(q?'Aucun résultat.':'Aucune production.')+'</div>';}
+function confInsight(){const w={},s={};productions.forEach(p=>{if(p.confidence==='😬')w[p.topic]=(w[p.topic]||0)+1;if(p.confidence==='😎')s[p.topic]=(s[p.topic]||0)+1;});
+ const W=Object.entries(w).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t])=>t),S=Object.entries(s).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t])=>t);
+ if(!W.length&&!S.length)return'';
+ return `<p class="muted" style="margin-top:8px">${S.length?'😎 Points forts : <b>'+S.join(', ')+'</b>. ':''}${W.length?'😬 Zones de panique : <b>'+W.join(', ')+'</b> — pratiquez-les en priorité.':''}</p>`;}
+function delProd(i){if(confirm('Supprimer ?')){productions.splice(i,1);SV('tcf_productions',productions);buildProductions();refreshBadges();}}
+
+/* ═══ SRS CONNECTEURS ═══ */
+const SRS_INTERVALS=[0,1,3,7,14,30];
+let srsQueue=[],srsCur=null;
+function buildConnList(){document.getElementById('connListArea').innerHTML=CONNECTORS.map(([c,l])=>`<div class="conn-cat">${c}</div>`+l.map(([w,g])=>`<div class="conn-row"><b>${escHtml(w)}</b><span class="muted">${escHtml(g)}</span></div>`).join('')).join('');}
+function buildSRS(){const t=todayStr();srsQueue=ALL_CONN.map((c,i)=>({...c,i})).filter(c=>{const e=srs[c.i];return!e||e.due<=t;});
+ const a=document.getElementById('srsArea');
+ if(!srsQueue.length){a.innerHTML='<div class="empty-state">🎉 Connecteurs à jour ! '+Object.values(srs).filter(e=>e.box>=4).length+'/100 maîtrisés. Revenez demain.</div>';return;}srsNext();}
+function srsNext(){const a=document.getElementById('srsArea');if(!srsQueue.length){buildSRS();return;}srsCur=srsQueue.shift();
+ a.innerHTML=`<div class="muted">${srsQueue.length+1} carte(s) · ${escHtml(srsCur.cat)}</div><div class="flashcard" onclick="this.classList.toggle('flipped')"><div class="flash-inner"><div class="flash-f">${escHtml(srsCur.w)}</div><div class="flash-b"><b>${escHtml(srsCur.g)}</b></div></div></div><div class="srs-actions"><button class="btn btn-ghost" onclick="srsAns(false)">❌ À revoir</button><button class="btn btn-primary" onclick="srsAns(true)">✅ Je connais</button></div>`;}
+function srsAns(k){const e=srs[srsCur.i]||{box:0};e.box=k?Math.min(e.box+1,5):0;const d=new Date();d.setDate(d.getDate()+SRS_INTERVALS[e.box]);e.due=d.toISOString().slice(0,10);srs[srsCur.i]=e;SV('tcf_srs',srs);srsNext();}
+
+/* ═══ SRS VOCAB B2 ═══ */
+let srsVQueue=[],srsVCur=null;
+function buildSRSV(){const t=todayStr();srsVQueue=B2_VOCAB.map((v,i)=>({w:v[0],g:v[1],i})).filter(v=>{const e=srsV[v.i];return!e||e.due<=t;});
+ const a=document.getElementById('srsVArea');
+ if(!srsVQueue.length){a.innerHTML='<div class="empty-state">🎉 Vocab B2 à jour ! '+Object.values(srsV).filter(e=>e.box>=4).length+'/'+B2_VOCAB.length+' maîtrisés.</div>';return;}srsVNext();}
+function srsVNext(){const a=document.getElementById('srsVArea');if(!srsVQueue.length){buildSRSV();return;}srsVCur=srsVQueue.shift();
+ a.innerHTML=`<div class="muted">${srsVQueue.length+1} carte(s)</div><div class="flashcard" onclick="this.classList.toggle('flipped')"><div class="flash-inner"><div class="flash-f">${escHtml(srsVCur.w)}</div><div class="flash-b">${escHtml(srsVCur.g)}</div></div></div><div class="srs-actions"><button class="btn btn-ghost" onclick="srsVAns(false)">❌ À revoir</button><button class="btn btn-primary" onclick="srsVAns(true)">✅ Je connais</button></div>`;}
+function srsVAns(k){const e=srsV[srsVCur.i]||{box:0};e.box=k?Math.min(e.box+1,5):0;const d=new Date();d.setDate(d.getDate()+SRS_INTERVALS[e.box]);e.due=d.toISOString().slice(0,10);srsV[srsVCur.i]=e;SV('tcf_srs_vocab',srsV);srsVNext();}
+
+/* ═══ VOCAB + THÈMES ═══ */
+function addVocabWord(){const w=document.getElementById('vocabWord').value.trim(),d=document.getElementById('vocabDef').value.trim();
+ const th=document.getElementById('vocabTheme').value||'Autre';if(!w)return;
+ vocabList.push({word:w,def:d,theme:th,addedAt:todayStr()});SV('tcf_vocab',vocabList);
+ document.getElementById('vocabWord').value='';document.getElementById('vocabDef').value='';
+ renderVocabList();renderSentenceChips();renderThemeBalance();refreshBadges();}
+function autoAddVocab(word,def,theme){if(word&&!vocabList.some(v=>v.word===word)){vocabList.push({word,def,theme:theme||'Autre',auto:true,addedAt:todayStr()});SV('tcf_vocab',vocabList);refreshBadges();}}
+function renderVocabList(){const el=document.getElementById('vocabList');
+ el.innerHTML=vocabList.length?[...vocabList].reverse().map((v,ri)=>{const i=vocabList.length-1-ri;
+ return`<div class="list-item"><div class="list-item-text"><b style="color:var(--accent)">${escHtml(v.word)}</b>${v.def?' — <span class="muted">'+escHtml(v.def)+'</span>':''} <span class="muted">[${escHtml(v.theme||'Autre')}${v.auto?' · auto':''}]</span></div><span class="del-x" onclick="delVocab(${i})">×</span></div>`;}).join(''):'<div class="empty-state">Aucun mot.</div>';}
+function delVocab(i){vocabList.splice(i,1);SV('tcf_vocab',vocabList);renderVocabList();renderSentenceChips();renderThemeBalance();refreshBadges();}
+function exportVocabTXT(){dl(new Blob([vocabList.map(v=>v.word+(v.def?' — '+v.def:'')+' ['+(v.theme||'Autre')+']').join('\n')],{type:'text/plain;charset=utf-8'}),'TCF_vocabulaire.txt');}
+function renderThemeBalance(){const el=document.getElementById('vocabThemeBalance');if(!el)return;
+ const c={};TCF_THEMES.forEach(t=>c[t]=0);vocabList.forEach(v=>c[v.theme||'Autre']=(c[v.theme||'Autre']||0)+1);
+ const mx=Math.max(1,...Object.values(c));const mn=Math.min(...Object.values(c));
+ el.innerHTML='<div class="an-title">Vocabulaire par thème TCF</div>'+TCF_THEMES.map(t=>`<div class="bar-row"><span class="lbl">${t}</span><div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(c[t]/mx*100)}%"></div></div><b>${c[t]}</b></div>`).join('')+`<p class="muted">💡 Thèmes faibles : <b>${TCF_THEMES.filter(t=>c[t]===mn).slice(0,3).join(', ')}</b> — enrichissez-les en priorité.</p>`;}
+let flashIdx=0;
+function renderFlashcards(){const el=document.getElementById('flashArea');
+ if(!vocabList.length){el.innerHTML='<div class="empty-state">Ajoutez des mots d\'abord.</div>';return;}
+ flashIdx=flashIdx%vocabList.length;const v=vocabList[flashIdx];
+ el.innerHTML=`<div class="muted">${flashIdx+1}/${vocabList.length}</div><div class="flashcard" onclick="this.classList.toggle('flipped')"><div class="flash-inner"><div class="flash-f">${escHtml(v.word)}</div><div class="flash-b">${escHtml(v.def||'(pas de définition)')}</div></div></div><div class="btn-row"><button class="btn btn-ghost btn-sm" onclick="flashIdx=(flashIdx-1+vocabList.length)%vocabList.length;renderFlashcards()">‹ Précédent</button><button class="btn btn-primary btn-sm" onclick="flashIdx=(flashIdx+1)%vocabList.length;renderFlashcards()">Suivant ›</button></div>`;}
+function renderSentenceChips(){const el=document.getElementById('sentenceChips');if(el)el.innerHTML=vocabList.length?vocabList.map(v=>`<span class="word-chip" onclick="insertWordInSentence(this.textContent)">${escHtml(v.word)}</span>`).join(''):'<span class="muted">Ajoutez des mots d\'abord.</span>';}
+function insertWordInSentence(w){const sa=document.getElementById('sentenceArea');sa.value+=(sa.value&&!sa.value.endsWith(' ')?' ':'')+w+' ';sa.focus();}
+function saveSentencePractice(){const t=document.getElementById('sentenceArea').value.trim();if(!t)return;savedSentences.unshift({text:t,date:new Date().toLocaleDateString('fr-FR')});if(savedSentences.length>50)savedSentences.pop();SV('tcf_sentences',savedSentences);document.getElementById('sentenceArea').value='';renderSavedSentences();}
+function renderSavedSentences(){const el=document.getElementById('savedSentences');if(el)el.innerHTML=savedSentences.slice(0,10).map((s,i)=>`<div class="list-item"><div class="list-item-text"><span class="muted">${s.date}</span> — ${escHtml(s.text)}</div><span class="del-x" onclick="savedSentences.splice(${i},1);SV('tcf_sentences',savedSentences);renderSavedSentences()">×</span></div>`).join('');}
+
+/* ═══ ERREURS RECYCLÉES ═══ */
+function addError(){const w=document.getElementById('errWrong').value.trim(),r=document.getElementById('errRight').value.trim();if(!w)return;
+ myErrors.push({wrong:w,right:r,addedAt:todayStr()});SV('tcf_errors',myErrors);
+ document.getElementById('errWrong').value='';document.getElementById('errRight').value='';
+ buildErrorsList();renderErrorsPanel();refreshBadges();}
+function buildErrorsList(){const el=document.getElementById('errorsList');
+ el.innerHTML=myErrors.length?myErrors.map((e,i)=>`<div class="list-item"><div class="list-item-text">❌ <b style="color:var(--danger)">${escHtml(e.wrong)}</b>${e.right?' → ✅ <b style="color:var(--success)">'+escHtml(e.right)+'</b>':''}</div><span class="del-x" onclick="delError(${i})">×</span></div>`).join(''):'<div class="empty-state">Aucune erreur notée.</div>';}
+function delError(i){myErrors.splice(i,1);SV('tcf_errors',myErrors);buildErrorsList();renderErrorsPanel();refreshBadges();}
+function renderErrorsPanel(){const p=document.getElementById('errorsPanel');
+ if(!myErrors.length){p.style.display='none';return;}p.style.display='block';
+ document.getElementById('errorsPanelChips').innerHTML=myErrors.slice(-8).map(e=>`<span class="err-chip">❌ ${escHtml(e.wrong)}${e.right?' → ✅ '+escHtml(e.right):''}</span>`).join('');}
+
+/* ═══ FAV / REV / HISTORIQUE / STATS ═══ */
+function addFav(){const s=getCurrentSujet();if(!s){alert('Chargez un sujet d\'abord.');return;}if(!favorites.includes(s)){favorites.push(s);SV('tcf_favorites',favorites);refreshBadges();}}
+function addRevisit(){const s=getCurrentSujet();if(!s){alert('Chargez un sujet d\'abord.');return;}if(!revisits.includes(s)){revisits.push(s);SV('tcf_revisits',revisits);refreshBadges();}}
+function buildFavList(){const el=document.getElementById('favList');el.innerHTML=favorites.length?favorites.map((f,i)=>`<div class="list-item"><div class="list-item-text">${escHtml(f)}</div><span class="del-x" onclick="favorites.splice(${i},1);SV('tcf_favorites',favorites);refreshBadges();buildFavList()">×</span></div>`).join(''):'<div class="empty-state">Aucun favori.</div>';}
+function buildRevList(){const el=document.getElementById('revList');el.innerHTML=revisits.length?revisits.map((r,i)=>`<div class="list-item"><div class="list-item-text">${escHtml(r)}</div><span class="del-x" onclick="revisits.splice(${i},1);SV('tcf_revisits',revisits);refreshBadges();buildRevList()">×</span></div>`).join(''):'<div class="empty-state">Rien à réviser.</div>';}
+function saveHistory(t){history.push({time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),date:todayStr(),text:t});if(history.length>300)history=history.slice(-300);SV('tcf_history',history);refreshBadges();}
+function buildHistList(){const el=document.getElementById('histList');
+ if(!history.length){el.innerHTML='<div class="empty-state">Aucun historique.</div>';return;}
+ const g={};[...history].reverse().forEach(h=>{(g[h.date||'—']=g[h.date||'—']||[]).push(h);});
+ el.innerHTML=Object.entries(g).map(([d,es])=>`<div class="hist-date-group">${d}</div>`+es.map(h=>`<div class="hist-item"><span class="hist-time">${h.time}</span><span>${escHtml(h.text)}</span></div>`).join('')).join('');}
+function buildStats(){document.getElementById('statProd').textContent=productions.length;
+ document.getElementById('statWords').textContent=productions.reduce((a,p)=>a+p.words,0)+wordCount();
+ document.getElementById('statStreak').textContent=streak.cur;document.getElementById('statBest').textContent=streak.best;
+ document.getElementById('statVocab').textContent=vocabList.length;
+ document.getElementById('statConn').textContent=Object.values(srs).filter(e=>e.box>=4).length;
+ document.getElementById('statFav').textContent=favorites.length;document.getElementById('statHist').textContent=history.length;}
+function refreshBadges(){const set=(i,n)=>{const e=document.getElementById(i);if(e)e.textContent=n;};
+ set('fav-badge',favorites.length);set('rev-badge',revisits.length);set('hist-badge',history.length);
+ set('prod-badge',productions.length);set('vocab-badge',vocabList.length);set('err-badge',myErrors.length);}
+
+/* ═══ STREAK ═══ */
+function bumpStreak(){const t=todayStr();if(streak.lastDate===t)return;
+ const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+ streak.cur=(streak.lastDate===y)?streak.cur+1:1;streak.best=Math.max(streak.best,streak.cur);
+ streak.lastDate=t;streak.days=streak.days||[];if(!streak.days.includes(t))streak.days.push(t);
+ SV('tcf_streak',streak);renderStreak();}
+function renderStreak(){document.getElementById('streakStrip').textContent='🔥 Série : '+streak.cur+' jour'+(streak.cur>1?'s':'')+(streak.best>1?' · Record : '+streak.best:'');}
+
+/* ═══ PROFIL ═══ */
+function saveProfile(){profile={prenom:document.getElementById('profPrenom').value.trim(),nom:document.getElementById('profNom').value.trim(),objectif:document.getElementById('profObjectif').value,dateExamen:document.getElementById('profDate').value};
+ SV('tcf_profile',profile);applyProfile();buildReport();alert('Profil enregistré, '+(profile.prenom||'étudiant')+' ! (conservé même PC éteint)');}
+function loadProfileForm(){if(profile.prenom)document.getElementById('profPrenom').value=profile.prenom;if(profile.nom)document.getElementById('profNom').value=profile.nom;if(profile.objectif)document.getElementById('profObjectif').value=profile.objectif;if(profile.dateExamen)document.getElementById('profDate').value=profile.dateExamen;}
+function applyProfile(){const full=((profile.prenom||'')+' '+(profile.nom||'')).trim();const bn=document.getElementById('brandName');
+ if(full){bn.textContent=full;bn.style.display='block';
+  document.getElementById('profileBanner').style.display='flex';
+  document.getElementById('profileAvatar').textContent=(profile.prenom||'?')[0].toUpperCase();
+  document.getElementById('pbName').textContent=full;
+  document.getElementById('pbSub').textContent='Objectif '+(profile.objectif||'B2')+(profile.dateExamen?' · Examen le '+profile.dateExamen:'');
+  document.getElementById('studioGreeting').innerHTML='<p class="muted" style="margin-bottom:12px">Bonjour <b style="color:var(--accent)">'+escHtml(profile.prenom||full)+'</b> 👋 — objectif <b>'+(profile.objectif||'B2')+'</b>'+(daysLeft()!==null?' · <b>'+daysLeft()+' jours</b> avant l\'examen':'')+'</p>';
+ }else{bn.style.display='none';document.getElementById('profileBanner').style.display='none';document.getElementById('studioGreeting').innerHTML='';}}
+function daysLeft(){if(!profile.dateExamen)return null;return Math.max(0,Math.ceil((new Date(profile.dateExamen)-new Date())/864e5));}
+function buildReport(){const tot=productions.reduce((a,p)=>a+p.words,0);
+ const byTask=[1,2,3].map(n=>productions.filter(p=>p.task===n).length);const mT=Math.max(1,...byTask);
+ document.getElementById('reportContent').innerHTML=
+ `<div class="bar-row"><span class="lbl">📄 Productions</span><b>${productions.length}</b></div>
+ <div class="bar-row"><span class="lbl">📝 Mots rédigés</span><b>${tot}</b></div>
+ <div class="bar-row"><span class="lbl">🔥 Série / Record</span><b>${streak.cur} / ${streak.best}</b></div>
+ <div class="bar-row"><span class="lbl">📆 Jours actifs</span><b>${(streak.days||[]).length}</b></div>
+ <div class="bar-row"><span class="lbl">📖 Vocabulaire</span><b>${vocabList.length} mots</b></div>
+ <div class="bar-row"><span class="lbl">🔗 Connecteurs maîtrisés</span><b>${Object.values(srs).filter(e=>e.box>=4).length}/100</b></div>
+ <div class="bar-row"><span class="lbl">🧠 Vocab B2 maîtrisé</span><b>${Object.values(srsV).filter(e=>e.box>=4).length}/${B2_VOCAB.length}</b></div>
+ <div class="bar-row"><span class="lbl">♻️ Erreurs suivies</span><b>${myErrors.length}</b></div>
+ <div class="an-title">Pratique par tâche</div>
+ ${[1,2,3].map(n=>`<div class="bar-row"><span class="lbl">Tâche ${n}</span><div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(byTask[n-1]/mT*100)}%"></div></div><b>${byTask[n-1]}</b></div>`).join('')}${confInsight()}`;}
+function exportReport(){const full=((profile.prenom||'')+' '+(profile.nom||'')).trim()||'Étudiant';
+ dl(new Blob(['RAPPORT TCF EE STUDIO X\nÉtudiant : '+full+'\nObjectif : '+(profile.objectif||'B2')+'\nDate examen : '+(profile.dateExamen||'—')+'\nProductions : '+productions.length+'\nMots rédigés : '+productions.reduce((a,p)=>a+p.words,0)+'\nSérie : '+streak.cur+' (record '+streak.best+')\nVocabulaire : '+vocabList.length+' mots\nConnecteurs maîtrisés : '+Object.values(srs).filter(e=>e.box>=4).length+'/100\nErreurs suivies : '+myErrors.length+'\nGénéré le : '+new Date().toLocaleString('fr-FR')],{type:'text/plain;charset=utf-8'}),'TCF_rapport.txt');}
+
+/* ═══ MODE EXAMEN ═══ */
+let examRemain=3600,examInterval=null,examCombo=null,examTask=1;
+function launchExamDay(){if(!combos.length)loadSujets();
+ if(!combos.length){const s=Object.keys(customBank).filter(k=>(customBank[k]||[]).length);if(!s.length){alert('Aucun sujet.');return;}activeMonthSlug=s[0];combos=customBank[activeMonthSlug].map((c,i)=>({...c,num:c.num||i+1}));}
+ document.getElementById('examOverlay').classList.add('active');
+ document.getElementById('examLaunch').style.display='block';document.getElementById('examShell').style.display='none';}
+function closeExamLaunch(){document.getElementById('examOverlay').classList.remove('active');}
+function startExamDay(){examCombo=combos[Math.floor(Math.random()*combos.length)];
+ examTask=availableTasks(examCombo)[0]||1;examRemain=3600;
+ examAnswers={1:'',2:'',3:''};SV('tcf_exam_answers',examAnswers);
+ document.body.classList.add('exam-active');
+ document.getElementById('examLaunch').style.display='none';document.getElementById('examShell').style.display='block';
+ document.getElementById('examComboLabel').textContent=getMonth(activeMonthSlug).label+' · Combinaison '+examCombo.num;
+ document.getElementById('examEditor').value='';
+ document.getElementById('examEditor').style.fontSize=(localStorage.getItem('tcf_font')||'15')+'px';
+ renderExamTask();clearInterval(examInterval);
+ examInterval=setInterval(()=>{if(examRemain>0){examRemain--;drawExamTimer();}else{clearInterval(examInterval);alert('⏰ Temps écoulé !');endExam();}},1000);
+ drawExamTimer();saveHistory('🎓 Examen démarré · C'+examCombo.num);}
+function drawExamTimer(){const m=Math.floor(examRemain/60),s=examRemain%60;const e=document.getElementById('examTimer');e.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');e.style.color=examRemain<600?'#fecaca':'#fff';}
+function renderExamTask(){const av=availableTasks(examCombo);
+ document.getElementById('examTaskTabs').innerHTML=[1,2,3].map(n=>`<div class="task-tab ${examTask===n?'active':''} ${av.includes(n)?'':'missing'}" onclick="switchExamTask(${n})">Tâche ${n}${(examAnswers[n]||'').trim()?' ✍':''}</div>`).join('');
+ renderTaskContent(examCombo,document.getElementById('examTaskContent'),examTask);
+ document.getElementById('examTaskName').textContent='Tâche '+examTask;}
+function switchExamTask(n){examAnswers[examTask]=document.getElementById('examEditor').value;SV('tcf_exam_answers',examAnswers);
+ examTask=n;renderExamTask();document.getElementById('examEditor').value=examAnswers[n]||'';onExamInput();}
+function onExamInput(){examAnswers[examTask]=document.getElementById('examEditor').value;SV('tcf_exam_answers',examAnswers);
+ const w=wcOf(document.getElementById('examEditor').value);const L=[[60,120],[120,150],[0,180]];const[mn,mx]=L[examTask-1];
+ const el=document.getElementById('examWC');el.textContent=w+' mots'+(w>=mn&&w<=mx?' ✓':'');el.className='word-counter '+(w>=mn&&w<=mx?'ok':(w>mx?'over':''));}
+function endExam(){examAnswers[examTask]=document.getElementById('examEditor').value;SV('tcf_exam_answers',examAnswers);
+ clearInterval(examInterval);
+ [1,2,3].forEach(n=>{const t=(examAnswers[n]||'').trim();if(wcOf(t)>=10){productions.unshift({date:todayStr(),time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),topic:'Examen T'+n+' · C'+examCombo.num,task:n,month:activeMonthSlug,text:t,words:wcOf(t),confidence:null,exam:true});}});
+ SV('tcf_productions',productions);bumpStreak();refreshBadges();
+ let html='<h3 class="h3">🏁 Analyse complète de l\'examen</h3>';
+ [1,2,3].forEach(n=>{const t=(examAnswers[n]||'').trim();if(t){html+='<div class="an-title" style="font-size:15px">Tâche '+n+' — '+wcOf(t)+' mots</div>'+renderAnalysisHTML(analyzeText(t,n));recycleFlags();}});
+ html+='<div class="btn-row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="saveExamTXT()">💾 Tout en TXT</button><button class="btn btn-ghost btn-sm" onclick="saveExamDOC()">📄 Tout en DOC</button><button class="btn btn-primary btn-sm" onclick="confirmLeaveExam(true)">Fermer</button></div>';
+ document.getElementById('examTaskContent').innerHTML=html;
+ document.getElementById('examEditorCard').style.display='none';
+ saveHistory('🏁 Examen terminé · '+[1,2,3].map(n=>'T'+n+':'+wcOf(examAnswers[n]||'')).join(' '));}
+function allExamText(){return [1,2,3].map(n=>'=== TÂCHE '+n+' ===\n'+(examAnswers[n]||'(vide)')).join('\n\n');}
+function saveExamTXT(){
+ // Sync current editor before saving
+ examAnswers[examTask]=document.getElementById('examEditor').value;
+ let out='TCF EE — MODE EXAMEN\n';
+ out+=getMonth(activeMonthSlug).label+' · Combinaison '+examCombo.num+'\n';
+ out+='Généré le '+new Date().toLocaleString('fr-FR')+'\n\n';
+ [1,2,3].forEach(n=>{
+  const t=(examAnswers[n]||'').trim();
+  const lbl=['60-120 mots','120-150 mots','180 mots max.'][n-1];
+  out+='=== TÂCHE '+n+' ('+lbl+') ===\n'+(t||'(vide)')+'\n\n';
+ });
+ dl(new Blob([out],{type:'text/plain;charset=utf-8'}),'TCF_examen.txt');
+}
+function saveExamDOC(){
+ if(!window.docx){alert('Chargement docx en cours, réessayez.');return;}
+ // Sync current editor
+ examAnswers[examTask]=document.getElementById('examEditor').value;
+ const{Document,Packer,Paragraph,TextRun,HeadingLevel}=docx;
+ const month=getMonth(activeMonthSlug).label;
+ const children=[];
+ children.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun('TCF EE — Mode Examen')]}));
+ children.push(new Paragraph({children:[new TextRun({text:month+' · Combinaison '+examCombo.num+' · '+new Date().toLocaleDateString('fr-FR'),color:'64748b',size:20})],spacing:{after:300}}));
+ const limites=['60 mots min. / 120 mots max.','120 mots min. / 150 mots max.','180 mots maximum'];
+ [1,2,3].forEach(n=>{
+  const t=(examAnswers[n]||'').trim();
+  let consigne='';
+  if(n===1&&examCombo.t1)consigne=examCombo.t1.consigne||'';
+  if(n===2&&examCombo.t2)consigne=examCombo.t2.consigne||'';
+  if(n===3&&examCombo.t3){if(examCombo.t3.doc1)consigne+='Document 1 :\n'+examCombo.t3.doc1;if(examCombo.t3.doc2)consigne+=(consigne?'\n\n':'')+'Document 2 :\n'+examCombo.t3.doc2;}
+  children.push(...makeDocxParagraphs('Tâche '+n,consigne,t,limites[n-1]));
+ });
+ const doc=new Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},children}]});
+ Packer.toBlob(doc).then(blob=>dl(blob,'TCF_examen_C'+examCombo.num+'.docx'));
+}
+function confirmLeaveExam(skip){
+ if(!skip){if(!confirm('⚠️ Vous êtes en MODE EXAMEN. Voulez-vous vraiment quitter ?'))return;
+  if(!confirm('🛑 Confirmation finale : quitter maintenant ?'))return;
+  examAnswers[examTask]=document.getElementById('examEditor').value;SV('tcf_exam_answers',examAnswers);}
+ clearInterval(examInterval);
+ document.getElementById('examOverlay').classList.remove('active');
+ document.getElementById('examEditorCard').style.display='block';
+ document.body.classList.remove('exam-active');}
+
+/* ═══ THÈME + INIT ═══ */
+function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('tcf_theme',document.body.classList.contains('dark')?'dark':'light');}
+if(localStorage.getItem('tcf_theme')==='dark')document.body.classList.add('dark');
+document.getElementById('vocabTheme').innerHTML=TCF_THEMES.map(t=>`<option value="${t}">Thème : ${t}</option>`).join('');
+populateMonthSelect();onMonthChange();refreshBadges();renderStreak();applyProfile();renderErrorsPanel();loadDraft();
+</script>
+</body>
+</html>
+
+
