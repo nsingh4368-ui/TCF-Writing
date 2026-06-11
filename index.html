@@ -92,8 +92,9 @@ textarea.editor-area:focus{border-color:var(--accent2)}
 body.dark .errors-panel{background:#2d1e0e;border-color:#7c4a12}
 .errors-panel h4{font-size:12px;font-weight:800;color:var(--warn);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
 .err-chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:3px 10px;font-size:11.5px;margin:2px;font-weight:600}
-.accent-dock{position:fixed;right:14px;bottom:14px;z-index:20;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
-body.exam-active .accent-dock{z-index:70}
+.accent-dock{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:20;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.accent-dock.writing-active{display:flex}
+body.exam-active .accent-dock{z-index:70;display:flex}
 .accent-page{display:grid;grid-template-columns:repeat(4,34px);gap:5px}
 .accent-nav{display:flex;gap:5px}
 .accent-nav button,.accent-page button{background:var(--panel2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font:inherit;font-weight:700;min-height:32px;font-size:14px}
@@ -180,19 +181,37 @@ body.focus-mode .focus-toggle{display:none}
 .freeze-overlay{position:fixed;inset:0;background:rgba(10,15,25,.75);backdrop-filter:blur(16px);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
 .freeze-card{width:min(560px,100%);background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:22px;color:var(--text)}
 .freeze-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+/* Mobile hamburger toggle */
+.sidebar-toggle-btn{display:none;position:fixed;top:12px;left:12px;z-index:50;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 11px;font-size:18px;cursor:pointer;box-shadow:var(--shadow);line-height:1}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:39}
 @media(max-width:900px){.main{padding:16px 16px 140px}.exam-overlay{padding:12px 12px 140px}}
 @media(max-width:700px){
- .app{flex-direction:column;height:auto;min-height:100vh}
- .sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border)}
- .sidebar-scroll{max-height:280px}
- .main{padding:14px 12px 150px;overflow:visible}
+ .sidebar-toggle-btn{display:block}
+ .app{display:flex;flex-direction:column;height:auto;min-height:100vh}
+ .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:40;width:280px;min-width:280px;transform:translateX(-100%);transition:transform .25s ease,opacity .25s;border-right:1px solid var(--border);border-bottom:none;overflow-y:auto}
+ .sidebar.mobile-open{transform:translateX(0)}
+ .sidebar-overlay.mobile-open{display:block}
+ .sidebar-scroll{max-height:none;flex:1}
+ .main{padding:60px 12px 150px;overflow:visible}
  .timer-display{font-size:38px}
  .form-grid,.bank-tools,.freeze-actions{grid-template-columns:1fr}
- .accent-dock{right:8px;bottom:10px}.accent-page{grid-template-columns:repeat(4,32px)}
+ .accent-dock{right:6px;top:50%;transform:translateY(-50%)}.accent-page{grid-template-columns:repeat(4,32px)}
  .focus-toolbar{left:8px;right:8px;transform:none;max-width:none;flex-wrap:wrap}
  .focus-toggle{right:8px;top:8px}
  body.focus-mode .main{padding:96px 12px 150px}
  .stats-grid{grid-template-columns:repeat(2,1fr)}.exam-timer{font-size:24px}
+ .exam-overlay{padding:12px 12px 120px}
+ .editor-footer{flex-wrap:wrap}
+ .btn-sm{font-size:11px;padding:6px 8px}
+ .task-tabs{gap:4px}
+ .task-tab{padding:5px 10px;font-size:11px}
+ .section-title{font-size:16px}
+ .card{padding:14px 14px}
+ textarea.editor-area{font-size:14px}
+ .focus-tasks{grid-template-columns:1fr}
+ .month-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+ .view-tabs,.ex-mode-tabs,.err-tabs,.analysis-tabs{flex-wrap:wrap}
+ .view-tab,.ex-mode-tab,.err-tab,.analysis-tab{font-size:11.5px;padding:5px 10px}
 }
 
 /* ═══ V5 ENHANCEMENTS ═══ */
@@ -369,6 +388,8 @@ body.dark .rdg-option.wrong{background:#450a0a!important;color:#fca5a5!important
 </style>
 </head>
 <body>
+<button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleMobileSidebar()" aria-label="Menu">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
 <div class="app">
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -2205,7 +2226,7 @@ let combos=[],activeCombIdx=0,activeTask=1,activeMonthSlug='',focusMode=false,pe
 
 /* ═══ VIEWS ═══ */
 const views=['studio','browse','productions','connectors','vocab','errors','reading','listening','reading_mock','favorites','revisit','history','stats','profile'];
-function showView(v){views.forEach(x=>{const e=document.getElementById('view-'+x);if(e)e.style.display=(x===v?'':'none');const n=document.getElementById('nav-'+x);if(n)n.classList.toggle('active',x===v);});
+function showView(v){closeMobileSidebar();views.forEach(x=>{const e=document.getElementById('view-'+x);if(e)e.style.display=(x===v?'':'none');const n=document.getElementById('nav-'+x);if(n)n.classList.toggle('active',x===v);});
  if(v==='browse')buildMonthGrid();if(v==='productions')buildProductions();
  if(v==='connectors'){buildSRS();buildConnList();}
  if(v==='vocab'){renderVocabList();renderSentenceChips();renderSavedSentences();renderThemeBalance();}
@@ -2414,19 +2435,25 @@ function updateFocusBar(){
  const tp=document.getElementById('focusTopics');
  if(tp&&combos.length){
   const c=combos[activeCombIdx];
-  const t1html=c.t1&&c.t1.consigne
-   ?'<div class="focus-task-block"><span class="ftb-label">Tâche 1 — 60-120 mots</span>'+escHtml(c.t1.consigne)+'</div>'
-   :'<div class="focus-task-block"><span class="ftb-label">Tâche 1</span><span style="color:var(--sub)">Non disponible</span></div>';
-  const t2html=c.t2&&c.t2.consigne
-   ?'<div class="focus-task-block"><span class="ftb-label">Tâche 2 — 120-150 mots</span>'+escHtml(c.t2.consigne)+'</div>'
-   :'<div class="focus-task-block"><span class="ftb-label">Tâche 2</span><span style="color:var(--sub)">Non disponible</span></div>';
-  let t3html='<div class="focus-task-block"><span class="ftb-label">Tâche 3 — 180 mots max.'+(c.t3&&c.t3.titre?' — '+escHtml(c.t3.titre):'')+'</span>';
-  if(c.t3&&(c.t3.doc1||c.t3.doc2)){
-   if(c.t3.doc1)t3html+='<div style="margin-bottom:6px"><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 1</span><br>'+escHtml(c.t3.doc1)+'</div>';
-   if(c.t3.doc2)t3html+='<div><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 2</span><br>'+escHtml(c.t3.doc2)+'</div>';
-  }else t3html+='<span style="color:var(--sub)">Non disponible</span>';
-  t3html+='</div>';
-  tp.innerHTML=t1html+t2html+t3html;
+  let html='';
+  if(activeTask===1){
+   html=c.t1&&c.t1.consigne
+    ?'<div class="focus-task-block" style="grid-column:1/-1"><span class="ftb-label">Tâche 1 — 60-120 mots</span>'+escHtml(c.t1.consigne)+'</div>'
+    :'<div class="focus-task-block" style="grid-column:1/-1"><span class="ftb-label">Tâche 1</span><span style="color:var(--sub)">Non disponible</span></div>';
+  }else if(activeTask===2){
+   html=c.t2&&c.t2.consigne
+    ?'<div class="focus-task-block" style="grid-column:1/-1"><span class="ftb-label">Tâche 2 — 120-150 mots</span>'+escHtml(c.t2.consigne)+'</div>'
+    :'<div class="focus-task-block" style="grid-column:1/-1"><span class="ftb-label">Tâche 2</span><span style="color:var(--sub)">Non disponible</span></div>';
+  }else{
+   let t3html='<div class="focus-task-block" style="grid-column:1/-1"><span class="ftb-label">Tâche 3 — 180 mots max.'+(c.t3&&c.t3.titre?' — '+escHtml(c.t3.titre):'')+'</span>';
+   if(c.t3&&(c.t3.doc1||c.t3.doc2)){
+    if(c.t3.doc1)t3html+='<div style="margin-bottom:6px"><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 1</span><br>'+escHtml(c.t3.doc1)+'</div>';
+    if(c.t3.doc2)t3html+='<div><span style="font-size:10px;font-weight:800;color:var(--sub)">Document 2</span><br>'+escHtml(c.t3.doc2)+'</div>';
+   }else t3html+='<span style="color:var(--sub)">Non disponible</span>';
+   t3html+='</div>';
+   html=t3html;
+  }
+  tp.innerHTML=html;
  }else if(tp)tp.innerHTML='';
 }
 
@@ -4033,9 +4060,19 @@ function clearReadingDocs(){
   refreshBadges();
 }
 
-/* ── ADD RESTORE BACKUP BUTTON TO PROFILE VIEW ── */
+/* ── MOBILE SIDEBAR ── */
+function toggleMobileSidebar(){
+  const s=document.querySelector('.sidebar');
+  const o=document.getElementById('sidebarOverlay');
+  const open=s.classList.toggle('mobile-open');
+  o.classList.toggle('mobile-open',open);
+}
+function closeMobileSidebar(){
+  document.querySelector('.sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarOverlay').classList.remove('mobile-open');
+}
 
-/* ── INIT NEW FEATURES ── */
+/* ── ACCENT DOCK: always visible on right-middle ── */
 rebuildCustomConnsSRS();
 // Add auto-backup reminder on load if >100 productions
 if(productions.length>100||history.length>200){
