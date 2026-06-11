@@ -92,7 +92,7 @@ textarea.editor-area:focus{border-color:var(--accent2)}
 body.dark .errors-panel{background:#2d1e0e;border-color:#7c4a12}
 .errors-panel h4{font-size:12px;font-weight:800;color:var(--warn);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
 .err-chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:3px 10px;font-size:11.5px;margin:2px;font-weight:600}
-.accent-dock{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:20;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.accent-dock{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:20;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow);display:none;flex-direction:column;gap:6px}
 .accent-dock.writing-active{display:flex}
 body.exam-active .accent-dock{z-index:70;display:flex}
 .accent-page{display:grid;grid-template-columns:repeat(4,34px);gap:5px}
@@ -433,12 +433,6 @@ body.dark .rdg-option.wrong{background:#450a0a!important;color:#fca5a5!important
   <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
   <button class="btn btn-ghost" onclick="addFav()">⭐ Ajouter aux favoris</button>
   <button class="btn btn-ghost" onclick="addRevisit()">🔄 À réviser</button>
-  <div class="btn-row">
-   <button class="btn btn-ghost btn-sm" onclick="saveAsTXT()">⬇ TXT</button>
-   <button class="btn btn-ghost btn-sm" onclick="saveAsDOC()">⬇ DOC</button>
-   <button class="btn btn-ghost btn-sm" onclick="exportJSON()">⬇ JSON</button>
-   <button class="btn btn-ghost btn-sm" onclick="openPDFModal()">🖨 PDF</button>
-  </div>
   <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
   <button class="btn btn-ghost" onclick="downloadFullBackup()" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none">💾 Sauvegarder tout l'historique</button>
  </div>
@@ -2227,6 +2221,7 @@ let combos=[],activeCombIdx=0,activeTask=1,activeMonthSlug='',focusMode=false,pe
 /* ═══ VIEWS ═══ */
 const views=['studio','browse','productions','connectors','vocab','errors','reading','listening','reading_mock','favorites','revisit','history','stats','profile'];
 function showView(v){closeMobileSidebar();views.forEach(x=>{const e=document.getElementById('view-'+x);if(e)e.style.display=(x===v?'':'none');const n=document.getElementById('nav-'+x);if(n)n.classList.toggle('active',x===v);});
+ const dock=document.querySelector('.accent-dock');if(dock&&!document.body.classList.contains('exam-active')){dock.style.display=(v==='studio'||v==='browse'||v==='vocab'||v==='errors'||v==='connectors')?'flex':'none';}
  if(v==='browse')buildMonthGrid();if(v==='productions')buildProductions();
  if(v==='connectors'){buildSRS();buildConnList();}
  if(v==='vocab'){renderVocabList();renderSentenceChips();renderSavedSentences();renderThemeBalance();}
@@ -2704,6 +2699,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
 if(localStorage.getItem('tcf_theme')==='dark')document.body.classList.add('dark');
 document.getElementById('vocabTheme').innerHTML=TCF_THEMES.map(t=>`<option value="${t}">Thème : ${t}</option>`).join('');
 populateMonthSelect();onMonthChange();refreshBadges();renderStreak();applyProfile();renderErrorsPanel();loadDraft();
+(function(){const dock=document.querySelector('.accent-dock');if(dock)dock.style.display='flex';})();
 
 /* ══════════════════════════════════════════════
    V5 ADDITIONS
