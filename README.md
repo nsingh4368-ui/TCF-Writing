@@ -1,6 +1,6 @@
-# TCF EE Studio X — Written Expression
+# TCF EE, CE, CO and EO Studio for TCF CANADA
 
-Free web application to prepare for the TCF Written Expression exam (B1/B2/C1).
+Free web application to prepare for the TCF Written Expression and others before exam (B1/B2/C1).
 TCF keyboard, TCF writing simulation, l'Expression Écrite de TCF pour la tâche 1, 2, et 3.
 
 ## ✨ Features
