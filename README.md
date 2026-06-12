@@ -1,56 +1,130 @@
-# TCF EE, CE, CO and EO Studio for TCF CANADA
+TCF EE Studio X — Free TCF Writing Practice App
 
-Free web application to prepare for the TCF Written Expression and others before exam (B1/B2/C1).
-TCF keyboard, TCF writing simulation, l'Expression Écrite de TCF pour la tâche 1, 2, et 3.
+The most complete free web app to prepare for TCF Canada Expression Écrite (EE), Compréhension Écrite (CE), Compréhension Orale (CO) and Expression Orale (EO).
 
-## ✨ Features
+Practice TCF writing tasks with a real timer, AI-powered analysis, spaced repetition, and exam simulation — all in your browser, no login required.
 
-- 📝 **Studio** - Editor, timer, text analysis, auto-save
-- 📚 **Subject Bank** - Add your own topics by month
-- 📄 **Productions** - Full history with confidence tracking (😬/🙂/😎)
-- 🔗 **B1/B2 Connectors** - 100 connectors with spaced repetition (SRS)
-- 📖 **Vocabulary** - Flashcards, personal sentences, themes
-- ♻️ **Recycled Errors** - Track and fix recurring mistakes
-- ⭐ **Favorites** - Save important topics
-- 🔄 **To Revise** - Personal revision list
-- 🕒 **History** - Log of all your actions
-- 📊 **Statistics** - Productions, words, streaks, vocabulary
-- 👤 **Profile** - B1/B2/C1 goal, exam date, progress report
-- 🎓 **Exam Mode** - Real conditions, 3 tasks, timer
+🔗 Live app: nsingh4368-ui.github.io/nsingh4368-ui
 
-## 🛠️ Technical Features
 
-- Task memory (T1/T2/T3 each keep their own text)
-- Advanced analysis (nuance, connectors, repetitions, structure)
-- Auto-suggest errors to recycled list
-- Theme-based tracking (environment, education, health...)
-- Export TXT, DOC, JSON
-- Distraction-free focus mode
-- Light/Dark theme
-- Accent pad (é, è, ê, ç, œ...)
-- 100% local (all data stays in your browser)
+✨ Features
 
-## 🎓 TCF EE Tips
+📝 Writing Studio
 
-| Task | Words | Type |
-|------|-------|------|
-| Task 1 | 60-120 | Email / Letter |
-| Task 2 | 120-150 | Story / Testimony |
-| Task 3 | 180 max | Argumentation with documents |
 
-## 📥 Export Options
+Timed editor with task-by-task memory (T1 / T2 / T3 each save separately)
+Real-time word counter with B1/B2/C1 target ranges
+Auto-save every 30 seconds
+Distraction-free focus mode
+French accent pad (é, è, ê, ç, œ, «, »…)
 
-- TXT (plain text)
-- DOC (Microsoft Word compatible)
-- JSON (full backup)
 
-## 🙏 Credits
+📚 Subject Bank
 
-To the TCF study group members who use and test the application.
 
----
+Built-in subjects from January 2025 to June 2026
+Add your own topics by month
+Browse and load any subject directly into the studio
 
-**Good luck with your TCF preparation!** 🇫🇷
 
-Keywords
-TCF writing simulator, TCF Keyboard, TCF writing practice etc
+🎓 Exam Mode
+
+
+Simulates real TCF exam conditions
+3 tasks, 60-minute timer, no distractions
+Export your exam as TXT or DOC when finished
+
+
+🔍 Writing Analysis
+
+
+Detects connector usage, nuance, argumentation structure
+Flags overused words and suggests B2-level alternatives
+Theme-based tracking (environment, education, health, work…)
+Auto-suggests errors to your recycled errors list
+
+
+🔗 B1/B2 Connectors
+
+
+100+ French connectors organised by category
+Spaced repetition system (SRS) for long-term retention
+Import your own connectors
+
+
+📖 Vocabulary
+
+
+Flashcards with spaced repetition
+Personal word list with themes
+B2 vocabulary builder
+Fill-in-the-gap exercises
+
+
+♻️ Recycled Errors
+
+
+Track your recurring spelling and grammar mistakes
+Quiz yourself to fix them
+
+
+🎧 Listening & Reading Mock Tests
+
+
+CO (Compréhension Orale) mock tests
+CE (Compréhension Écrite) mock tests with multiple choice
+
+
+📊 Stats & Tracking
+
+
+Productions written, total words, writing streaks
+Vocabulary and connector mastery progress
+Full session history log
+
+
+👤 Multi-Profile Support
+
+
+Create separate profiles (B1 / B2 / C1 goal)
+Set your exam date and track your countdown
+Export and restore your full profile
+
+
+
+🎯 TCF EE Task Reference
+
+TaskWordsTypeTâche 160–120Email / Letter / MessageTâche 2120–150Story / Blog / TestimonyTâche 3180 maxArgumentation with two documents
+
+
+📥 Export Options
+
+
+TXT — plain text, works anywhere
+DOC — Microsoft Word compatible
+PDF — print-ready export
+JSON — full backup of all your data
+
+
+
+🛠️ Technical
+
+
+100% client-side — all data stays in your browser (localStorage)
+No login, no server, no tracking
+Works offline after first load
+Light / Dark theme
+Mobile-friendly
+
+
+
+🙏 Credits
+
+Built for the TCF Canada study community. Thanks to all the students who use and test the app.
+
+Bonne chance pour votre TCF ! 🇫🇷
+
+
+🔍 Keywords
+
+TCF Canada writing practice, TCF Expression Écrite, TCF EE simulator, TCF writing app, TCF tâche 1 2 3, TCF B1 B2 C1 preparation, TCF keyboard French accents, TCF exam practice online, entraînement TCF Canada, TCF Expression Écrite gratuit, TCF writing timer, TCF mock exam, préparation TCF en ligne, TCF connecteurs français, TCF vocabulaire B2, TCF Compréhension Écrite, TCF Compréhension Orale, free TCF preparation tool
