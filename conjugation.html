@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pratique Conjugaison — TCF EE Studio X</title>
+<style>
+:root{--bg:#eef1f7;--panel:#fff;--panel2:#f6f8fc;--text:#0f172a;--sub:#64748b;--accent:#1d4ed8;--accent2:#3b82f6;--border:#e2e8f0;--danger:#dc2626;--success:#16a34a;--warn:#d97706;--shadow:0 1px 3px rgba(15,23,42,.07),0 8px 24px rgba(15,23,42,.06);--grad:linear-gradient(135deg,#1d4ed8,#7c3aed)}
+body.dark{--bg:#0b0e14;--panel:#161a23;--panel2:#1f2430;--text:#f1f5f9;--sub:#94a3b8;--border:#2b3242;--shadow:0 1px 3px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.55;min-height:100vh;padding:20px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:19px;font-weight:800}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.h3{font-size:15px;font-weight:800;margin-bottom:10px}
+.muted{color:var(--sub);font-size:12.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:.15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(29,78,216,.2)}
+.btn-primary:hover{background:#1e40af}
+.btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* Level selector */
+.level-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.level-tab{padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid var(--border);background:var(--panel2);color:var(--sub);transition:all .15s}
+.level-tab:hover{border-color:var(--accent2)}
+.level-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 12px rgba(29,78,216,.2)}
+/* Verb selector grid */
+.verb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;max-height:260px;overflow-y:auto;margin-bottom:12px;padding:2px}
+.verb-grid::-webkit-scrollbar{width:4px}
+.verb-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.verb-pill{padding:7px 10px;border-radius:9px;border:1px solid var(--border);background:var(--panel2);cursor:pointer;font-size:12.5px;font-weight:600;color:var(--text);transition:all .15s;text-align:center}
+.verb-pill:hover{border-color:var(--accent2);background:var(--panel)}
+.verb-pill.selected{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(29,78,216,.15)}
+.verb-pill.mastered{border-color:var(--success);background:#f0fdf4;color:var(--success)}
+.verb-pill.mastered.selected{background:var(--success);color:#fff}
+/* Tense tabs */
+.tense-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tense-tab{padding:6px 13px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--sub);transition:all .15s}
+.tense-tab:hover{border-color:var(--accent2)}
+.tense-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* Drill card */
+.drill-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.drill-verb{font-size:28px;font-weight:800;color:var(--accent)}
+.drill-tense-badge{background:var(--panel2);border:1px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:700;padding:4px 12px;color:var(--sub)}
+.drill-progress{font-size:12px;font-weight:700;color:var(--sub)}
+.pronoun-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pronoun-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;transition:all .2s}
+.pronoun-label{font-size:12px;font-weight:800;color:var(--accent);min-width:50px;flex-shrink:0}
+.conj-input{flex:1;background:transparent;border:none;border-bottom:2px solid var(--border);color:var(--text);font:inherit;font-size:13px;font-weight:600;outline:none;padding:3px 4px;transition:border-color .2s}
+.conj-input:focus{border-bottom-color:var(--accent2)}
+.conj-input.correct{border-bottom-color:var(--success);color:var(--success)}
+.conj-input.wrong{border-bottom-color:var(--danger);color:var(--danger)}
+.conj-input.revealed{border-bottom-color:var(--warn);color:var(--warn);font-style:italic}
+.conj-answer{font-size:11.5px;font-weight:600;color:var(--sub);display:none;margin-top:2px}
+.conj-answer.show{display:block}
+.drill-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+/* Score bar */
+.score-strip{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border-radius:12px;margin-bottom:14px;font-size:12.5px;font-weight:700}
+.score-ok{color:var(--success)}
+.score-err{color:var(--danger)}
+.score-bar-wrap{flex:1;background:var(--border);border-radius:99px;height:7px;overflow:hidden}
+.score-bar{height:100%;background:var(--success);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+/* Result */
+.result-big{text-align:center;padding:24px 16px}
+.result-emoji{font-size:54px;margin-bottom:8px}
+.result-score{font-size:36px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.result-sub{color:var(--sub);font-size:13px}
+/* Session log */
+.session-log{max-height:200px;overflow-y:auto;margin-top:10px}
+.log-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:8px;font-size:12px;margin-bottom:3px}
+.log-item.ok{background:#f0fdf4;color:#15803d}
+.log-item.err{background:#fff1f2;color:#dc2626}
+body.dark .log-item.ok{background:#14532d;color:#86efac}
+body.dark .log-item.err{background:#450a0a;color:#fca5a5}
+/* Accents bar */
+.accent-dock{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;padding:8px 10px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}
+.accent-btn{background:var(--panel);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;font:inherit;font-weight:700;min-height:30px;min-width:30px;font-size:13px;transition:all .15s}
+.accent-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* Setup panel */
+#setup{display:block}
+#drill{display:none}
+#results{display:none}
+.hidden{display:none!important}
+.sel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.sel-count{font-size:12px;font-weight:700;color:var(--accent)}
+.tense-check-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tense-check{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:var(--panel2);cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;user-select:none}
+.tense-check:hover{border-color:var(--accent2)}
+.tense-check.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tense-check input{display:none}
+/* Dark toggle */
+.dark-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--sub)}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .3s ease}
+@media(max-width:600px){.pronoun-grid{grid-template-columns:1fr}.drill-verb{font-size:22px}.page-title{font-size:16px}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">🔀 Pratique Conjugaison</div>
+  <button class="dark-btn" onclick="toggleDark()" title="Thème sombre">🌓</button>
+</div>
+
+<!-- SETUP PANEL -->
+<div id="setup">
+
+  <!-- Level tabs -->
+  <div class="card">
+    <div class="h3">1. Choisir le niveau</div>
+    <div class="level-tabs">
+      <div class="level-tab active" id="ltab-common" onclick="setLevel('common')">🌟 Verbes communs (1–50)</div>
+      <div class="level-tab" id="ltab-b1" onclick="setLevel('b1')">📗 B1 (51–100)</div>
+      <div class="level-tab" id="ltab-b2" onclick="setLevel('b2')">📘 B2 (101–200)</div>
+      <div class="level-tab" id="ltab-all" onclick="setLevel('all')">🎯 Tout (1–200)</div>
+    </div>
+
+    <div class="sel-header">
+      <span class="muted">Sélectionnez les verbes à pratiquer</span>
+      <span class="sel-count" id="selCount">0 sélectionnés</span>
+    </div>
+    <div class="btn-row" style="margin-bottom:10px;margin-top:0">
+      <button class="btn btn-ghost btn-sm" onclick="selectAll()">✅ Tout sélectionner</button>
+      <button class="btn btn-ghost btn-sm" onclick="selectNone()">☐ Tout désélectionner</button>
+      <button class="btn btn-ghost btn-sm" onclick="selectRandom(10)">🎲 10 aléatoires</button>
+      <button class="btn btn-ghost btn-sm" onclick="selectRandom(20)">🎲 20 aléatoires</button>
+    </div>
+    <div class="verb-grid" id="verbGrid"></div>
+  </div>
+
+  <!-- Tense selector -->
+  <div class="card">
+    <div class="h3">2. Choisir les temps</div>
+    <div class="tense-check-row" id="tenseChecks">
+      <label class="tense-check on" data-tense="PR"><input type="checkbox" checked> Présent</label>
+      <label class="tense-check on" data-tense="PC"><input type="checkbox" checked> Passé composé</label>
+      <label class="tense-check on" data-tense="IMP"><input type="checkbox" checked> Imparfait</label>
+      <label class="tense-check on" data-tense="FUT"><input type="checkbox" checked> Futur simple</label>
+      <label class="tense-check on" data-tense="SUB"><input type="checkbox" checked> Subjonctif présent</label>
+    </div>
+  </div>
+
+  <!-- Start -->
+  <div class="card">
+    <div class="h3">3. Lancer</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer">
+        <input type="checkbox" id="chkShuffle" checked style="width:16px;height:16px;accent-color:var(--accent)"> Mélanger l'ordre
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer">
+        <input type="checkbox" id="chkShowHints" style="width:16px;height:16px;accent-color:var(--accent)"> Afficher les réponses si vide
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="startDrill()">🚀 Commencer la pratique</button>
+    </div>
+    <div id="setupError" style="display:none;margin-top:8px;padding:8px 12px;background:#fee2e2;color:#dc2626;border-radius:9px;font-size:12px;font-weight:700"></div>
+  </div>
+
+</div><!-- /setup -->
+
+
+<!-- DRILL PANEL -->
+<div id="drill">
+
+  <div class="score-strip">
+    <span class="score-ok" id="scoreOk">✅ 0</span>
+    <span class="score-err" id="scoreErr">❌ 0</span>
+    <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+    <span class="drill-progress" id="drillProg">0 / 0</span>
+    <button class="btn btn-ghost btn-sm" onclick="endDrill()">⏹ Terminer</button>
+  </div>
+
+  <div class="card" id="drillCard" style="animation:slideUp .3s ease-out">
+    <div class="drill-header">
+      <div>
+        <div class="drill-verb" id="drillVerb">—</div>
+        <div style="font-size:12px;color:var(--sub);margin-top:3px" id="drillVerbMeaning"></div>
+      </div>
+      <div style="text-align:right">
+        <div class="drill-tense-badge" id="drillTense">—</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:4px" id="drillAux"></div>
+      </div>
+    </div>
+
+    <div class="pronoun-grid" id="pronounGrid"></div>
+
+    <div class="accent-dock">
+      <span style="font-size:10px;font-weight:700;color:var(--sub);align-self:center;margin-right:4px">Accents →</span>
+      <button class="accent-btn" onclick="insertAccent('é')">é</button>
+      <button class="accent-btn" onclick="insertAccent('è')">è</button>
+      <button class="accent-btn" onclick="insertAccent('ê')">ê</button>
+      <button class="accent-btn" onclick="insertAccent('ë')">ë</button>
+      <button class="accent-btn" onclick="insertAccent('à')">à</button>
+      <button class="accent-btn" onclick="insertAccent('â')">â</button>
+      <button class="accent-btn" onclick="insertAccent('ç')">ç</button>
+      <button class="accent-btn" onclick="insertAccent('ù')">ù</button>
+      <button class="accent-btn" onclick="insertAccent('û')">û</button>
+      <button class="accent-btn" onclick="insertAccent('î')">î</button>
+      <button class="accent-btn" onclick="insertAccent('ï')">ï</button>
+      <button class="accent-btn" onclick="insertAccent('ô')">ô</button>
+      <button class="accent-btn" onclick="insertAccent('œ')">œ</button>
+      <button class="accent-btn" onclick="insertAccent('É')">É</button>
+      <button class="accent-btn" onclick="insertAccent('È')">È</button>
+      <button class="accent-btn" onclick="insertAccent('À')">À</button>
+    </div>
+
+    <div class="drill-actions">
+      <button class="btn btn-primary" onclick="checkAnswers()">✅ Vérifier</button>
+      <button class="btn btn-ghost" onclick="revealAll()">👁 Voir les réponses</button>
+      <button class="btn btn-ghost" onclick="nextCard()">⏭ Suivant →</button>
+    </div>
+
+    <div id="cardFeedback" style="margin-top:12px;display:none;padding:9px 13px;border-radius:10px;font-size:13px;font-weight:700"></div>
+  </div>
+
+  <div class="card">
+    <div class="h3" style="margin-bottom:6px">📋 Journal de session</div>
+    <div class="session-log" id="sessionLog"><div class="muted" style="padding:4px">Les résultats apparaîtront ici…</div></div>
+  </div>
+</div><!-- /drill -->
+
+
+<!-- RESULTS PANEL -->
+<div id="results">
+  <div class="card result-big" id="resultCard">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-score" id="resultScore">—</div>
+    <div class="result-sub" id="resultSub">—</div>
+    <div class="btn-row" style="justify-content:center;margin-top:16px">
+      <button class="btn btn-primary" onclick="restartDrill()">🔄 Recommencer</button>
+      <button class="btn btn-ghost" onclick="showSetup()">⚙ Nouvelle sélection</button>
+    </div>
+    <div class="session-log" id="resultLog" style="max-height:320px;margin-top:16px"></div>
+  </div>
+</div><!-- /results -->
+
+
+<script>
+// Global error catcher — shows any JS crash visibly on screen
+window.onerror = function(msg, src, line, col, err){
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px 16px;font-size:13px;font-weight:700;z-index:9999;white-space:pre-wrap;';
+  div.textContent = '⚠ JS ERROR: ' + msg + '\nLine: ' + line + ' Col: ' + col + '\n' + (err?.stack||'');
+  document.body.prepend(div);
+  return false;
+};
+
+// pronouns: je/tu/il/elle/on/nous/vous/ils/elles
+// ─────────────────────────────────────────────
+const PRONOUNS = ['je','tu','il','elle','on','nous','vous','ils','elles'];
+const TENSE_LABELS = {PR:'Présent',PC:'Passé composé',IMP:'Imparfait',FUT:'Futur simple',SUB:'Subjonctif présent'};
+
+const VERBS = [
+// ──── COMMON (1-50) ────
+{id:1,inf:'être',level:'common',
+ PR:['suis','es','est','est','est','sommes','êtes','sont','sont'],
+ PC:['ai été','as été','a été','a été','a été','avons été','avez été','ont été','ont été'],
+ IMP:['étais','étais','était','était','était','étions','étiez','étaient','étaient'],
+ FUT:['serai','seras','sera','sera','sera','serons','serez','seront','seront'],
+ SUB:['sois','sois','soit','soit','soit','soyons','soyez','soient','soient']},
+{id:2,inf:'avoir',level:'common',
+ PR:['ai','as','a','a','a','avons','avez','ont','ont'],
+ PC:['ai eu','as eu','a eu','a eu','a eu','avons eu','avez eu','ont eu','ont eu'],
+ IMP:['avais','avais','avait','avait','avait','avions','aviez','avaient','avaient'],
+ FUT:['aurai','auras','aura','aura','aura','aurons','aurez','auront','auront'],
+ SUB:['aie','aies','ait','ait','ait','ayons','ayez','aient','aient']},
+{id:3,inf:'faire',level:'common',
+ PR:['fais','fais','fait','fait','fait','faisons','faites','font','font'],
+ PC:['ai fait','as fait','a fait','a fait','a fait','avons fait','avez fait','ont fait','ont fait'],
+ IMP:['faisais','faisais','faisait','faisait','faisait','faisions','faisiez','faisaient','faisaient'],
+ FUT:['ferai','feras','fera','fera','fera','ferons','ferez','feront','feront'],
+ SUB:['fasse','fasses','fasse','fasse','fasse','fassions','fassiez','fassent','fassent']},
+{id:4,inf:'dire',level:'common',
+ PR:['dis','dis','dit','dit','dit','disons','dites','disent','disent'],
+ PC:['ai dit','as dit','a dit','a dit','a dit','avons dit','avez dit','ont dit','ont dit'],
+ IMP:['disais','disais','disait','disait','disait','disions','disiez','disaient','disaient'],
+ FUT:['dirai','diras','dira','dira','dira','dirons','direz','diront','diront'],
+ SUB:['dise','dises','dise','dise','dise','disions','disiez','disent','disent']},
+{id:5,inf:'aller',level:'common',
+ PR:['vais','vas','va','va','va','allons','allez','vont','vont'],
+ PC:["suis allé(e)","es allé(e)","est allé","est allée","est allé","sommes allé(e)s","êtes allé(e)(s)","sont allés","sont allées"],
+ IMP:['allais','allais','allait','allait','allait','allions','alliez','allaient','allaient'],
+ FUT:['irai','iras','ira','ira','ira','irons','irez','iront','iront'],
+ SUB:['aille','ailles','aille','aille','aille','allions','alliez','aillent','aillent']},
+{id:6,inf:'voir',level:'common',
+ PR:['vois','vois','voit','voit','voit','voyons','voyez','voient','voient'],
+ PC:['ai vu','as vu','a vu','a vu','a vu','avons vu','avez vu','ont vu','ont vu'],
+ IMP:['voyais','voyais','voyait','voyait','voyait','voyions','voyiez','voyaient','voyaient'],
+ FUT:['verrai','verras','verra','verra','verra','verrons','verrez','verront','verront'],
+ SUB:['voie','voies','voie','voie','voie','voyions','voyiez','voient','voient']},
+{id:7,inf:'prendre',level:'common',
+ PR:['prends','prends','prend','prend','prend','prenons','prenez','prennent','prennent'],
+ PC:['ai pris','as pris','a pris','a pris','a pris','avons pris','avez pris','ont pris','ont pris'],
+ IMP:['prenais','prenais','prenait','prenait','prenait','prenions','preniez','prenaient','prenaient'],
+ FUT:['prendrai','prendras','prendra','prendra','prendra','prendrons','prendrez','prendront','prendront'],
+ SUB:['prenne','prennes','prenne','prenne','prenne','prenions','preniez','prennent','prennent']},
+{id:8,inf:'pouvoir',level:'common',
+ PR:['peux','peux','peut','peut','peut','pouvons','pouvez','peuvent','peuvent'],
+ PC:['ai pu','as pu','a pu','a pu','a pu','avons pu','avez pu','ont pu','ont pu'],
+ IMP:['pouvais','pouvais','pouvait','pouvait','pouvait','pouvions','pouviez','pouvaient','pouvaient'],
+ FUT:['pourrai','pourras','pourra','pourra','pourra','pourrons','pourrez','pourront','pourront'],
+ SUB:['puisse','puisses','puisse','puisse','puisse','puissions','puissiez','puissent','puissent']},
+{id:9,inf:'vouloir',level:'common',
+ PR:['veux','veux','veut','veut','veut','voulons','voulez','veulent','veulent'],
+ PC:['ai voulu','as voulu','a voulu','a voulu','a voulu','avons voulu','avez voulu','ont voulu','ont voulu'],
+ IMP:['voulais','voulais','voulait','voulait','voulait','voulions','vouliez','voulaient','voulaient'],
+ FUT:['voudrai','voudras','voudra','voudra','voudra','voudrons','voudrez','voudront','voudront'],
+ SUB:['veuille','veuilles','veuille','veuille','veuille','voulions','vouliez','veuillent','veuillent']},
+{id:10,inf:'venir',level:'common',
+ PR:['viens','viens','vient','vient','vient','venons','venez','viennent','viennent'],
+ PC:["suis venu(e)","es venu(e)","est venu","est venue","est venu","sommes venu(e)s","êtes venu(e)(s)","sont venus","sont venues"],
+ IMP:['venais','venais','venait','venait','venait','venions','veniez','venaient','venaient'],
+ FUT:['viendrai','viendras','viendra','viendra','viendra','viendrons','viendrez','viendront','viendront'],
+ SUB:['vienne','viennes','vienne','vienne','vienne','venions','veniez','viennent','viennent']},
+{id:11,inf:'savoir',level:'common',
+ PR:['sais','sais','sait','sait','sait','savons','savez','savent','savent'],
+ PC:['ai su','as su','a su','a su','a su','avons su','avez su','ont su','ont su'],
+ IMP:['savais','savais','savait','savait','savait','savions','saviez','savaient','savaient'],
+ FUT:['saurai','sauras','saura','saura','saura','saurons','saurez','sauront','sauront'],
+ SUB:['sache','saches','sache','sache','sache','sachions','sachiez','sachent','sachent']},
+{id:12,inf:'devoir',level:'common',
+ PR:['dois','dois','doit','doit','doit','devons','devez','doivent','doivent'],
+ PC:['ai dû','as dû','a dû','a dû','a dû','avons dû','avez dû','ont dû','ont dû'],
+ IMP:['devais','devais','devait','devait','devait','devions','deviez','devaient','devaient'],
+ FUT:['devrai','devras','devra','devra','devra','devrons','devrez','devront','devront'],
+ SUB:['doive','doives','doive','doive','doive','devions','deviez','doivent','doivent']},
+{id:13,inf:'croire',level:'common',
+ PR:['crois','crois','croit','croit','croit','croyons','croyez','croient','croient'],
+ PC:['ai cru','as cru','a cru','a cru','a cru','avons cru','avez cru','ont cru','ont cru'],
+ IMP:['croyais','croyais','croyait','croyait','croyait','croyions','croyiez','croyaient','croyaient'],
+ FUT:['croirai','croiras','croira','croira','croira','croirons','croirez','croiront','croiront'],
+ SUB:['croie','croies','croie','croie','croie','croyions','croyiez','croient','croient']},
+{id:14,inf:'mettre',level:'common',
+ PR:['mets','mets','met','met','met','mettons','mettez','mettent','mettent'],
+ PC:['ai mis','as mis','a mis','a mis','a mis','avons mis','avez mis','ont mis','ont mis'],
+ IMP:['mettais','mettais','mettait','mettait','mettait','mettions','mettiez','mettaient','mettaient'],
+ FUT:['mettrai','mettras','mettra','mettra','mettra','mettrons','mettrez','mettront','mettront'],
+ SUB:['mette','mettes','mette','mette','mette','mettions','mettiez','mettent','mettent']},
+{id:15,inf:'parler',level:'common',
+ PR:['parle','parles','parle','parle','parle','parlons','parlez','parlent','parlent'],
+ PC:['ai parlé','as parlé','a parlé','a parlé','a parlé','avons parlé','avez parlé','ont parlé','ont parlé'],
+ IMP:['parlais','parlais','parlait','parlait','parlait','parlions','parliez','parlaient','parlaient'],
+ FUT:['parlerai','parleras','parlera','parlera','parlera','parlerons','parlerez','parleront','parleront'],
+ SUB:['parle','parles','parle','parle','parle','parlions','parliez','parlent','parlent']},
+{id:16,inf:'aimer',level:'common',
+ PR:['aime','aimes','aime','aime','aime','aimons','aimez','aiment','aiment'],
+ PC:['ai aimé','as aimé','a aimé','a aimé','a aimé','avons aimé','avez aimé','ont aimé','ont aimé'],
+ IMP:['aimais','aimais','aimait','aimait','aimait','aimions','aimiez','aimaient','aimaient'],
+ FUT:['aimerai','aimeras','aimera','aimera','aimera','aimerons','aimerez','aimeront','aimeront'],
+ SUB:['aime','aimes','aime','aime','aime','aimions','aimiez','aiment','aiment']},
+{id:17,inf:'donner',level:'common',
+ PR:['donne','donnes','donne','donne','donne','donnons','donnez','donnent','donnent'],
+ PC:['ai donné','as donné','a donné','a donné','a donné','avons donné','avez donné','ont donné','ont donné'],
+ IMP:['donnais','donnais','donnait','donnait','donnait','donnions','donniez','donnaient','donnaient'],
+ FUT:['donnerai','donneras','donnera','donnera','donnera','donnerons','donnerez','donneront','donneront'],
+ SUB:['donne','donnes','donne','donne','donne','donnions','donniez','donnent','donnent']},
+{id:18,inf:'regarder',level:'common',
+ PR:['regarde','regardes','regarde','regarde','regarde','regardons','regardez','regardent','regardent'],
+ PC:['ai regardé','as regardé','a regardé','a regardé','a regardé','avons regardé','avez regardé','ont regardé','ont regardé'],
+ IMP:['regardais','regardais','regardait','regardait','regardait','regardions','regardiez','regardaient','regardaient'],
+ FUT:['regarderai','regarderas','regardera','regardera','regardera','regarderons','regarderez','regarderont','regarderont'],
+ SUB:['regarde','regardes','regarde','regarde','regarde','regardions','regardiez','regardent','regardent']},
+{id:19,inf:'écouter',level:'common',
+ PR:['écoute','écoutes','écoute','écoute','écoute','écoutons','écoutez','écoutent','écoutent'],
+ PC:['ai écouté','as écouté','a écouté','a écouté','a écouté','avons écouté','avez écouté','ont écouté','ont écouté'],
+ IMP:['écoutais','écoutais','écoutait','écoutait','écoutait','écoutions','écoutiez','écoutaient','écoutaient'],
+ FUT:['écouterai','écouteras','écoutera','écoutera','écoutera','écouterons','écouterez','écouteront','écouteront'],
+ SUB:['écoute','écoutes','écoute','écoute','écoute','écoutions','écoutiez','écoutent','écoutent']},
+{id:20,inf:'manger',level:'common',
+ PR:['mange','manges','mange','mange','mange','mangeons','mangez','mangent','mangent'],
+ PC:['ai mangé','as mangé','a mangé','a mangé','a mangé','avons mangé','avez mangé','ont mangé','ont mangé'],
+ IMP:['mangeais','mangeais','mangeait','mangeait','mangeait','mangions','mangiez','mangeaient','mangeaient'],
+ FUT:['mangerai','mangeras','mangera','mangera','mangera','mangerons','mangerez','mangeront','mangeront'],
+ SUB:['mange','manges','mange','mange','mange','mangions','mangiez','mangent','mangent']},
+{id:21,inf:'finir',level:'common',
+ PR:['finis','finis','finit','finit','finit','finissons','finissez','finissent','finissent'],
+ PC:['ai fini','as fini','a fini','a fini','a fini','avons fini','avez fini','ont fini','ont fini'],
+ IMP:['finissais','finissais','finissait','finissait','finissait','finissions','finissiez','finissaient','finissaient'],
+ FUT:['finirai','finiras','finira','finira','finira','finirons','finirez','finiront','finiront'],
+ SUB:['finisse','finisses','finisse','finisse','finisse','finissions','finissiez','finissent','finissent']},
+{id:22,inf:'choisir',level:'common',
+ PR:['choisis','choisis','choisit','choisit','choisit','choisissons','choisissez','choisissent','choisissent'],
+ PC:['ai choisi','as choisi','a choisi','a choisi','a choisi','avons choisi','avez choisi','ont choisi','ont choisi'],
+ IMP:['choisissais','choisissais','choisissait','choisissait','choisissait','choisissions','choisissiez','choisissaient','choisissaient'],
+ FUT:['choisirai','choisiras','choisira','choisira','choisira','choisirons','choisirez','choisiront','choisiront'],
+ SUB:['choisisse','choisisses','choisisse','choisisse','choisisse','choisissions','choisissiez','choisissent','choisissent']},
+{id:23,inf:'partir',level:'common',
+ PR:['pars','pars','part','part','part','partons','partez','partent','partent'],
+ PC:["suis parti(e)","es parti(e)","est parti","est partie","est parti","sommes parti(e)s","êtes parti(e)(s)","sont partis","sont parties"],
+ IMP:['partais','partais','partait','partait','partait','partions','partiez','partaient','partaient'],
+ FUT:['partirai','partiras','partira','partira','partira','partirons','partirez','partiront','partiront'],
+ SUB:['parte','partes','parte','parte','parte','partions','partiez','partent','partent']},
+{id:24,inf:'sortir',level:'common',
+ PR:['sors','sors','sort','sort','sort','sortons','sortez','sortent','sortent'],
+ PC:["suis sorti(e)","es sorti(e)","est sorti","est sortie","est sorti","sommes sorti(e)s","êtes sorti(e)(s)","sont sortis","sont sorties"],
+ IMP:['sortais','sortais','sortait','sortait','sortait','sortions','sortiez','sortaient','sortaient'],
+ FUT:['sortirai','sortiras','sortira','sortira','sortira','sortirons','sortirez','sortiront','sortiront'],
+ SUB:['sorte','sortes','sorte','sorte','sorte','sortions','sortiez','sortent','sortent']},
+{id:25,inf:'dormir',level:'common',
+ PR:['dors','dors','dort','dort','dort','dormons','dormez','dorment','dorment'],
+ PC:['ai dormi','as dormi','a dormi','a dormi','a dormi','avons dormi','avez dormi','ont dormi','ont dormi'],
+ IMP:['dormais','dormais','dormait','dormait','dormait','dormions','dormiez','dormaient','dormaient'],
+ FUT:['dormirai','dormiras','dormira','dormira','dormira','dormirons','dormirez','dormiront','dormiront'],
+ SUB:['dorme','dormes','dorme','dorme','dorme','dormions','dormiez','dorment','dorment']},
+{id:26,inf:'servir',level:'common',
+ PR:['sers','sers','sert','sert','sert','servons','servez','servent','servent'],
+ PC:['ai servi','as servi','a servi','a servi','a servi','avons servi','avez servi','ont servi','ont servi'],
+ IMP:['servais','servais','servait','servait','servait','servions','serviez','servaient','servaient'],
+ FUT:['servirai','serviras','servira','servira','servira','servirons','servirez','serviront','serviront'],
+ SUB:['serve','serves','serve','serve','serve','servions','serviez','servent','servent']},
+{id:27,inf:'sentir',level:'common',
+ PR:['sens','sens','sent','sent','sent','sentons','sentez','sentent','sentent'],
+ PC:['ai senti','as senti','a senti','a senti','a senti','avons senti','avez senti','ont senti','ont senti'],
+ IMP:['sentais','sentais','sentait','sentait','sentait','sentions','sentiez','sentaient','sentaient'],
+ FUT:['sentirai','sentiras','sentira','sentira','sentira','sentirons','sentirez','sentiront','sentiront'],
+ SUB:['sente','sentes','sente','sente','sente','sentions','sentiez','sentent','sentent']},
+{id:28,inf:'ouvrir',level:'common',
+ PR:['ouvre','ouvres','ouvre','ouvre','ouvre','ouvrons','ouvrez','ouvrent','ouvrent'],
+ PC:['ai ouvert','as ouvert','a ouvert','a ouvert','a ouvert','avons ouvert','avez ouvert','ont ouvert','ont ouvert'],
+ IMP:['ouvrais','ouvrais','ouvrait','ouvrait','ouvrait','ouvrions','ouvriez','ouvraient','ouvraient'],
+ FUT:['ouvrirai','ouvriras','ouvrira','ouvrira','ouvrira','ouvrirons','ouvrirez','ouvriront','ouvriront'],
+ SUB:['ouvre','ouvres','ouvre','ouvre','ouvre','ouvrions','ouvriez','ouvrent','ouvrent']},
+{id:29,inf:'offrir',level:'common',
+ PR:['offre','offres','offre','offre','offre','offrons','offrez','offrent','offrent'],
+ PC:['ai offert','as offert','a offert','a offert','a offert','avons offert','avez offert','ont offert','ont offert'],
+ IMP:['offrais','offrais','offrait','offrait','offrait','offrions','offriez','offraient','offraient'],
+ FUT:['offrirai','offriras','offrira','offrira','offrira','offrirons','offrirez','offriront','offriront'],
+ SUB:['offre','offres','offre','offre','offre','offrions','offriez','offrent','offrent']},
+{id:30,inf:'conduire',level:'common',
+ PR:['conduis','conduis','conduit','conduit','conduit','conduisons','conduisez','conduisent','conduisent'],
+ PC:['ai conduit','as conduit','a conduit','a conduit','a conduit','avons conduit','avez conduit','ont conduit','ont conduit'],
+ IMP:['conduisais','conduisais','conduisait','conduisait','conduisait','conduisions','conduisiez','conduisaient','conduisaient'],
+ FUT:['conduirai','conduiras','conduira','conduira','conduira','conduirons','conduirez','conduiront','conduiront'],
+ SUB:['conduise','conduises','conduise','conduise','conduise','conduisions','conduisiez','conduisent','conduisent']},
+{id:31,inf:'rire',level:'common',
+ PR:['ris','ris','rit','rit','rit','rions','riez','rient','rient'],
+ PC:['ai ri','as ri','a ri','a ri','a ri','avons ri','avez ri','ont ri','ont ri'],
+ IMP:['riais','riais','riait','riait','riait','riions','riiez','riaient','riaient'],
+ FUT:['rirai','riras','rira','rira','rira','rirons','rirez','riront','riront'],
+ SUB:['rie','ries','rie','rie','rie','riions','riiez','rient','rient']},
+{id:32,inf:'vivre',level:'common',
+ PR:['vis','vis','vit','vit','vit','vivons','vivez','vivent','vivent'],
+ PC:['ai vécu','as vécu','a vécu','a vécu','a vécu','avons vécu','avez vécu','ont vécu','ont vécu'],
+ IMP:['vivais','vivais','vivait','vivait','vivait','vivions','viviez','vivaient','vivaient'],
+ FUT:['vivrai','vivras','vivra','vivra','vivra','vivrons','vivrez','vivront','vivront'],
+ SUB:['vive','vives','vive','vive','vive','vivions','viviez','vivent','vivent']},
+{id:33,inf:'suivre',level:'common',
+ PR:['suis','suis','suit','suit','suit','suivons','suivez','suivent','suivent'],
+ PC:['ai suivi','as suivi','a suivi','a suivi','a suivi','avons suivi','avez suivi','ont suivi','ont suivi'],
+ IMP:['suivais','suivais','suivait','suivait','suivait','suivions','suiviez','suivaient','suivaient'],
+ FUT:['suivrai','suivras','suivra','suivra','suivra','suivrons','suivrez','suivront','suivront'],
+ SUB:['suive','suives','suive','suive','suive','suivions','suiviez','suivent','suivent']},
+{id:34,inf:'connaître',level:'common',
+ PR:['connais','connais','connaît','connaît','connaît','connaissons','connaissez','connaissent','connaissent'],
+ PC:['ai connu','as connu','a connu','a connu','a connu','avons connu','avez connu','ont connu','ont connu'],
+ IMP:['connaissais','connaissais','connaissait','connaissait','connaissait','connaissions','connaissiez','connaissaient','connaissaient'],
+ FUT:['connaîtrai','connaîtras','connaîtra','connaîtra','connaîtra','connaîtrons','connaîtrez','connaîtront','connaîtront'],
+ SUB:['connaisse','connaisses','connaisse','connaisse','connaisse','connaissions','connaissiez','connaissent','connaissent']},
+{id:35,inf:'recevoir',level:'common',
+ PR:['reçois','reçois','reçoit','reçoit','reçoit','recevons','recevez','reçoivent','reçoivent'],
+ PC:['ai reçu','as reçu','a reçu','a reçu','a reçu','avons reçu','avez reçu','ont reçu','ont reçu'],
+ IMP:['recevais','recevais','recevait','recevait','recevait','recevions','receviez','recevaient','recevaient'],
+ FUT:['recevrai','recevras','recevra','recevra','recevra','recevrons','recevrez','recevront','recevront'],
+ SUB:['reçoive','reçoives','reçoive','reçoive','reçoive','recevions','receviez','reçoivent','reçoivent']},
+{id:36,inf:'devenir',level:'common',
+ PR:['deviens','deviens','devient','devient','devient','devenons','devenez','deviennent','deviennent'],
+ PC:["suis devenu(e)","es devenu(e)","est devenu","est devenue","est devenu","sommes devenu(e)s","êtes devenu(e)(s)","sont devenus","sont devenues"],
+ IMP:['devenais','devenais','devenait','devenait','devenait','devenions','deveniez','devenaient','devenaient'],
+ FUT:['deviendrai','deviendras','deviendra','deviendra','deviendra','deviendrons','deviendrez','deviendront','deviendront'],
+ SUB:['devienne','deviennes','devienne','devienne','devienne','devenions','deveniez','deviennent','deviennent']},
+{id:37,inf:'revenir',level:'common',
+ PR:['reviens','reviens','revient','revient','revient','revenons','revenez','reviennent','reviennent'],
+ PC:["suis revenu(e)","es revenu(e)","est revenu","est revenue","est revenu","sommes revenu(e)s","êtes revenu(e)(s)","sont revenus","sont revenues"],
+ IMP:['revenais','revenais','revenait','revenait','revenait','revenions','reveniez','revenaient','revenaient'],
+ FUT:['reviendrai','reviendras','reviendra','reviendra','reviendra','reviendrons','reviendrez','reviendront','reviendront'],
+ SUB:['revienne','reviennes','revienne','revienne','revienne','revenions','reveniez','reviennent','reviennent']},
+{id:38,inf:'tenir',level:'common',
+ PR:['tiens','tiens','tient','tient','tient','tenons','tenez','tiennent','tiennent'],
+ PC:['ai tenu','as tenu','a tenu','a tenu','a tenu','avons tenu','avez tenu','ont tenu','ont tenu'],
+ IMP:['tenais','tenais','tenait','tenait','tenait','tenions','teniez','tenaient','tenaient'],
+ FUT:['tiendrai','tiendras','tiendra','tiendra','tiendra','tiendrons','tiendrez','tiendront','tiendront'],
+ SUB:['tienne','tiennes','tienne','tienne','tienne','tenions','teniez','tiennent','tiennent']},
+{id:39,inf:'obtenir',level:'common',
+ PR:['obtiens','obtiens','obtient','obtient','obtient','obtenons','obtenez','obtiennent','obtiennent'],
+ PC:['ai obtenu','as obtenu','a obtenu','a obtenu','a obtenu','avons obtenu','avez obtenu','ont obtenu','ont obtenu'],
+ IMP:['obtenais','obtenais','obtenait','obtenait','obtenait','obtenions','obteniez','obtenaient','obtenaient'],
+ FUT:['obtiendrai','obtiendras','obtiendra','obtiendra','obtiendra','obtiendrons','obtiendrez','obtiendront','obtiendront'],
+ SUB:['obtienne','obtiennes','obtienne','obtienne','obtienne','obtenions','obteniez','obtiennent','obtiennent']},
+{id:40,inf:'prévenir',level:'common',
+ PR:['préviens','préviens','prévient','prévient','prévient','prévenons','prévenez','préviennent','préviennent'],
+ PC:['ai prévenu','as prévenu','a prévenu','a prévenu','a prévenu','avons prévenu','avez prévenu','ont prévenu','ont prévenu'],
+ IMP:['prévenais','prévenais','prévenait','prévenait','prévenait','prévenions','préveniez','prévenaient','prévenaient'],
+ FUT:['préviendrai','préviendras','préviendra','préviendra','préviendra','préviendrons','préviendrez','préviendront','préviendront'],
+ SUB:['prévienne','préviennes','prévienne','prévienne','prévienne','prévenions','préveniez','préviennent','préviennent']},
+{id:41,inf:'boire',level:'common',
+ PR:['bois','bois','boit','boit','boit','buvons','buvez','boivent','boivent'],
+ PC:['ai bu','as bu','a bu','a bu','a bu','avons bu','avez bu','ont bu','ont bu'],
+ IMP:['buvais','buvais','buvait','buvait','buvait','buvions','buviez','buvaient','buvaient'],
+ FUT:['boirai','boiras','boira','boira','boira','boirons','boirez','boiront','boiront'],
+ SUB:['boive','boives','boive','boive','boive','buvions','buviez','boivent','boivent']},
+{id:42,inf:'lire',level:'common',
+ PR:['lis','lis','lit','lit','lit','lisons','lisez','lisent','lisent'],
+ PC:['ai lu','as lu','a lu','a lu','a lu','avons lu','avez lu','ont lu','ont lu'],
+ IMP:['lisais','lisais','lisait','lisait','lisait','lisions','lisiez','lisaient','lisaient'],
+ FUT:['lirai','liras','lira','lira','lira','lirons','lirez','liront','liront'],
+ SUB:['lise','lises','lise','lise','lise','lisions','lisiez','lisent','lisent']},
+{id:43,inf:'écrire',level:'common',
+ PR:['écris','écris','écrit','écrit','écrit','écrivons','écrivez','écrivent','écrivent'],
+ PC:['ai écrit','as écrit','a écrit','a écrit','a écrit','avons écrit','avez écrit','ont écrit','ont écrit'],
+ IMP:['écrivais','écrivais','écrivait','écrivait','écrivait','écrivions','écriviez','écrivaient','écrivaient'],
+ FUT:['écrirai','écriras','écrira','écrira','écrira','écrirons','écrirez','écriront','écriront'],
+ SUB:['écrive','écrives','écrive','écrive','écrive','écrivions','écriviez','écrivent','écrivent']},
+{id:44,inf:'rendre',level:'common',
+ PR:['rends','rends','rend','rend','rend','rendons','rendez','rendent','rendent'],
+ PC:['ai rendu','as rendu','a rendu','a rendu','a rendu','avons rendu','avez rendu','ont rendu','ont rendu'],
+ IMP:['rendais','rendais','rendait','rendait','rendait','rendions','rendiez','rendaient','rendaient'],
+ FUT:['rendrai','rendras','rendra','rendra','rendra','rendrons','rendrez','rendront','rendront'],
+ SUB:['rende','rendes','rende','rende','rende','rendions','rendiez','rendent','rendent']},
+{id:45,inf:'perdre',level:'common',
+ PR:['perds','perds','perd','perd','perd','perdons','perdez','perdent','perdent'],
+ PC:['ai perdu','as perdu','a perdu','a perdu','a perdu','avons perdu','avez perdu','ont perdu','ont perdu'],
+ IMP:['perdais','perdais','perdait','perdait','perdait','perdions','perdiez','perdaient','perdaient'],
+ FUT:['perdrai','perdras','perdra','perdra','perdra','perdrons','perdrez','perdront','perdront'],
+ SUB:['perde','perdes','perde','perde','perde','perdions','perdiez','perdent','perdent']},
+{id:46,inf:'vendre',level:'common',
+ PR:['vends','vends','vend','vend','vend','vendons','vendez','vendent','vendent'],
+ PC:['ai vendu','as vendu','a vendu','a vendu','a vendu','avons vendu','avez vendu','ont vendu','ont vendu'],
+ IMP:['vendais','vendais','vendait','vendait','vendait','vendions','vendiez','vendaient','vendaient'],
+ FUT:['vendrai','vendras','vendra','vendra','vendra','vendrons','vendrez','vendront','vendront'],
+ SUB:['vende','vendes','vende','vende','vende','vendions','vendiez','vendent','vendent']},
+{id:47,inf:'attendre',level:'common',
+ PR:['attends','attends','attend','attend','attend','attendons','attendez','attendent','attendent'],
+ PC:['ai attendu','as attendu','a attendu','a attendu','a attendu','avons attendu','avez attendu','ont attendu','ont attendu'],
+ IMP:['attendais','attendais','attendait','attendait','attendait','attendions','attendiez','attendaient','attendaient'],
+ FUT:['attendrai','attendras','attendra','attendra','attendra','attendrons','attendrez','attendront','attendront'],
+ SUB:['attende','attendes','attende','attende','attende','attendions','attendiez','attendent','attendent']},
+{id:48,inf:'descendre',level:'common',
+ PR:['descends','descends','descend','descend','descend','descendons','descendez','descendent','descendent'],
+ PC:["suis descendu(e)","es descendu(e)","est descendu","est descendue","est descendu","sommes descendu(e)s","êtes descendu(e)(s)","sont descendus","sont descendues"],
+ IMP:['descendais','descendais','descendait','descendait','descendait','descendions','descendiez','descendaient','descendaient'],
+ FUT:['descendrai','descendras','descendra','descendra','descendra','descendrons','descendrez','descendront','descendront'],
+ SUB:['descende','descendes','descende','descende','descende','descendions','descendiez','descendent','descendent']},
+{id:49,inf:'rester',level:'common',
+ PR:['reste','restes','reste','reste','reste','restons','restez','restent','restent'],
+ PC:["suis resté(e)","es resté(e)","est resté","est restée","est resté","sommes resté(e)s","êtes resté(e)(s)","sont restés","sont restées"],
+ IMP:['restais','restais','restait','restait','restait','restions','restiez','restaient','restaient'],
+ FUT:['resterai','resteras','restera','restera','restera','resterons','resterez','resteront','resteront'],
+ SUB:['reste','restes','reste','reste','reste','restions','restiez','restent','restent']},
+{id:50,inf:'arriver',level:'common',
+ PR:['arrive','arrives','arrive','arrive','arrive','arrivons','arrivez','arrivent','arrivent'],
+ PC:["suis arrivé(e)","es arrivé(e)","est arrivé","est arrivée","est arrivé","sommes arrivé(e)s","êtes arrivé(e)(s)","sont arrivés","sont arrivées"],
+ IMP:['arrivais','arrivais','arrivait','arrivait','arrivait','arrivions','arriviez','arrivaient','arrivaient'],
+ FUT:['arriverai','arriveras','arrivera','arrivera','arrivera','arriverons','arriverez','arriveront','arriveront'],
+ SUB:['arrive','arrives','arrive','arrive','arrive','arrivions','arriviez','arrivent','arrivent']},
+
+// ──── B1 (51-100) ────
+{id:51,inf:'acheter',level:'b1',
+ PR:['achète','achètes','achète','achète','achète','achetons','achetez','achètent','achètent'],
+ PC:['ai acheté','as acheté','a acheté','a acheté','a acheté','avons acheté','avez acheté','ont acheté','ont acheté'],
+ IMP:['achetais','achetais','achetait','achetait','achetait','achetions','achetiez','achetaient','achetaient'],
+ FUT:['achèterai','achèteras','achètera','achètera','achètera','achèterons','achèterez','achèteront','achèteront'],
+ SUB:['achète','achètes','achète','achète','achète','achetions','achetiez','achètent','achètent']},
+{id:52,inf:'lever',level:'b1',
+ PR:['lève','lèves','lève','lève','lève','levons','levez','lèvent','lèvent'],
+ PC:['ai levé','as levé','a levé','a levé','a levé','avons levé','avez levé','ont levé','ont levé'],
+ IMP:['levais','levais','levait','levait','levait','levions','leviez','levaient','levaient'],
+ FUT:['lèverai','lèveras','lèvera','lèvera','lèvera','lèverons','lèverez','lèveront','lèveront'],
+ SUB:['lève','lèves','lève','lève','lève','levions','leviez','lèvent','lèvent']},
+{id:53,inf:'appeler',level:'b1',
+ PR:['appelle','appelles','appelle','appelle','appelle','appelons','appelez','appellent','appellent'],
+ PC:['ai appelé','as appelé','a appelé','a appelé','a appelé','avons appelé','avez appelé','ont appelé','ont appelé'],
+ IMP:['appelais','appelais','appelait','appelait','appelait','appelions','appeliez','appelaient','appelaient'],
+ FUT:['appellerai','appelleras','appellera','appellera','appellera','appellerons','appellerez','appelleront','appelleront'],
+ SUB:['appelle','appelles','appelle','appelle','appelle','appelions','appeliez','appellent','appellent']},
+{id:54,inf:'jeter',level:'b1',
+ PR:['jette','jettes','jette','jette','jette','jetons','jetez','jettent','jettent'],
+ PC:['ai jeté','as jeté','a jeté','a jeté','a jeté','avons jeté','avez jeté','ont jeté','ont jeté'],
+ IMP:['jetais','jetais','jetait','jetait','jetait','jetions','jetiez','jetaient','jetaient'],
+ FUT:['jetterai','jetteras','jettera','jettera','jettera','jetterons','jetterez','jetteront','jetteront'],
+ SUB:['jette','jettes','jette','jette','jette','jetions','jetiez','jettent','jettent']},
+{id:55,inf:'essayer',level:'b1',
+ PR:['essaie','essaies','essaie','essaie','essaie','essayons','essayez','essaient','essaient'],
+ PC:['ai essayé','as essayé','a essayé','a essayé','a essayé','avons essayé','avez essayé','ont essayé','ont essayé'],
+ IMP:['essayais','essayais','essayait','essayait','essayait','essayions','essayiez','essayaient','essayaient'],
+ FUT:['essaierai','essaieras','essaiera','essaiera','essaiera','essaierons','essaierez','essaieront','essaieront'],
+ SUB:['essaie','essaies','essaie','essaie','essaie','essayions','essayiez','essaient','essaient']},
+{id:56,inf:'payer',level:'b1',
+ PR:['paie','paies','paie','paie','paie','payons','payez','paient','paient'],
+ PC:['ai payé','as payé','a payé','a payé','a payé','avons payé','avez payé','ont payé','ont payé'],
+ IMP:['payais','payais','payait','payait','payait','payions','payiez','payaient','payaient'],
+ FUT:['paierai','paieras','paiera','paiera','paiera','paierons','paierez','paieront','paieront'],
+ SUB:['paie','paies','paie','paie','paie','payions','payiez','paient','paient']},
+{id:57,inf:'envoyer',level:'b1',
+ PR:['envoie','envoies','envoie','envoie','envoie','envoyons','envoyez','envoient','envoient'],
+ PC:['ai envoyé','as envoyé','a envoyé','a envoyé','a envoyé','avons envoyé','avez envoyé','ont envoyé','ont envoyé'],
+ IMP:['envoyais','envoyais','envoyait','envoyait','envoyait','envoyions','envoyiez','envoyaient','envoyaient'],
+ FUT:['enverrai','enverras','enverra','enverra','enverra','enverrons','enverrez','enverront','enverront'],
+ SUB:['envoie','envoies','envoie','envoie','envoie','envoyions','envoyiez','envoient','envoient']},
+{id:58,inf:'nettoyer',level:'b1',
+ PR:['nettoie','nettoies','nettoie','nettoie','nettoie','nettoyons','nettoyez','nettoient','nettoient'],
+ PC:['ai nettoyé','as nettoyé','a nettoyé','a nettoyé','a nettoyé','avons nettoyé','avez nettoyé','ont nettoyé','ont nettoyé'],
+ IMP:['nettoyais','nettoyais','nettoyait','nettoyait','nettoyait','nettoyions','nettoyiez','nettoyaient','nettoyaient'],
+ FUT:['nettoierai','nettoieras','nettoiera','nettoiera','nettoiera','nettoierons','nettoierez','nettoieront','nettoieront'],
+ SUB:['nettoie','nettoies','nettoie','nettoie','nettoie','nettoyions','nettoyiez','nettoient','nettoient']},
+{id:59,inf:'répéter',level:'b1',
+ PR:['répète','répètes','répète','répète','répète','répétons','répétez','répètent','répètent'],
+ PC:['ai répété','as répété','a répété','a répété','a répété','avons répété','avez répété','ont répété','ont répété'],
+ IMP:['répétais','répétais','répétait','répétait','répétait','répétions','répétiez','répétaient','répétaient'],
+ FUT:['répéterai','répéteras','répétera','répétera','répétera','répéterons','répéterez','répéteront','répéteront'],
+ SUB:['répète','répètes','répète','répète','répète','répétions','répétiez','répètent','répètent']},
+{id:60,inf:'espérer',level:'b1',
+ PR:['espère','espères','espère','espère','espère','espérons','espérez','espèrent','espèrent'],
+ PC:['ai espéré','as espéré','a espéré','a espéré','a espéré','avons espéré','avez espéré','ont espéré','ont espéré'],
+ IMP:['espérais','espérais','espérait','espérait','espérait','espérions','espériez','espéraient','espéraient'],
+ FUT:['espérerai','espéreras','espérera','espérera','espérera','espérerons','espérerez','espéreront','espéreront'],
+ SUB:['espère','espères','espère','espère','espère','espérions','espériez','espèrent','espèrent']},
+{id:61,inf:'préférer',level:'b1',
+ PR:['préfère','préfères','préfère','préfère','préfère','préférons','préférez','préfèrent','préfèrent'],
+ PC:['ai préféré','as préféré','a préféré','a préféré','a préféré','avons préféré','avez préféré','ont préféré','ont préféré'],
+ IMP:['préférais','préférais','préférait','préférait','préférait','préférions','préfériez','préféraient','préféraient'],
+ FUT:['préférerai','préféreras','préférera','préférera','préférera','préférerons','préférerez','préféreront','préféreront'],
+ SUB:['préfère','préfères','préfère','préfère','préfère','préférions','préfériez','préfèrent','préfèrent']},
+{id:62,inf:'considérer',level:'b1',
+ PR:['considère','considères','considère','considère','considère','considérons','considérez','considèrent','considèrent'],
+ PC:['ai considéré','as considéré','a considéré','a considéré','a considéré','avons considéré','avez considéré','ont considéré','ont considéré'],
+ IMP:['considérais','considérais','considérait','considérait','considérait','considérions','considériez','considéraient','considéraient'],
+ FUT:['considérerai','considéreras','considérera','considérera','considérera','considérerons','considérerez','considéreront','considéreront'],
+ SUB:['considère','considères','considère','considère','considère','considérions','considériez','considèrent','considèrent']},
+{id:63,inf:'commencer',level:'b1',
+ PR:['commence','commences','commence','commence','commence','commençons','commencez','commencent','commencent'],
+ PC:['ai commencé','as commencé','a commencé','a commencé','a commencé','avons commencé','avez commencé','ont commencé','ont commencé'],
+ IMP:['commençais','commençais','commençait','commençait','commençait','commencions','commenciez','commençaient','commençaient'],
+ FUT:['commencerai','commenceras','commencera','commencera','commencera','commencerons','commencerez','commenceront','commenceront'],
+ SUB:['commence','commences','commence','commence','commence','commencions','commenciez','commencent','commencent']},
+{id:64,inf:'changer',level:'b1',
+ PR:['change','changes','change','change','change','changeons','changez','changent','changent'],
+ PC:['ai changé','as changé','a changé','a changé','a changé','avons changé','avez changé','ont changé','ont changé'],
+ IMP:['changeais','changeais','changeait','changeait','changeait','changions','changiez','changeaient','changeaient'],
+ FUT:['changerai','changeras','changera','changera','changera','changerons','changerez','changeront','changeront'],
+ SUB:['change','changes','change','change','change','changions','changiez','changent','changent']},
+{id:65,inf:'mélanger',level:'b1',
+ PR:['mélange','mélanges','mélange','mélange','mélange','mélangeons','mélangez','mélangent','mélangent'],
+ PC:['ai mélangé','as mélangé','a mélangé','a mélangé','a mélangé','avons mélangé','avez mélangé','ont mélangé','ont mélangé'],
+ IMP:['mélangeais','mélangeais','mélangeait','mélangeait','mélangeait','mélangions','mélangiez','mélangeaient','mélangeaient'],
+ FUT:['mélangerai','mélangeras','mélangera','mélangera','mélangera','mélangerons','mélangerez','mélangeront','mélangeront'],
+ SUB:['mélange','mélanges','mélange','mélange','mélange','mélangions','mélangiez','mélangent','mélangent']},
+{id:66,inf:'placer',level:'b1',
+ PR:['place','places','place','place','place','plaçons','placez','placent','placent'],
+ PC:['ai placé','as placé','a placé','a placé','a placé','avons placé','avez placé','ont placé','ont placé'],
+ IMP:['plaçais','plaçais','plaçait','plaçait','plaçait','placions','placiez','plaçaient','plaçaient'],
+ FUT:['placerai','placeras','placera','placera','placera','placerons','placerez','placeront','placeront'],
+ SUB:['place','places','place','place','place','placions','placiez','placent','placent']},
+{id:67,inf:'promettre',level:'b1',
+ PR:['promets','promets','promet','promet','promet','promettons','promettez','promettent','promettent'],
+ PC:['ai promis','as promis','a promis','a promis','a promis','avons promis','avez promis','ont promis','ont promis'],
+ IMP:['promettais','promettais','promettait','promettait','promettait','promettions','promettiez','promettaient','promettaient'],
+ FUT:['promettrai','promettras','promettra','promettra','promettra','promettrons','promettrez','promettront','promettront'],
+ SUB:['promette','promettes','promette','promette','promette','promettions','promettiez','promettent','promettent']},
+{id:68,inf:'permettre',level:'b1',
+ PR:['permets','permets','permet','permet','permet','permettons','permettez','permettent','permettent'],
+ PC:['ai permis','as permis','a permis','a permis','a permis','avons permis','avez permis','ont permis','ont permis'],
+ IMP:['permettais','permettais','permettait','permettait','permettait','permettions','permettiez','permettaient','permettaient'],
+ FUT:['permettrai','permettras','permettra','permettra','permettra','permettrons','permettrez','permettront','permettront'],
+ SUB:['permette','permettes','permette','permette','permette','permettions','permettiez','permettent','permettent']},
+{id:69,inf:'apprendre',level:'b1',
+ PR:['apprends','apprends','apprend','apprend','apprend','apprenons','apprenez','apprennent','apprennent'],
+ PC:['ai appris','as appris','a appris','a appris','a appris','avons appris','avez appris','ont appris','ont appris'],
+ IMP:['apprenais','apprenais','apprenait','apprenait','apprenait','apprenions','appreniez','apprenaient','apprenaient'],
+ FUT:['apprendrai','apprendras','apprendra','apprendra','apprendra','apprendrons','apprendrez','apprendront','apprendront'],
+ SUB:['apprenne','apprennes','apprenne','apprenne','apprenne','apprenions','appreniez','apprennent','apprennent']},
+{id:70,inf:'comprendre',level:'b1',
+ PR:['comprends','comprends','comprend','comprend','comprend','comprenons','comprenez','comprennent','comprennent'],
+ PC:['ai compris','as compris','a compris','a compris','a compris','avons compris','avez compris','ont compris','ont compris'],
+ IMP:['comprenais','comprenais','comprenait','comprenait','comprenait','comprenions','compreniez','comprenaient','comprenaient'],
+ FUT:['comprendrai','comprendras','comprendra','comprendra','comprendra','comprendrons','comprendrez','comprendront','comprendront'],
+ SUB:['comprenne','comprennes','comprenne','comprenne','comprenne','comprenions','compreniez','comprennent','comprennent']},
+{id:71,inf:'reprendre',level:'b1',
+ PR:['reprends','reprends','reprend','reprend','reprend','reprenons','reprenez','reprennent','reprennent'],
+ PC:['ai repris','as repris','a repris','a repris','a repris','avons repris','avez repris','ont repris','ont repris'],
+ IMP:['reprenais','reprenais','reprenait','reprenait','reprenait','reprenions','repreniez','reprenaient','reprenaient'],
+ FUT:['reprendrai','reprendras','reprendra','reprendra','reprendra','reprendrons','reprendrez','reprendront','reprendront'],
+ SUB:['reprenne','reprennes','reprenne','reprenne','reprenne','reprenions','repreniez','reprennent','reprennent']},
+{id:72,inf:'surprendre',level:'b1',
+ PR:['surprends','surprends','surprend','surprend','surprend','surprenons','surprenez','surprennent','surprennent'],
+ PC:['ai surpris','as surpris','a surpris','a surpris','a surpris','avons surpris','avez surpris','ont surpris','ont surpris'],
+ IMP:['surprenais','surprenais','surprenait','surprenait','surprenait','surprenions','surpreniez','surprenaient','surprenaient'],
+ FUT:['surprendrai','surprendras','surprendra','surprendra','surprendra','surprendrons','surprendrez','surprendront','surprendront'],
+ SUB:['surprenne','surprennes','surprenne','surprenne','surprenne','surprenions','surpreniez','surprennent','surprennent']},
+{id:73,inf:'retenir',level:'b1',
+ PR:['retiens','retiens','retient','retient','retient','retenons','retenez','retiennent','retiennent'],
+ PC:['ai retenu','as retenu','a retenu','a retenu','a retenu','avons retenu','avez retenu','ont retenu','ont retenu'],
+ IMP:['retenais','retenais','retenait','retenait','retenait','retenions','reteniez','retenaient','retenaient'],
+ FUT:['retiendrai','retiendras','retiendra','retiendra','retiendra','retiendrons','retiendrez','retiendront','retiendront'],
+ SUB:['retienne','retiennes','retienne','retienne','retienne','retenions','reteniez','retiennent','retiennent']},
+{id:74,inf:'traduire',level:'b1',
+ PR:['traduis','traduis','traduit','traduit','traduit','traduisons','traduisez','traduisent','traduisent'],
+ PC:['ai traduit','as traduit','a traduit','a traduit','a traduit','avons traduit','avez traduit','ont traduit','ont traduit'],
+ IMP:['traduisais','traduisais','traduisait','traduisait','traduisait','traduisions','traduisiez','traduisaient','traduisaient'],
+ FUT:['traduirai','traduiras','traduira','traduira','traduira','traduirons','traduirez','traduiront','traduiront'],
+ SUB:['traduise','traduises','traduise','traduise','traduise','traduisions','traduisiez','traduisent','traduisent']},
+{id:75,inf:'produire',level:'b1',
+ PR:['produis','produis','produit','produit','produit','produisons','produisez','produisent','produisent'],
+ PC:['ai produit','as produit','a produit','a produit','a produit','avons produit','avez produit','ont produit','ont produit'],
+ IMP:['produisais','produisais','produisait','produisait','produisait','produisions','produisiez','produisaient','produisaient'],
+ FUT:['produirai','produiras','produira','produira','produira','produirons','produirez','produiront','produiront'],
+ SUB:['produise','produises','produise','produise','produise','produisions','produisiez','produisent','produisent']},
+{id:76,inf:'marcher',level:'b1',
+ PR:['marche','marches','marche','marche','marche','marchons','marchez','marchent','marchent'],
+ PC:['ai marché','as marché','a marché','a marché','a marché','avons marché','avez marché','ont marché','ont marché'],
+ IMP:['marchais','marchais','marchait','marchait','marchait','marchions','marchiez','marchaient','marchaient'],
+ FUT:['marcherai','marcheras','marchera','marchera','marchera','marcherons','marcherez','marcheront','marcheront'],
+ SUB:['marche','marches','marche','marche','marche','marchions','marchiez','marchent','marchent']},
+{id:77,inf:'travailler',level:'b1',
+ PR:['travaille','travailles','travaille','travaille','travaille','travaillons','travaillez','travaillent','travaillent'],
+ PC:['ai travaillé','as travaillé','a travaillé','a travaillé','a travaillé','avons travaillé','avez travaillé','ont travaillé','ont travaillé'],
+ IMP:['travaillais','travaillais','travaillait','travaillait','travaillait','travaillions','travailliez','travaillaient','travaillaient'],
+ FUT:['travaillerai','travailleras','travaillera','travaillera','travaillera','travaillerons','travaillerez','travailleront','travailleront'],
+ SUB:['travaille','travailles','travaille','travaille','travaille','travaillions','travailliez','travaillent','travaillent']},
+{id:78,inf:'étudier',level:'b1',
+ PR:['étudie','étudies','étudie','étudie','étudie','étudions','étudiez','étudient','étudient'],
+ PC:['ai étudié','as étudié','a étudié','a étudié','a étudié','avons étudié','avez étudié','ont étudié','ont étudié'],
+ IMP:['étudiais','étudiais','étudiait','étudiait','étudiait','étudiions','étudiiez','étudiaient','étudiaient'],
+ FUT:['étudierai','étudieras','étudiera','étudiera','étudiera','étudierons','étudierez','étudieront','étudieront'],
+ SUB:['étudie','étudies','étudie','étudie','étudie','étudiions','étudiiez','étudient','étudient']},
+{id:79,inf:'oublier',level:'b1',
+ PR:['oublie','oublies','oublie','oublie','oublie','oublions','oubliez','oublient','oublient'],
+ PC:['ai oublié','as oublié','a oublié','a oublié','a oublié','avons oublié','avez oublié','ont oublié','ont oublié'],
+ IMP:['oubliais','oubliais','oubliait','oubliait','oubliait','oubliions','oubliiez','oubliaient','oubliaient'],
+ FUT:['oublierai','oublieras','oubliera','oubliera','oubliera','oublierons','oublierez','oublieront','oublieront'],
+ SUB:['oublie','oublies','oublie','oublie','oublie','oubliions','oubliiez','oublient','oublient']},
+{id:80,inf:'crier',level:'b1',
+ PR:['crie','cries','crie','crie','crie','crions','criez','crient','crient'],
+ PC:['ai crié','as crié','a crié','a crié','a crié','avons crié','avez crié','ont crié','ont crié'],
+ IMP:['criais','criais','criait','criait','criait','criions','criiez','criaient','criaient'],
+ FUT:['crierai','crieras','criera','criera','criera','crierons','crierez','crieront','crieront'],
+ SUB:['crie','cries','crie','crie','crie','criions','criiez','crient','crient']},
+{id:81,inf:'tomber',level:'b1',
+ PR:['tombe','tombes','tombe','tombe','tombe','tombons','tombez','tombent','tombent'],
+ PC:["suis tombé(e)","es tombé(e)","est tombé","est tombée","est tombé","sommes tombé(e)s","êtes tombé(e)(s)","sont tombés","sont tombées"],
+ IMP:['tombais','tombais','tombait','tombait','tombait','tombions','tombiez','tombaient','tombaient'],
+ FUT:['tomberai','tomberas','tombera','tombera','tombera','tomberons','tomberez','tomberont','tomberont'],
+ SUB:['tombe','tombes','tombe','tombe','tombe','tombions','tombiez','tombent','tombent']},
+{id:82,inf:'monter',level:'b1',
+ PR:['monte','montes','monte','monte','monte','montons','montez','montent','montent'],
+ PC:["suis monté(e)","es monté(e)","est monté","est montée","est monté","sommes monté(e)s","êtes monté(e)(s)","sont montés","sont montées"],
+ IMP:['montais','montais','montait','montait','montait','montions','montiez','montaient','montaient'],
+ FUT:['monterai','monteras','montera','montera','montera','monterons','monterez','monteront','monteront'],
+ SUB:['monte','montes','monte','monte','monte','montions','montiez','montent','montent']},
+{id:83,inf:'entrer',level:'b1',
+ PR:['entre','entres','entre','entre','entre','entrons','entrez','entrent','entrent'],
+ PC:["suis entré(e)","es entré(e)","est entré","est entrée","est entré","sommes entré(e)s","êtes entré(e)(s)","sont entrés","sont entrées"],
+ IMP:['entrais','entrais','entrait','entrait','entrait','entrions','entriez','entraient','entraient'],
+ FUT:['entrerai','entreras','entrera','entrera','entrera','entrerons','entrerez','entreront','entreront'],
+ SUB:['entre','entres','entre','entre','entre','entrions','entriez','entrent','entrent']},
+{id:84,inf:'passer',level:'b1',
+ PR:['passe','passes','passe','passe','passe','passons','passez','passent','passent'],
+ PC:['ai passé','as passé','a passé','a passé','a passé','avons passé','avez passé','ont passé','ont passé'],
+ IMP:['passais','passais','passait','passait','passait','passions','passiez','passaient','passaient'],
+ FUT:['passerai','passeras','passera','passera','passera','passerons','passerez','passeront','passeront'],
+ SUB:['passe','passes','passe','passe','passe','passions','passiez','passent','passent']},
+{id:85,inf:'sourire',level:'b1',
+ PR:['souris','souris','sourit','sourit','sourit','sourions','souriez','sourient','sourient'],
+ PC:['ai souri','as souri','a souri','a souri','a souri','avons souri','avez souri','ont souri','ont souri'],
+ IMP:['souriais','souriais','souriait','souriait','souriait','souriions','souriiez','souriaient','souriaient'],
+ FUT:['sourirai','souriras','sourira','sourira','sourira','sourirons','sourirez','souriront','souriront'],
+ SUB:['sourie','souries','sourie','sourie','sourie','souriions','souriiez','sourient','sourient']},
+{id:86,inf:'paraître',level:'b1',
+ PR:['parais','parais','paraît','paraît','paraît','paraissons','paraissez','paraissent','paraissent'],
+ PC:['ai paru','as paru','a paru','a paru','a paru','avons paru','avez paru','ont paru','ont paru'],
+ IMP:['paraissais','paraissais','paraissait','paraissait','paraissait','paraissions','paraissiez','paraissaient','paraissaient'],
+ FUT:['paraîtrai','paraîtras','paraîtra','paraîtra','paraîtra','paraîtrons','paraîtrez','paraîtront','paraîtront'],
+ SUB:['paraisse','paraisses','paraisse','paraisse','paraisse','paraissions','paraissiez','paraissent','paraissent']},
+{id:87,inf:'disparaître',level:'b1',
+ PR:['disparais','disparais','disparaît','disparaît','disparaît','disparaissons','disparaissez','disparaissent','disparaissent'],
+ PC:['ai disparu','as disparu','a disparu','a disparu','a disparu','avons disparu','avez disparu','ont disparu','ont disparu'],
+ IMP:['disparaissais','disparaissais','disparaissait','disparaissait','disparaissait','disparaissions','disparaissiez','disparaissaient','disparaissaient'],
+ FUT:['disparaîtrai','disparaîtras','disparaîtra','disparaîtra','disparaîtra','disparaîtrons','disparaîtrez','disparaîtront','disparaîtront'],
+ SUB:['disparaisse','disparaisses','disparaisse','disparaisse','disparaisse','disparaissions','disparaissiez','disparaissent','disparaissent']},
+{id:88,inf:'apercevoir',level:'b1',
+ PR:['aperçois','aperçois','aperçoit','aperçoit','aperçoit','apercevons','apercevez','aperçoivent','aperçoivent'],
+ PC:['ai aperçu','as aperçu','a aperçu','a aperçu','a aperçu','avons aperçu','avez aperçu','ont aperçu','ont aperçu'],
+ IMP:['apercevais','apercevais','apercevait','apercevait','apercevait','apercevions','aperceviez','apercevaient','apercevaient'],
+ FUT:['apercevrai','apercevras','apercevra','apercevra','apercevra','apercevrons','apercevrez','apercevront','apercevront'],
+ SUB:['aperçoive','aperçoives','aperçoive','aperçoive','aperçoive','apercevions','aperceviez','aperçoivent','aperçoivent']},
+{id:89,inf:'souffrir',level:'b1',
+ PR:['souffre','souffres','souffre','souffre','souffre','souffrons','souffrez','souffrent','souffrent'],
+ PC:['ai souffert','as souffert','a souffert','a souffert','a souffert','avons souffert','avez souffert','ont souffert','ont souffert'],
+ IMP:['souffrais','souffrais','souffrait','souffrait','souffrait','souffrions','souffriez','souffraient','souffraient'],
+ FUT:['souffrirai','souffriras','souffrira','souffrira','souffrira','souffrirons','souffrirez','souffriront','souffriront'],
+ SUB:['souffre','souffres','souffre','souffre','souffre','souffrions','souffriez','souffrent','souffrent']},
+{id:90,inf:'couvrir',level:'b1',
+ PR:['couvre','couvres','couvre','couvre','couvre','couvrons','couvrez','couvrent','couvrent'],
+ PC:['ai couvert','as couvert','a couvert','a couvert','a couvert','avons couvert','avez couvert','ont couvert','ont couvert'],
+ IMP:['couvrais','couvrais','couvrait','couvrait','couvrait','couvrions','couvriez','couvraient','couvraient'],
+ FUT:['couvrirai','couvriras','couvrira','couvrira','couvrira','couvrirons','couvrirez','couvriront','couvriront'],
+ SUB:['couvre','couvres','couvre','couvre','couvre','couvrions','couvriez','couvrent','couvrent']},
+{id:91,inf:'soumettre',level:'b1',
+ PR:['soumets','soumets','soumet','soumet','soumet','soumettons','soumettez','soumettent','soumettent'],
+ PC:['ai soumis','as soumis','a soumis','a soumis','a soumis','avons soumis','avez soumis','ont soumis','ont soumis'],
+ IMP:['soumettais','soumettais','soumettait','soumettait','soumettait','soumettions','soumettiez','soumettaient','soumettaient'],
+ FUT:['soumettrai','soumettras','soumettra','soumettra','soumettra','soumettrons','soumettrez','soumettront','soumettront'],
+ SUB:['soumette','soumettes','soumette','soumette','soumette','soumettions','soumettiez','soumettent','soumettent']},
+{id:92,inf:'posséder',level:'b1',
+ PR:['possède','possèdes','possède','possède','possède','possédons','possédez','possèdent','possèdent'],
+ PC:['ai possédé','as possédé','a possédé','a possédé','a possédé','avons possédé','avez possédé','ont possédé','ont possédé'],
+ IMP:['possédais','possédais','possédait','possédait','possédait','possédions','possédiez','possédaient','possédaient'],
+ FUT:['posséderai','posséderas','possédera','possédera','possédera','posséderons','posséderez','posséderont','posséderont'],
+ SUB:['possède','possèdes','possède','possède','possède','possédions','possédiez','possèdent','possèdent']},
+{id:93,inf:'renouveler',level:'b1',
+ PR:['renouvelle','renouvelles','renouvelle','renouvelle','renouvelle','renouvelons','renouvelez','renouvellent','renouvellent'],
+ PC:['ai renouvelé','as renouvelé','a renouvelé','a renouvelé','a renouvelé','avons renouvelé','avez renouvelé','ont renouvelé','ont renouvelé'],
+ IMP:['renouvelais','renouvelais','renouvelait','renouvelait','renouvelait','renouvelions','renouveliez','renouvelaient','renouvelaient'],
+ FUT:['renouvellerai','renouvelleras','renouvellera','renouvellera','renouvellera','renouvellerons','renouvellerez','renouvelleront','renouvelleront'],
+ SUB:['renouvelle','renouvelles','renouvelle','renouvelle','renouvelle','renouvelions','renouveliez','renouvellent','renouvellent']},
+{id:94,inf:'exagérer',level:'b1',
+ PR:['exagère','exagères','exagère','exagère','exagère','exagérons','exagérez','exagèrent','exagèrent'],
+ PC:['ai exagéré','as exagéré','a exagéré','a exagéré','a exagéré','avons exagéré','avez exagéré','ont exagéré','ont exagéré'],
+ IMP:['exagérais','exagérais','exagérait','exagérait','exagérait','exagérions','exagériez','exagéraient','exagéraient'],
+ FUT:['exagérerai','exagéreras','exagérera','exagérera','exagérera','exagérerons','exagérerez','exagéreront','exagéreront'],
+ SUB:['exagère','exagères','exagère','exagère','exagère','exagérions','exagériez','exagèrent','exagèrent']},
+{id:95,inf:'céder',level:'b1',
+ PR:['cède','cèdes','cède','cède','cède','cédons','cédez','cèdent','cèdent'],
+ PC:['ai cédé','as cédé','a cédé','a cédé','a cédé','avons cédé','avez cédé','ont cédé','ont cédé'],
+ IMP:['cédais','cédais','cédait','cédait','cédait','cédions','cédiez','cédaient','cédaient'],
+ FUT:['céderai','céderas','cédera','cédera','cédera','céderons','céderez','céderont','céderont'],
+ SUB:['cède','cèdes','cède','cède','cède','cédions','cédiez','cèdent','cèdent']},
+{id:96,inf:'peser',level:'b1',
+ PR:['pèse','pèses','pèse','pèse','pèse','pesons','pesez','pèsent','pèsent'],
+ PC:['ai pesé','as pesé','a pesé','a pesé','a pesé','avons pesé','avez pesé','ont pesé','ont pesé'],
+ IMP:['pesais','pesais','pesait','pesait','pesait','pesions','pesiez','pesaient','pesaient'],
+ FUT:['pèserai','pèseras','pèsera','pèsera','pèsera','pèserons','pèserez','pèseront','pèseront'],
+ SUB:['pèse','pèses','pèse','pèse','pèse','pesions','pesiez','pèsent','pèsent']},
+{id:97,inf:'interdire',level:'b1',
+ PR:['interdis','interdis','interdit','interdit','interdit','interdisons','interdisez','interdisent','interdisent'],
+ PC:['ai interdit','as interdit','a interdit','a interdit','a interdit','avons interdit','avez interdit','ont interdit','ont interdit'],
+ IMP:['interdisais','interdisais','interdisait','interdisait','interdisait','interdisions','interdisiez','interdisaient','interdisaient'],
+ FUT:['interdirai','interdiras','interdira','interdira','interdira','interdirons','interdirez','interdiront','interdiront'],
+ SUB:['interdise','interdises','interdise','interdise','interdise','interdisions','interdisiez','interdisent','interdisent']},
+{id:98,inf:'entreprendre',level:'b1',
+ PR:['entreprends','entreprends','entreprend','entreprend','entreprend','entreprenons','entreprenez','entreprennent','entreprennent'],
+ PC:['ai entrepris','as entrepris','a entrepris','a entrepris','a entrepris','avons entrepris','avez entrepris','ont entrepris','ont entrepris'],
+ IMP:['entreprenais','entreprenais','entreprenait','entreprenait','entreprenait','entreprenions','entrepreniez','entreprenaient','entreprenaient'],
+ FUT:['entreprendrai','entreprendras','entreprendra','entreprendra','entreprendra','entreprendrons','entreprendrez','entreprendront','entreprendront'],
+ SUB:['entreprenne','entreprennes','entreprenne','entreprenne','entreprenne','entreprenions','entrepreniez','entreprennent','entreprennent']},
+{id:99,inf:'apercevoir',level:'b1',
+ PR:['aperçois','aperçois','aperçoit','aperçoit','aperçoit','apercevons','apercevez','aperçoivent','aperçoivent'],
+ PC:['ai aperçu','as aperçu','a aperçu','a aperçu','a aperçu','avons aperçu','avez aperçu','ont aperçu','ont aperçu'],
+ IMP:['apercevais','apercevais','apercevait','apercevait','apercevait','apercevions','aperceviez','apercevaient','apercevaient'],
+ FUT:['apercevrai','apercevras','apercevra','apercevra','apercevra','apercevrons','apercevrez','apercevront','apercevront'],
+ SUB:['aperçoive','aperçoives','aperçoive','aperçoive','aperçoive','apercevions','aperceviez','aperçoivent','aperçoivent']},
+{id:100,inf:'médire',level:'b1',
+ PR:['médis','médis','médit','médit','médit','médisons','médisez','médisent','médisent'],
+ PC:['ai médit','as médit','a médit','a médit','a médit','avons médit','avez médit','ont médit','ont médit'],
+ IMP:['médisais','médisais','médisait','médisait','médisait','médisions','médisiez','médisaient','médisaient'],
+ FUT:['médirai','médiras','médira','médira','médira','médirons','médirez','médiront','médiront'],
+ SUB:['médise','médises','médise','médise','médise','médisions','médisiez','médisent','médisent']},
+
+// ──── B2 (101-200) ────
+{id:101,inf:'abandonner',level:'b2',
+ PR:['abandonne','abandonnes','abandonne','abandonne','abandonne','abandonnons','abandonnez','abandonnent','abandonnent'],
+ PC:['ai abandonné','as abandonné','a abandonné','a abandonné','a abandonné','avons abandonné','avez abandonné','ont abandonné','ont abandonné'],
+ IMP:['abandonnais','abandonnais','abandonnait','abandonnait','abandonnait','abandonnions','abandonniez','abandonnaient','abandonnaient'],
+ FUT:['abandonnerai','abandonneras','abandonnera','abandonnera','abandonnera','abandonnerons','abandonnerez','abandonneront','abandonneront'],
+ SUB:['abandonne','abandonnes','abandonne','abandonne','abandonne','abandonnions','abandonniez','abandonnent','abandonnent']},
+{id:102,inf:'aborder',level:'b2',
+ PR:['aborde','abordes','aborde','aborde','aborde','abordons','abordez','abordent','abordent'],
+ PC:['ai abordé','as abordé','a abordé','a abordé','a abordé','avons abordé','avez abordé','ont abordé','ont abordé'],
+ IMP:['abordais','abordais','abordait','abordait','abordait','abordions','abordiez','abordaient','abordaient'],
+ FUT:['aborderai','aborderas','abordera','abordera','abordera','aborderons','aborderez','aborderont','aborderont'],
+ SUB:['aborde','abordes','aborde','aborde','aborde','abordions','abordiez','abordent','abordent']},
+{id:103,inf:'accélérer',level:'b2',
+ PR:['accélère','accélères','accélère','accélère','accélère','accélérons','accélérez','accélèrent','accélèrent'],
+ PC:['ai accéléré','as accéléré','a accéléré','a accéléré','a accéléré','avons accéléré','avez accéléré','ont accéléré','ont accéléré'],
+ IMP:['accélérais','accélérais','accélérait','accélérait','accélérait','accélérions','accélériez','accéléraient','accéléraient'],
+ FUT:['accélérerai','accéléreras','accélérera','accélérera','accélérera','accélérerons','accélérerez','accéléreront','accéléreront'],
+ SUB:['accélère','accélères','accélère','accélère','accélère','accélérions','accélériez','accélèrent','accélèrent']},
+{id:104,inf:'accompagner',level:'b2',
+ PR:['accompagne','accompagnes','accompagne','accompagne','accompagne','accompagnons','accompagnez','accompagnent','accompagnent'],
+ PC:['ai accompagné','as accompagné','a accompagné','a accompagné','a accompagné','avons accompagné','avez accompagné','ont accompagné','ont accompagné'],
+ IMP:['accompagnais','accompagnais','accompagnait','accompagnait','accompagnait','accompagnions','accompagniez','accompagnaient','accompagnaient'],
+ FUT:['accompagnerai','accompagneras','accompagnera','accompagnera','accompagnera','accompagnerons','accompagnerez','accompagneront','accompagneront'],
+ SUB:['accompagne','accompagnes','accompagne','accompagne','accompagne','accompagnions','accompagniez','accompagnent','accompagnent']},
+{id:105,inf:'accroître',level:'b2',
+ PR:['accroît','accroît','accroît','accroît','accroît','accroissons','accroissez','accroissent','accroissent'],
+ PC:['ai accru','as accru','a accru','a accru','a accru','avons accru','avez accru','ont accru','ont accru'],
+ IMP:['accroissais','accroissais','accroissait','accroissait','accroissait','accroissions','accroissiez','accroissaient','accroissaient'],
+ FUT:['accroîtrai','accroîtras','accroîtra','accroîtra','accroîtra','accroîtrons','accroîtrez','accroîtront','accroîtront'],
+ SUB:['accroisse','accroisses','accroisse','accroisse','accroisse','accroissions','accroissiez','accroissent','accroissent']},
+{id:106,inf:'admettre',level:'b2',
+ PR:['admets','admets','admet','admet','admet','admettons','admettez','admettent','admettent'],
+ PC:['ai admis','as admis','a admis','a admis','a admis','avons admis','avez admis','ont admis','ont admis'],
+ IMP:['admettais','admettais','admettait','admettait','admettait','admettions','admettiez','admettaient','admettaient'],
+ FUT:['admettrai','admettras','admettra','admettra','admettra','admettrons','admettrez','admettront','admettront'],
+ SUB:['admette','admettes','admette','admette','admette','admettions','admettiez','admettent','admettent']},
+{id:107,inf:'adopter',level:'b2',
+ PR:['adopte','adoptes','adopte','adopte','adopte','adoptons','adoptez','adoptent','adoptent'],
+ PC:['ai adopté','as adopté','a adopté','a adopté','a adopté','avons adopté','avez adopté','ont adopté','ont adopté'],
+ IMP:['adoptais','adoptais','adoptait','adoptait','adoptait','adoptions','adoptiez','adoptaient','adoptaient'],
+ FUT:['adopterai','adopteras','adoptera','adoptera','adoptera','adopterons','adopterez','adopteront','adopteront'],
+ SUB:['adopte','adoptes','adopte','adopte','adopte','adoptions','adoptiez','adoptent','adoptent']},
+{id:108,inf:'aggraver',level:'b2',
+ PR:['aggrave','aggraves','aggrave','aggrave','aggrave','aggravons','aggravez','aggravent','aggravent'],
+ PC:['ai aggravé','as aggravé','a aggravé','a aggravé','a aggravé','avons aggravé','avez aggravé','ont aggravé','ont aggravé'],
+ IMP:['aggravais','aggravais','aggravait','aggravait','aggravait','aggravions','aggraviez','aggravaient','aggravaient'],
+ FUT:['aggraverai','aggraveras','aggravera','aggravera','aggravera','aggraverons','aggraverez','aggraveront','aggraveront'],
+ SUB:['aggrave','aggraves','aggrave','aggrave','aggrave','aggravions','aggraviez','aggravent','aggravent']},
+{id:109,inf:'alléger',level:'b2',
+ PR:['allège','allèges','allège','allège','allège','allégeons','allégez','allègent','allègent'],
+ PC:['ai allégé','as allégé','a allégé','a allégé','a allégé','avons allégé','avez allégé','ont allégé','ont allégé'],
+ IMP:['allégeais','allégeais','allégeait','allégeait','allégeait','allégions','allégiez','allégeaient','allégeaient'],
+ FUT:['allègerai','allègeras','allègera','allègera','allègera','allègerons','allègerez','allègeront','allègeront'],
+ SUB:['allège','allèges','allège','allège','allège','allégions','allégiez','allègent','allègent']},
+{id:110,inf:'appartenir',level:'b2',
+ PR:['appartiens','appartiens','appartient','appartient','appartient','appartenons','appartenez','appartiennent','appartiennent'],
+ PC:['ai appartenu','as appartenu','a appartenu','a appartenu','a appartenu','avons appartenu','avez appartenu','ont appartenu','ont appartenu'],
+ IMP:['appartenais','appartenais','appartenait','appartenait','appartenait','appartenions','apparteniez','appartenaient','appartenaient'],
+ FUT:['appartiendrai','appartiendras','appartiendra','appartiendra','appartiendra','appartiendrons','appartiendrez','appartiendront','appartiendront'],
+ SUB:['appartienne','appartiennes','appartienne','appartienne','appartienne','appartenions','apparteniez','appartiennent','appartiennent']},
+{id:111,inf:'approfondir',level:'b2',
+ PR:['approfondis','approfondis','approfondit','approfondit','approfondit','approfondissons','approfondissez','approfondissent','approfondissent'],
+ PC:['ai approfondi','as approfondi','a approfondi','a approfondi','a approfondi','avons approfondi','avez approfondi','ont approfondi','ont approfondi'],
+ IMP:['approfondissais','approfondissais','approfondissait','approfondissait','approfondissait','approfondissions','approfondissiez','approfondissaient','approfondissaient'],
+ FUT:['approfondirai','approfondiras','approfondira','approfondira','approfondira','approfondirons','approfondirez','approfondiront','approfondiront'],
+ SUB:['approfondisse','approfondisses','approfondisse','approfondisse','approfondisse','approfondissions','approfondissiez','approfondissent','approfondissent']},
+{id:112,inf:'assurer',level:'b2',
+ PR:['assure','assures','assure','assure','assure','assurons','assurez','assurent','assurent'],
+ PC:['ai assuré','as assuré','a assuré','a assuré','a assuré','avons assuré','avez assuré','ont assuré','ont assuré'],
+ IMP:['assurais','assurais','assurait','assurait','assurait','assurions','assuriez','assuraient','assuraient'],
+ FUT:['assurerai','assureras','assurera','assurera','assurera','assurerons','assurerez','assureront','assureront'],
+ SUB:['assure','assures','assure','assure','assure','assurions','assuriez','assurent','assurent']},
+{id:113,inf:'attirer',level:'b2',
+ PR:['attire','attires','attire','attire','attire','attirons','attirez','attirent','attirent'],
+ PC:['ai attiré','as attiré','a attiré','a attiré','a attiré','avons attiré','avez attiré','ont attiré','ont attiré'],
+ IMP:['attirais','attirais','attirait','attirait','attirait','attirions','attiriez','attiraient','attiraient'],
+ FUT:['attirerai','attireras','attirera','attirera','attirera','attirerons','attirerez','attireront','attireront'],
+ SUB:['attire','attires','attire','attire','attire','attirions','attiriez','attirent','attirent']},
+{id:114,inf:'avancer',level:'b2',
+ PR:['avance','avances','avance','avance','avance','avançons','avancez','avancent','avancent'],
+ PC:['ai avancé','as avancé','a avancé','a avancé','a avancé','avons avancé','avez avancé','ont avancé','ont avancé'],
+ IMP:['avançais','avançais','avançait','avançait','avançait','avancions','avanciez','avançaient','avançaient'],
+ FUT:['avancerai','avanceras','avancera','avancera','avancera','avancerons','avancerez','avanceront','avanceront'],
+ SUB:['avance','avances','avance','avance','avance','avancions','avanciez','avancent','avancent']},
+{id:115,inf:'avertir',level:'b2',
+ PR:['avertis','avertis','avertit','avertit','avertit','avertissons','avertissez','avertissent','avertissent'],
+ PC:['ai averti','as averti','a averti','a averti','a averti','avons averti','avez averti','ont averti','ont averti'],
+ IMP:['avertissais','avertissais','avertissait','avertissait','avertissait','avertissions','avertissiez','avertissaient','avertissaient'],
+ FUT:['avertirai','avertiras','avertira','avertira','avertira','avertirons','avertirez','avertiront','avertiront'],
+ SUB:['avertisse','avertisses','avertisse','avertisse','avertisse','avertissions','avertissiez','avertissent','avertissent']},
+{id:116,inf:'bannir',level:'b2',
+ PR:['bannis','bannis','bannit','bannit','bannit','bannissons','bannissez','bannissent','bannissent'],
+ PC:['ai banni','as banni','a banni','a banni','a banni','avons banni','avez banni','ont banni','ont banni'],
+ IMP:['bannissais','bannissais','bannissait','bannissait','bannissait','bannissions','bannissiez','bannissaient','bannissaient'],
+ FUT:['bannirai','banniras','bannira','bannira','bannira','bannirons','bannirez','banniront','banniront'],
+ SUB:['bannisse','bannisses','bannisse','bannisse','bannisse','bannissions','bannissiez','bannissent','bannissent']},
+{id:117,inf:'bénéficier',level:'b2',
+ PR:['bénéficie','bénéficies','bénéficie','bénéficie','bénéficie','bénéficions','bénéficiez','bénéficient','bénéficient'],
+ PC:['ai bénéficié','as bénéficié','a bénéficié','a bénéficié','a bénéficié','avons bénéficié','avez bénéficié','ont bénéficié','ont bénéficié'],
+ IMP:['bénéficiais','bénéficiais','bénéficiait','bénéficiait','bénéficiait','bénéficiions','bénéficiiez','bénéficiaient','bénéficiaient'],
+ FUT:['bénéficierai','bénéficieras','bénéficiera','bénéficiera','bénéficiera','bénéficierons','bénéficierez','bénéficieront','bénéficieront'],
+ SUB:['bénéficie','bénéficies','bénéficie','bénéficie','bénéficie','bénéficiions','bénéficiiez','bénéficient','bénéficient']},
+{id:118,inf:'bouger',level:'b2',
+ PR:['bouge','bouges','bouge','bouge','bouge','bougeons','bougez','bougent','bougent'],
+ PC:['ai bougé','as bougé','a bougé','a bougé','a bougé','avons bougé','avez bougé','ont bougé','ont bougé'],
+ IMP:['bougeais','bougeais','bougeait','bougeait','bougeait','bougions','bougiez','bougeaient','bougeaient'],
+ FUT:['bougerai','bougeras','bougera','bougera','bougera','bougerons','bougerez','bougeront','bougeront'],
+ SUB:['bouge','bouges','bouge','bouge','bouge','bougions','bougiez','bougent','bougent']},
+{id:119,inf:'célébrer',level:'b2',
+ PR:['célèbre','célèbres','célèbre','célèbre','célèbre','célébrons','célébrez','célèbrent','célèbrent'],
+ PC:['ai célébré','as célébré','a célébré','a célébré','a célébré','avons célébré','avez célébré','ont célébré','ont célébré'],
+ IMP:['célébrais','célébrais','célébrait','célébrait','célébrait','célébrions','célébriez','célébraient','célébraient'],
+ FUT:['célébrerai','célébreras','célébrera','célébrera','célébrera','célébrerons','célébrerez','célébreront','célébreront'],
+ SUB:['célèbre','célèbres','célèbre','célèbre','célèbre','célébrions','célébriez','célèbrent','célèbrent']},
+{id:120,inf:'collaborer',level:'b2',
+ PR:['collabore','collabores','collabore','collabore','collabore','collaborons','collaborez','collaborent','collaborent'],
+ PC:['ai collaboré','as collaboré','a collaboré','a collaboré','a collaboré','avons collaboré','avez collaboré','ont collaboré','ont collaboré'],
+ IMP:['collaborais','collaborais','collaborait','collaborait','collaborait','collaborions','collaboriez','collaboraient','collaboraient'],
+ FUT:['collaborerai','collaboreras','collaborera','collaborera','collaborera','collaborerons','collaborerez','collaboreront','collaboreront'],
+ SUB:['collabore','collabores','collabore','collabore','collabore','collaborions','collaboriez','collaborent','collaborent']},
+{id:121,inf:'combattre',level:'b2',
+ PR:['combats','combats','combat','combat','combat','combattons','combattez','combattent','combattent'],
+ PC:['ai combattu','as combattu','a combattu','a combattu','a combattu','avons combattu','avez combattu','ont combattu','ont combattu'],
+ IMP:['combattais','combattais','combattait','combattait','combattait','combattions','combattiez','combattaient','combattaient'],
+ FUT:['combattrai','combattras','combattra','combattra','combattra','combattrons','combattrez','combattront','combattront'],
+ SUB:['combatte','combattes','combatte','combatte','combatte','combattions','combattiez','combattent','combattent']},
+{id:122,inf:'comparer',level:'b2',
+ PR:['compare','compares','compare','compare','compare','comparons','comparez','comparent','comparent'],
+ PC:['ai comparé','as comparé','a comparé','a comparé','a comparé','avons comparé','avez comparé','ont comparé','ont comparé'],
+ IMP:['comparais','comparais','comparait','comparait','comparait','comparions','compariez','comparaient','comparaient'],
+ FUT:['comparerai','compareras','comparera','comparera','comparera','comparerons','comparerez','compareront','compareront'],
+ SUB:['compare','compares','compare','compare','compare','comparions','compariez','comparent','comparent']},
+{id:123,inf:'compromettre',level:'b2',
+ PR:['compromets','compromets','compromet','compromet','compromet','compromettons','compromettez','compromettent','compromettent'],
+ PC:['ai compromis','as compromis','a compromis','a compromis','a compromis','avons compromis','avez compromis','ont compromis','ont compromis'],
+ IMP:['compromettais','compromettais','compromettait','compromettait','compromettait','compromettions','compromettiez','compromettaient','compromettaient'],
+ FUT:['compromettrai','compromettras','compromettra','compromettra','compromettra','compromettrons','compromettrez','compromettront','compromettront'],
+ SUB:['compromette','compromettes','compromette','compromette','compromette','compromettions','compromettiez','compromettent','compromettent']},
+{id:124,inf:'concevoir',level:'b2',
+ PR:['conçois','conçois','conçoit','conçoit','conçoit','concevons','concevez','conçoivent','conçoivent'],
+ PC:['ai conçu','as conçu','a conçu','a conçu','a conçu','avons conçu','avez conçu','ont conçu','ont conçu'],
+ IMP:['concevais','concevais','concevait','concevait','concevait','concevions','conceviez','concevaient','concevaient'],
+ FUT:['concevrai','concevras','concevra','concevra','concevra','concevrons','concevrez','concevront','concevront'],
+ SUB:['conçoive','conçoives','conçoive','conçoive','conçoive','concevions','conceviez','conçoivent','conçoivent']},
+{id:125,inf:'conclure',level:'b2',
+ PR:['conclus','conclus','conclut','conclut','conclut','concluons','concluez','concluent','concluent'],
+ PC:['ai conclu','as conclu','a conclu','a conclu','a conclu','avons conclu','avez conclu','ont conclu','ont conclu'],
+ IMP:['concluais','concluais','concluait','concluait','concluait','concluions','concluiez','concluaient','concluaient'],
+ FUT:['conclurai','concluras','conclura','conclura','conclura','conclurons','conclurez','concluront','concluront'],
+ SUB:['conclue','conclues','conclue','conclue','conclue','concluions','concluiez','concluent','concluent']},
+{id:126,inf:'confier',level:'b2',
+ PR:['confie','confies','confie','confie','confie','confions','confiez','confient','confient'],
+ PC:['ai confié','as confié','a confié','a confié','a confié','avons confié','avez confié','ont confié','ont confié'],
+ IMP:['confiais','confiais','confiait','confiait','confiait','confiions','confiiez','confiaient','confiaient'],
+ FUT:['confierai','confieras','confiera','confiera','confiera','confierons','confierez','confieront','confieront'],
+ SUB:['confie','confies','confie','confie','confie','confiions','confiiez','confient','confient']},
+{id:127,inf:'confondre',level:'b2',
+ PR:['confonds','confonds','confond','confond','confond','confondons','confondez','confondent','confondent'],
+ PC:['ai confondu','as confondu','a confondu','a confondu','a confondu','avons confondu','avez confondu','ont confondu','ont confondu'],
+ IMP:['confondais','confondais','confondait','confondait','confondait','confondions','confondiez','confondaient','confondaient'],
+ FUT:['confondrai','confondras','confondra','confondra','confondra','confondrons','confondrez','confondront','confondront'],
+ SUB:['confonde','confondes','confonde','confonde','confonde','confondions','confondiez','confondent','confondent']},
+{id:128,inf:'conserver',level:'b2',
+ PR:['conserve','conserves','conserve','conserve','conserve','conservons','conservez','conservent','conservent'],
+ PC:['ai conservé','as conservé','a conservé','a conservé','a conservé','avons conservé','avez conservé','ont conservé','ont conservé'],
+ IMP:['conservais','conservais','conservait','conservait','conservait','conservions','conserviez','conservaient','conservaient'],
+ FUT:['conserverai','conserveras','conservera','conservera','conservera','conserverons','conserverez','conserveront','conserveront'],
+ SUB:['conserve','conserves','conserve','conserve','conserve','conservions','conserviez','conservent','conservent']},
+{id:129,inf:'construire',level:'b2',
+ PR:['construis','construis','construit','construit','construit','construisons','construisez','construisent','construisent'],
+ PC:['ai construit','as construit','a construit','a construit','a construit','avons construit','avez construit','ont construit','ont construit'],
+ IMP:['construisais','construisais','construisait','construisait','construisait','construisions','construisiez','construisaient','construisaient'],
+ FUT:['construirai','construiras','construira','construira','construira','construirons','construirez','construiront','construiront'],
+ SUB:['construise','construises','construise','construise','construise','construisions','construisiez','construisent','construisent']},
+{id:130,inf:'contester',level:'b2',
+ PR:['conteste','contestes','conteste','conteste','conteste','contestons','contestez','contestent','contestent'],
+ PC:['ai contesté','as contesté','a contesté','a contesté','a contesté','avons contesté','avez contesté','ont contesté','ont contesté'],
+ IMP:['contestais','contestais','contestait','contestait','contestait','contestions','contestiez','contestaient','contestaient'],
+ FUT:['contesterai','contesteras','contestera','contestera','contestera','contesterons','contesterez','contesteront','contesteront'],
+ SUB:['conteste','contestes','conteste','conteste','conteste','contestions','contestiez','contestent','contestent']},
+{id:131,inf:'contredire',level:'b2',
+ PR:['contredis','contredis','contredit','contredit','contredit','contredisons','contredisez','contredisent','contredisent'],
+ PC:['ai contredit','as contredit','a contredit','a contredit','a contredit','avons contredit','avez contredit','ont contredit','ont contredit'],
+ IMP:['contredisais','contredisais','contredisait','contredisait','contredisait','contredisions','contredisiez','contredisaient','contredisaient'],
+ FUT:['contredirai','contrediras','contredira','contredira','contredira','contredirons','contredirez','contrediront','contrediront'],
+ SUB:['contredise','contredises','contredise','contredise','contredise','contredisions','contredisiez','contredisent','contredisent']},
+{id:132,inf:'contrôler',level:'b2',
+ PR:['contrôle','contrôles','contrôle','contrôle','contrôle','contrôlons','contrôlez','contrôlent','contrôlent'],
+ PC:['ai contrôlé','as contrôlé','a contrôlé','a contrôlé','a contrôlé','avons contrôlé','avez contrôlé','ont contrôlé','ont contrôlé'],
+ IMP:['contrôlais','contrôlais','contrôlait','contrôlait','contrôlait','contrôlions','contrôliez','contrôlaient','contrôlaient'],
+ FUT:['contrôlerai','contrôleras','contrôlera','contrôlera','contrôlera','contrôlerons','contrôlerez','contrôleront','contrôleront'],
+ SUB:['contrôle','contrôles','contrôle','contrôle','contrôle','contrôlions','contrôliez','contrôlent','contrôlent']},
+{id:133,inf:'courir',level:'b2',
+ PR:['cours','cours','court','court','court','courons','courez','courent','courent'],
+ PC:['ai couru','as couru','a couru','a couru','a couru','avons couru','avez couru','ont couru','ont couru'],
+ IMP:['courais','courais','courait','courait','courait','courions','couriez','couraient','couraient'],
+ FUT:['courrai','courras','courra','courra','courra','courrons','courrez','courront','courront'],
+ SUB:['coure','coures','coure','coure','coure','courions','couriez','courent','courent']},
+{id:134,inf:'craindre',level:'b2',
+ PR:['crains','crains','craint','craint','craint','craignons','craignez','craignent','craignent'],
+ PC:['ai craint','as craint','a craint','a craint','a craint','avons craint','avez craint','ont craint','ont craint'],
+ IMP:['craignais','craignais','craignait','craignait','craignait','craignions','craigniez','craignaient','craignaient'],
+ FUT:['craindrai','craindras','craindra','craindra','craindra','craindrons','craindrez','craindront','craindront'],
+ SUB:['craigne','craignes','craigne','craigne','craigne','craignions','craigniez','craignent','craignent']},
+{id:135,inf:'décider',level:'b2',
+ PR:['décide','décides','décide','décide','décide','décidons','décidez','décident','décident'],
+ PC:['ai décidé','as décidé','a décidé','a décidé','a décidé','avons décidé','avez décidé','ont décidé','ont décidé'],
+ IMP:['décidais','décidais','décidait','décidait','décidait','décidions','décidiez','décidaient','décidaient'],
+ FUT:['déciderai','décideras','décidera','décidera','décidera','déciderons','déciderez','décideront','décideront'],
+ SUB:['décide','décides','décide','décide','décide','décidions','décidiez','décident','décident']},
+{id:136,inf:'décrire',level:'b2',
+ PR:['décris','décris','décrit','décrit','décrit','décrivons','décrivez','décrivent','décrivent'],
+ PC:['ai décrit','as décrit','a décrit','a décrit','a décrit','avons décrit','avez décrit','ont décrit','ont décrit'],
+ IMP:['décrivais','décrivais','décrivait','décrivait','décrivait','décrivions','décriviez','décrivaient','décrivaient'],
+ FUT:['décrirai','décriras','décrira','décrira','décrira','décrirons','décrirez','décriront','décriront'],
+ SUB:['décrive','décrives','décrive','décrive','décrive','décrivions','décriviez','décrivent','décrivent']},
+{id:137,inf:'défendre',level:'b2',
+ PR:['défends','défends','défend','défend','défend','défendons','défendez','défendent','défendent'],
+ PC:['ai défendu','as défendu','a défendu','a défendu','a défendu','avons défendu','avez défendu','ont défendu','ont défendu'],
+ IMP:['défendais','défendais','défendait','défendait','défendait','défendions','défendiez','défendaient','défendaient'],
+ FUT:['défendrai','défendras','défendra','défendra','défendra','défendrons','défendrez','défendront','défendront'],
+ SUB:['défende','défendes','défende','défende','défende','défendions','défendiez','défendent','défendent']},
+{id:138,inf:'détruire',level:'b2',
+ PR:['détruis','détruis','détruit','détruit','détruit','détruisons','détruisez','détruisent','détruisent'],
+ PC:['ai détruit','as détruit','a détruit','a détruit','a détruit','avons détruit','avez détruit','ont détruit','ont détruit'],
+ IMP:['détruisais','détruisais','détruisait','détruisait','détruisait','détruisions','détruisiez','détruisaient','détruisaient'],
+ FUT:['détruirai','détruiras','détruira','détruira','détruira','détruirons','détruirez','détruiront','détruiront'],
+ SUB:['détruise','détruises','détruise','détruise','détruise','détruisions','détruisiez','détruisent','détruisent']},
+{id:139,inf:'éloigner',level:'b2',
+ PR:['éloigne','éloignes','éloigne','éloigne','éloigne','éloignons','éloignez','éloignent','éloignent'],
+ PC:['ai éloigné','as éloigné','a éloigné','a éloigné','a éloigné','avons éloigné','avez éloigné','ont éloigné','ont éloigné'],
+ IMP:['éloignais','éloignais','éloignait','éloignait','éloignait','éloignions','éloigniez','éloignaient','éloignaient'],
+ FUT:['éloignerai','éloigneras','éloignera','éloignera','éloignera','éloignerons','éloignerez','éloigneront','éloigneront'],
+ SUB:['éloigne','éloignes','éloigne','éloigne','éloigne','éloignions','éloigniez','éloignent','éloignent']},
+{id:140,inf:'emmener',level:'b2',
+ PR:['emmène','emmènes','emmène','emmène','emmène','emmenons','emmenez','emmènent','emmènent'],
+ PC:['ai emmené','as emmené','a emmené','a emmené','a emmené','avons emmené','avez emmené','ont emmené','ont emmené'],
+ IMP:['emmenais','emmenais','emmenait','emmenait','emmenait','emmenions','emmeniez','emmenaient','emmenaient'],
+ FUT:['emmènerai','emmèneras','emmènera','emmènera','emmènera','emmènerons','emmènerez','emmèneront','emmèneront'],
+ SUB:['emmène','emmènes','emmène','emmène','emmène','emmenions','emmeniez','emmènent','emmènent']},
+{id:141,inf:'empêcher',level:'b2',
+ PR:['empêche','empêches','empêche','empêche','empêche','empêchons','empêchez','empêchent','empêchent'],
+ PC:['ai empêché','as empêché','a empêché','a empêché','a empêché','avons empêché','avez empêché','ont empêché','ont empêché'],
+ IMP:['empêchais','empêchais','empêchait','empêchait','empêchait','empêchions','empêchiez','empêchaient','empêchaient'],
+ FUT:['empêcherai','empêcheras','empêchera','empêchera','empêchera','empêcherons','empêcherez','empêcheront','empêcheront'],
+ SUB:['empêche','empêches','empêche','empêche','empêche','empêchions','empêchiez','empêchent','empêchent']},
+{id:142,inf:'endormir',level:'b2',
+ PR:['endors','endors','endort','endort','endort','endormons','endormez','endorment','endorment'],
+ PC:['ai endormi','as endormi','a endormi','a endormi','a endormi','avons endormi','avez endormi','ont endormi','ont endormi'],
+ IMP:['endormais','endormais','endormait','endormait','endormait','endormions','endormiez','endormaient','endormaient'],
+ FUT:['endormirai','endormiras','endormira','endormira','endormira','endormirons','endormirez','endormiront','endormiront'],
+ SUB:['endorme','endormes','endorme','endorme','endorme','endormions','endormiez','endorment','endorment']},
+{id:143,inf:'garantir',level:'b2',
+ PR:['garantis','garantis','garantit','garantit','garantit','garantissons','garantissez','garantissent','garantissent'],
+ PC:['ai garanti','as garanti','a garanti','a garanti','a garanti','avons garanti','avez garanti','ont garanti','ont garanti'],
+ IMP:['garantissais','garantissais','garantissait','garantissait','garantissait','garantissions','garantissiez','garantissaient','garantissaient'],
+ FUT:['garantirai','garantiras','garantira','garantira','garantira','garantirons','garantirez','garantiront','garantiront'],
+ SUB:['garantisse','garantisses','garantisse','garantisse','garantisse','garantissions','garantissiez','garantissent','garantissent']},
+{id:144,inf:'imaginer',level:'b2',
+ PR:['imagine','imagines','imagine','imagine','imagine','imaginons','imaginez','imaginent','imaginent'],
+ PC:['ai imaginé','as imaginé','a imaginé','a imaginé','a imaginé','avons imaginé','avez imaginé','ont imaginé','ont imaginé'],
+ IMP:['imaginais','imaginais','imaginait','imaginait','imaginait','imaginions','imaginiez','imaginaient','imaginaient'],
+ FUT:['imaginerai','imagineras','imaginera','imaginera','imaginera','imaginerons','imaginerez','imagineront','imagineront'],
+ SUB:['imagine','imagines','imagine','imagine','imagine','imaginions','imaginiez','imaginent','imaginent']},
+{id:145,inf:'intéresser',level:'b2',
+ PR:['intéresse','intéresses','intéresse','intéresse','intéresse','intéressons','intéressez','intéressent','intéressent'],
+ PC:['ai intéressé','as intéressé','a intéressé','a intéressé','a intéressé','avons intéressé','avez intéressé','ont intéressé','ont intéressé'],
+ IMP:['intéressais','intéressais','intéressait','intéressait','intéressait','intéressions','intéressiez','intéressaient','intéressaient'],
+ FUT:['intéresserai','intéresseras','intéressera','intéressera','intéressera','intéresserons','intéresserez','intéresseront','intéresseront'],
+ SUB:['intéresse','intéresses','intéresse','intéresse','intéresse','intéressions','intéressiez','intéressent','intéressent']},
+{id:146,inf:'posséder',level:'b2',
+ PR:['possède','possèdes','possède','possède','possède','possédons','possédez','possèdent','possèdent'],
+ PC:['ai possédé','as possédé','a possédé','a possédé','a possédé','avons possédé','avez possédé','ont possédé','ont possédé'],
+ IMP:['possédais','possédais','possédait','possédait','possédait','possédions','possédiez','possédaient','possédaient'],
+ FUT:['posséderai','posséderas','possédera','possédera','possédera','posséderons','posséderez','posséderont','posséderont'],
+ SUB:['possède','possèdes','possède','possède','possède','possédions','possédiez','possèdent','possèdent']},
+{id:147,inf:'renouveler',level:'b2',
+ PR:['renouvelle','renouvelles','renouvelle','renouvelle','renouvelle','renouvelons','renouvelez','renouvellent','renouvellent'],
+ PC:['ai renouvelé','as renouvelé','a renouvelé','a renouvelé','a renouvelé','avons renouvelé','avez renouvelé','ont renouvelé','ont renouvelé'],
+ IMP:['renouvelais','renouvelais','renouvelait','renouvelait','renouvelait','renouvelions','renouveliez','renouvelaient','renouvelaient'],
+ FUT:['renouvellerai','renouvelleras','renouvellera','renouvellera','renouvellera','renouvellerons','renouvellerez','renouvelleront','renouvelleront'],
+ SUB:['renouvelle','renouvelles','renouvelle','renouvelle','renouvelle','renouvelions','renouveliez','renouvellent','renouvellent']},
+{id:148,inf:'soumettre',level:'b2',
+ PR:['soumets','soumets','soumet','soumet','soumet','soumettons','soumettez','soumettent','soumettent'],
+ PC:['ai soumis','as soumis','a soumis','a soumis','a soumis','avons soumis','avez soumis','ont soumis','ont soumis'],
+ IMP:['soumettais','soumettais','soumettait','soumettait','soumettait','soumettions','soumettiez','soumettaient','soumettaient'],
+ FUT:['soumettrai','soumettras','soumettra','soumettra','soumettra','soumettrons','soumettrez','soumettront','soumettront'],
+ SUB:['soumette','soumettes','soumette','soumette','soumette','soumettions','soumettiez','soumettent','soumettent']},
+{id:149,inf:'découvrir',level:'b2',
+ PR:['découvre','découvres','découvre','découvre','découvre','découvrons','découvrez','découvrent','découvrent'],
+ PC:['ai découvert','as découvert','a découvert','a découvert','a découvert','avons découvert','avez découvert','ont découvert','ont découvert'],
+ IMP:['découvrais','découvrais','découvrait','découvrait','découvrait','découvrions','découvriez','découvraient','découvraient'],
+ FUT:['découvrirai','découvriras','découvrira','découvrira','découvrira','découvrirons','découvrirez','découvriront','découvriront'],
+ SUB:['découvre','découvres','découvre','découvre','découvre','découvrions','découvriez','découvrent','découvrent']},
+{id:150,inf:'admirer',level:'b2',
+ PR:['admire','admires','admire','admire','admire','admirons','admirez','admirent','admirent'],
+ PC:['ai admiré','as admiré','a admiré','a admiré','a admiré','avons admiré','avez admiré','ont admiré','ont admiré'],
+ IMP:['admirais','admirais','admirait','admirait','admirait','admirions','admiriez','admiraient','admiraient'],
+ FUT:['admirerai','admireras','admirera','admirera','admirera','admirerons','admirerez','admireront','admireront'],
+ SUB:['admire','admires','admire','admire','admire','admirions','admiriez','admirent','admirent']},
+{id:151,inf:'arranger',level:'b2',
+ PR:['arrange','arranges','arrange','arrange','arrange','arrangeons','arrangez','arrangent','arrangent'],
+ PC:['ai arrangé','as arrangé','a arrangé','a arrangé','a arrangé','avons arrangé','avez arrangé','ont arrangé','ont arrangé'],
+ IMP:['arrangeais','arrangeais','arrangeait','arrangeait','arrangeait','arrangions','arrangiez','arrangeaient','arrangeaient'],
+ FUT:['arrangerai','arrangeras','arrangera','arrangera','arrangera','arrangerons','arrangerez','arrangeront','arrangeront'],
+ SUB:['arrange','arranges','arrange','arrange','arrange','arrangions','arrangiez','arrangent','arrangent']},
+{id:152,inf:'attaquer',level:'b2',
+ PR:['attaque','attaques','attaque','attaque','attaque','attaquons','attaquez','attaquent','attaquent'],
+ PC:['ai attaqué','as attaqué','a attaqué','a attaqué','a attaqué','avons attaqué','avez attaqué','ont attaqué','ont attaqué'],
+ IMP:['attaquais','attaquais','attaquait','attaquait','attaquait','attaquions','attaquiez','attaquaient','attaquaient'],
+ FUT:['attaquerai','attaqueras','attaquera','attaquera','attaquera','attaquerons','attaquerez','attaqueront','attaqueront'],
+ SUB:['attaque','attaques','attaque','attaque','attaque','attaquions','attaquiez','attaquent','attaquent']},
+{id:153,inf:'balancer',level:'b2',
+ PR:['balance','balances','balance','balance','balance','balançons','balancez','balancent','balancent'],
+ PC:['ai balancé','as balancé','a balancé','a balancé','a balancé','avons balancé','avez balancé','ont balancé','ont balancé'],
+ IMP:['balançais','balançais','balançait','balançait','balançait','balancions','balanciez','balançaient','balançaient'],
+ FUT:['balancerai','balanceras','balancera','balancera','balancera','balancerons','balancerez','balanceront','balanceront'],
+ SUB:['balance','balances','balance','balance','balance','balancions','balanciez','balancent','balancent']},
+{id:154,inf:'blâmer',level:'b2',
+ PR:['blâme','blâmes','blâme','blâme','blâme','blâmons','blâmez','blâment','blâment'],
+ PC:['ai blâmé','as blâmé','a blâmé','a blâmé','a blâmé','avons blâmé','avez blâmé','ont blâmé','ont blâmé'],
+ IMP:['blâmais','blâmais','blâmait','blâmait','blâmait','blâmions','blâmiez','blâmaient','blâmaient'],
+ FUT:['blâmerai','blâmeras','blâmera','blâmera','blâmera','blâmerons','blâmerez','blâmeront','blâmeront'],
+ SUB:['blâme','blâmes','blâme','blâme','blâme','blâmions','blâmiez','blâment','blâment']},
+{id:155,inf:'briller',level:'b2',
+ PR:['brille','brilles','brille','brille','brille','brillons','brillez','brillent','brillent'],
+ PC:['ai brillé','as brillé','a brillé','a brillé','a brillé','avons brillé','avez brillé','ont brillé','ont brillé'],
+ IMP:['brillais','brillais','brillait','brillait','brillait','brillions','brilliez','brillaient','brillaient'],
+ FUT:['brillerai','brilleras','brillera','brillera','brillera','brillerons','brillerez','brilleront','brilleront'],
+ SUB:['brille','brilles','brille','brille','brille','brillions','brilliez','brillent','brillent']},
+{id:156,inf:'cacher',level:'b2',
+ PR:['cache','caches','cache','cache','cache','cachons','cachez','cachent','cachent'],
+ PC:['ai caché','as caché','a caché','a caché','a caché','avons caché','avez caché','ont caché','ont caché'],
+ IMP:['cachais','cachais','cachait','cachait','cachait','cachions','cachiez','cachaient','cachaient'],
+ FUT:['cacherai','cacheras','cachera','cachera','cachera','cacherons','cacherez','cacheront','cacheront'],
+ SUB:['cache','caches','cache','cache','cache','cachions','cachiez','cachent','cachent']},
+{id:157,inf:'circuler',level:'b2',
+ PR:['circule','circules','circule','circule','circule','circulons','circulez','circulent','circulent'],
+ PC:['ai circulé','as circulé','a circulé','a circulé','a circulé','avons circulé','avez circulé','ont circulé','ont circulé'],
+ IMP:['circulais','circulais','circulait','circulait','circulait','circulions','circuliez','circulaient','circulaient'],
+ FUT:['circulerai','circuleras','circulera','circulera','circulera','circulerons','circulerez','circuleront','circuleront'],
+ SUB:['circule','circules','circule','circule','circule','circulions','circuliez','circulent','circulent']},
+{id:158,inf:'confirmer',level:'b2',
+ PR:['confirme','confirmes','confirme','confirme','confirme','confirmons','confirmez','confirment','confirment'],
+ PC:['ai confirmé','as confirmé','a confirmé','a confirmé','a confirmé','avons confirmé','avez confirmé','ont confirmé','ont confirmé'],
+ IMP:['confirmais','confirmais','confirmait','confirmait','confirmait','confirmions','confirmiez','confirmaient','confirmaient'],
+ FUT:['confirmerai','confirmeras','confirmera','confirmera','confirmera','confirmerons','confirmerez','confirmeront','confirmeront'],
+ SUB:['confirme','confirmes','confirme','confirme','confirme','confirmions','confirmiez','confirment','confirment']},
+{id:159,inf:'consulter',level:'b2',
+ PR:['consulte','consultes','consulte','consulte','consulte','consultons','consultez','consultent','consultent'],
+ PC:['ai consulté','as consulté','a consulté','a consulté','a consulté','avons consulté','avez consulté','ont consulté','ont consulté'],
+ IMP:['consultais','consultais','consultait','consultait','consultait','consultions','consultiez','consultaient','consultaient'],
+ FUT:['consulterai','consulteras','consultera','consultera','consultera','consulterons','consulterez','consulteront','consulteront'],
+ SUB:['consulte','consultes','consulte','consulte','consulte','consultions','consultiez','consultent','consultent']},
+{id:160,inf:'continuer',level:'b2',
+ PR:['continue','continues','continue','continue','continue','continuons','continuez','continuent','continuent'],
+ PC:['ai continué','as continué','a continué','a continué','a continué','avons continué','avez continué','ont continué','ont continué'],
+ IMP:['continuais','continuais','continuait','continuait','continuait','continuions','continuiez','continuaient','continuaient'],
+ FUT:['continuerai','continueras','continuera','continuera','continuera','continuerons','continuerez','continueront','continueront'],
+ SUB:['continue','continues','continue','continue','continue','continuions','continuiez','continuent','continuent']},
+{id:161,inf:'couper',level:'b2',
+ PR:['coupe','coupes','coupe','coupe','coupe','coupons','coupez','coupent','coupent'],
+ PC:['ai coupé','as coupé','a coupé','a coupé','a coupé','avons coupé','avez coupé','ont coupé','ont coupé'],
+ IMP:['coupais','coupais','coupait','coupait','coupait','coupions','coupiez','coupaient','coupaient'],
+ FUT:['couperai','couperas','coupera','coupera','coupera','couperons','couperez','couperont','couperont'],
+ SUB:['coupe','coupes','coupe','coupe','coupe','coupions','coupiez','coupent','coupent']},
+{id:162,inf:'dépasser',level:'b2',
+ PR:['dépasse','dépasses','dépasse','dépasse','dépasse','dépassons','dépassez','dépassent','dépassent'],
+ PC:['ai dépassé','as dépassé','a dépassé','a dépassé','a dépassé','avons dépassé','avez dépassé','ont dépassé','ont dépassé'],
+ IMP:['dépassais','dépassais','dépassait','dépassait','dépassait','dépassions','dépassiez','dépassaient','dépassaient'],
+ FUT:['dépasserai','dépasseras','dépassera','dépassera','dépassera','dépasserons','dépasserez','dépasseront','dépasseront'],
+ SUB:['dépasse','dépasses','dépasse','dépasse','dépasse','dépassions','dépassiez','dépassent','dépassent']},
+{id:163,inf:'déranger',level:'b2',
+ PR:['dérange','déranges','dérange','dérange','dérange','dérangeons','dérangez','dérangent','dérangent'],
+ PC:['ai dérangé','as dérangé','a dérangé','a dérangé','a dérangé','avons dérangé','avez dérangé','ont dérangé','ont dérangé'],
+ IMP:['dérangeais','dérangeais','dérangeait','dérangeait','dérangeait','dérangions','dérangiez','dérangeaient','dérangeaient'],
+ FUT:['dérangerai','dérangeras','dérangera','dérangera','dérangera','dérangerons','dérangerez','dérangeront','dérangeront'],
+ SUB:['dérange','déranges','dérange','dérange','dérange','dérangions','dérangiez','dérangent','dérangent']},
+{id:164,inf:'dessiner',level:'b2',
+ PR:['dessine','dessines','dessine','dessine','dessine','dessinons','dessinez','dessinent','dessinent'],
+ PC:['ai dessiné','as dessiné','a dessiné','a dessiné','a dessiné','avons dessiné','avez dessiné','ont dessiné','ont dessiné'],
+ IMP:['dessinais','dessinais','dessinait','dessinait','dessinait','dessinions','dessiniez','dessinaient','dessinaient'],
+ FUT:['dessinerai','dessineras','dessinera','dessinera','dessinera','dessinerons','dessinerez','dessineront','dessineront'],
+ SUB:['dessine','dessines','dessine','dessine','dessine','dessinions','dessiniez','dessinent','dessinent']},
+{id:165,inf:'éviter',level:'b2',
+ PR:['évite','évites','évite','évite','évite','évitons','évitez','évitent','évitent'],
+ PC:['ai évité','as évité','a évité','a évité','a évité','avons évité','avez évité','ont évité','ont évité'],
+ IMP:['évitais','évitais','évitait','évitait','évitait','évitions','évitiez','évitaient','évitaient'],
+ FUT:['éviterai','éviteras','évitera','évitera','évitera','éviterons','éviterez','éviteront','éviteront'],
+ SUB:['évite','évites','évite','évite','évite','évitions','évitiez','évitent','évitent']},
+{id:166,inf:'expliquer',level:'b2',
+ PR:['explique','expliques','explique','explique','explique','expliquons','expliquez','expliquent','expliquent'],
+ PC:['ai expliqué','as expliqué','a expliqué','a expliqué','a expliqué','avons expliqué','avez expliqué','ont expliqué','ont expliqué'],
+ IMP:['expliquais','expliquais','expliquait','expliquait','expliquait','expliquions','expliquiez','expliquaient','expliquaient'],
+ FUT:['expliquerai','expliqueras','expliquera','expliquera','expliquera','expliquerons','expliquerez','expliqueront','expliqueront'],
+ SUB:['explique','expliques','explique','explique','explique','expliquions','expliquiez','expliquent','expliquent']},
+{id:167,inf:'gagner',level:'b2',
+ PR:['gagne','gagnes','gagne','gagne','gagne','gagnons','gagnez','gagnent','gagnent'],
+ PC:['ai gagné','as gagné','a gagné','a gagné','a gagné','avons gagné','avez gagné','ont gagné','ont gagné'],
+ IMP:['gagnais','gagnais','gagnait','gagnait','gagnait','gagnions','gagniez','gagnaient','gagnaient'],
+ FUT:['gagnerai','gagneras','gagnera','gagnera','gagnera','gagnerons','gagnerez','gagneront','gagneront'],
+ SUB:['gagne','gagnes','gagne','gagne','gagne','gagnions','gagniez','gagnent','gagnent']},
+{id:168,inf:'glisser',level:'b2',
+ PR:['glisse','glisses','glisse','glisse','glisse','glissons','glissez','glissent','glissent'],
+ PC:['ai glissé','as glissé','a glissé','a glissé','a glissé','avons glissé','avez glissé','ont glissé','ont glissé'],
+ IMP:['glissais','glissais','glissait','glissait','glissait','glissions','glissiez','glissaient','glissaient'],
+ FUT:['glisserai','glisseras','glissera','glissera','glissera','glisserons','glisserez','glisseront','glisseront'],
+ SUB:['glisse','glisses','glisse','glisse','glisse','glissions','glissiez','glissent','glissent']},
+{id:169,inf:'habiter',level:'b2',
+ PR:['habite','habites','habite','habite','habite','habitons','habitez','habitent','habitent'],
+ PC:['ai habité','as habité','a habité','a habité','a habité','avons habité','avez habité','ont habité','ont habité'],
+ IMP:['habitais','habitais','habitait','habitait','habitait','habitions','habitiez','habitaient','habitaient'],
+ FUT:['habiterai','habiteras','habitera','habitera','habitera','habiterons','habiterez','habiteront','habiteront'],
+ SUB:['habite','habites','habite','habite','habite','habitions','habitiez','habitent','habitent']},
+{id:170,inf:'allonger',level:'b2',
+ PR:['allonge','allonges','allonge','allonge','allonge','allongeons','allongez','allongent','allongent'],
+ PC:['ai allongé','as allongé','a allongé','a allongé','a allongé','avons allongé','avez allongé','ont allongé','ont allongé'],
+ IMP:['allongeais','allongeais','allongeait','allongeait','allongeait','allongions','allongiez','allongeaient','allongeaient'],
+ FUT:['allongerai','allongeras','allongera','allongera','allongera','allongerons','allongerez','allongeront','allongeront'],
+ SUB:['allonge','allonges','allonge','allonge','allonge','allongions','allongiez','allongent','allongent']},
+{id:171,inf:'apprécier',level:'b2',
+ PR:['apprécie','apprécies','apprécie','apprécie','apprécie','apprécions','appréciez','apprécient','apprécient'],
+ PC:['ai apprécié','as apprécié','a apprécié','a apprécié','a apprécié','avons apprécié','avez apprécié','ont apprécié','ont apprécié'],
+ IMP:['appréciais','appréciais','appréciait','appréciait','appréciait','appréciions','appréciiez','appréciaient','appréciaient'],
+ FUT:['apprécierai','apprécieras','appréciera','appréciera','appréciera','apprécierons','apprécierez','apprécieront','apprécieront'],
+ SUB:['apprécie','apprécies','apprécie','apprécie','apprécie','appréciions','appréciiez','apprécient','apprécient']},
+{id:172,inf:'assister',level:'b2',
+ PR:['assiste','assistes','assiste','assiste','assiste','assistons','assistez','assistent','assistent'],
+ PC:['ai assisté','as assisté','a assisté','a assisté','a assisté','avons assisté','avez assisté','ont assisté','ont assisté'],
+ IMP:['assistais','assistais','assistait','assistait','assistait','assistions','assistiez','assistaient','assistaient'],
+ FUT:['assisterai','assisteras','assistera','assistera','assistera','assisterons','assisterez','assisteront','assisteront'],
+ SUB:['assiste','assistes','assiste','assiste','assiste','assistions','assistiez','assistent','assistent']},
+{id:173,inf:'calculer',level:'b2',
+ PR:['calcule','calcules','calcule','calcule','calcule','calculons','calculez','calculent','calculent'],
+ PC:['ai calculé','as calculé','a calculé','a calculé','a calculé','avons calculé','avez calculé','ont calculé','ont calculé'],
+ IMP:['calculais','calculais','calculait','calculait','calculait','calculions','calculiez','calculaient','calculaient'],
+ FUT:['calculerai','calculeras','calculera','calculera','calculera','calculerons','calculerez','calculeront','calculeront'],
+ SUB:['calcule','calcules','calcule','calcule','calcule','calculions','calculiez','calculent','calculent']},
+{id:174,inf:'chasser',level:'b2',
+ PR:['chasse','chasses','chasse','chasse','chasse','chassons','chassez','chassent','chassent'],
+ PC:['ai chassé','as chassé','a chassé','a chassé','a chassé','avons chassé','avez chassé','ont chassé','ont chassé'],
+ IMP:['chassais','chassais','chassait','chassait','chassait','chassions','chassiez','chassaient','chassaient'],
+ FUT:['chasserai','chasseras','chassera','chassera','chassera','chasserons','chasserez','chasseront','chasseront'],
+ SUB:['chasse','chasses','chasse','chasse','chasse','chassions','chassiez','chassent','chassent']},
+{id:175,inf:'commander',level:'b2',
+ PR:['commande','commandes','commande','commande','commande','commandons','commandez','commandent','commandent'],
+ PC:['ai commandé','as commandé','a commandé','a commandé','a commandé','avons commandé','avez commandé','ont commandé','ont commandé'],
+ IMP:['commandais','commandais','commandait','commandait','commandait','commandions','commandiez','commandaient','commandaient'],
+ FUT:['commanderai','commanderas','commandera','commandera','commandera','commanderons','commanderez','commanderont','commanderont'],
+ SUB:['commande','commandes','commande','commande','commande','commandions','commandiez','commandent','commandent']},
+{id:176,inf:'compenser',level:'b2',
+ PR:['compense','compenses','compense','compense','compense','compensons','compensez','compensent','compensent'],
+ PC:['ai compensé','as compensé','a compensé','a compensé','a compensé','avons compensé','avez compensé','ont compensé','ont compensé'],
+ IMP:['compensais','compensais','compensait','compensait','compensait','compensions','compensiez','compensaient','compensaient'],
+ FUT:['compenserai','compenseras','compensera','compensera','compensera','compenserons','compenserez','compenseront','compenseront'],
+ SUB:['compense','compenses','compense','compense','compense','compensions','compensiez','compensent','compensent']},
+{id:177,inf:'consister',level:'b2',
+ PR:['consiste','consistes','consiste','consiste','consiste','consistons','consistez','consistent','consistent'],
+ PC:['ai consisté','as consisté','a consisté','a consisté','a consisté','avons consisté','avez consisté','ont consisté','ont consisté'],
+ IMP:['consistais','consistais','consistait','consistait','consistait','consistions','consistiez','consistaient','consistaient'],
+ FUT:['consisterai','consisteras','consistera','consistera','consistera','consisterons','consisterez','consisteront','consisteront'],
+ SUB:['consiste','consistes','consiste','consiste','consiste','consistions','consistiez','consistent','consistent']},
+{id:178,inf:'contacter',level:'b2',
+ PR:['contacte','contactes','contacte','contacte','contacte','contactons','contactez','contactent','contactent'],
+ PC:['ai contacté','as contacté','a contacté','a contacté','a contacté','avons contacté','avez contacté','ont contacté','ont contacté'],
+ IMP:['contactais','contactais','contactait','contactait','contactait','contactions','contactiez','contactaient','contactaient'],
+ FUT:['contacterai','contacteras','contactera','contactera','contactera','contacterons','contacterez','contacteront','contacteront'],
+ SUB:['contacte','contactes','contacte','contacte','contacte','contactions','contactiez','contactent','contactent']},
+{id:179,inf:'danser',level:'b2',
+ PR:['danse','danses','danse','danse','danse','dansons','dansez','dansent','dansent'],
+ PC:['ai dansé','as dansé','a dansé','a dansé','a dansé','avons dansé','avez dansé','ont dansé','ont dansé'],
+ IMP:['dansais','dansais','dansait','dansait','dansait','dansions','dansiez','dansaient','dansaient'],
+ FUT:['danserai','danseras','dansera','dansera','dansera','danserons','danserez','danseront','danseront'],
+ SUB:['danse','danses','danse','danse','danse','dansions','dansiez','dansent','dansent']},
+{id:180,inf:'demander',level:'b2',
+ PR:['demande','demandes','demande','demande','demande','demandons','demandez','demandent','demandent'],
+ PC:['ai demandé','as demandé','a demandé','a demandé','a demandé','avons demandé','avez demandé','ont demandé','ont demandé'],
+ IMP:['demandais','demandais','demandait','demandait','demandait','demandions','demandiez','demandaient','demandaient'],
+ FUT:['demanderai','demanderas','demandera','demandera','demandera','demanderons','demanderez','demanderont','demanderont'],
+ SUB:['demande','demandes','demande','demande','demande','demandions','demandiez','demandent','demandent']},
+{id:181,inf:'chanter',level:'b2',
+ PR:['chante','chantes','chante','chante','chante','chantons','chantez','chantent','chantent'],
+ PC:['ai chanté','as chanté','a chanté','a chanté','a chanté','avons chanté','avez chanté','ont chanté','ont chanté'],
+ IMP:['chantais','chantais','chantait','chantait','chantait','chantions','chantiez','chantaient','chantaient'],
+ FUT:['chanterai','chanteras','chantera','chantera','chantera','chanterons','chanterez','chanteront','chanteront'],
+ SUB:['chante','chantes','chante','chante','chante','chantions','chantiez','chantent','chantent']},
+{id:182,inf:'chercher',level:'b2',
+ PR:['cherche','cherches','cherche','cherche','cherche','cherchons','cherchez','cherchent','cherchent'],
+ PC:['ai cherché','as cherché','a cherché','a cherché','a cherché','avons cherché','avez cherché','ont cherché','ont cherché'],
+ IMP:['cherchais','cherchais','cherchait','cherchait','cherchait','cherchions','cherchiez','cherchaient','cherchaient'],
+ FUT:['chercherai','chercheras','cherchera','cherchera','cherchera','chercherons','chercherez','chercheront','chercheront'],
+ SUB:['cherche','cherches','cherche','cherche','cherche','cherchions','cherchiez','cherchent','cherchent']},
+{id:183,inf:'décider',level:'b2',
+ PR:['décide','décides','décide','décide','décide','décidons','décidez','décident','décident'],
+ PC:['ai décidé','as décidé','a décidé','a décidé','a décidé','avons décidé','avez décidé','ont décidé','ont décidé'],
+ IMP:['décidais','décidais','décidait','décidait','décidait','décidions','décidiez','décidaient','décidaient'],
+ FUT:['déciderai','décideras','décidera','décidera','décidera','déciderons','déciderez','décideront','décideront'],
+ SUB:['décide','décides','décide','décide','décide','décidions','décidiez','décident','décident']},
+{id:184,inf:'accepter',level:'b2',
+ PR:['accepte','acceptes','accepte','accepte','accepte','acceptons','acceptez','acceptent','acceptent'],
+ PC:['ai accepté','as accepté','a accepté','a accepté','a accepté','avons accepté','avez accepté','ont accepté','ont accepté'],
+ IMP:['acceptais','acceptais','acceptait','acceptait','acceptait','acceptions','acceptiez','acceptaient','acceptaient'],
+ FUT:['accepterai','accepteras','acceptera','acceptera','acceptera','accepterons','accepterez','accepteront','accepteront'],
+ SUB:['accepte','acceptes','accepte','accepte','accepte','acceptions','acceptiez','acceptent','acceptent']},
+{id:185,inf:'agir',level:'b2',
+ PR:['agis','agis','agit','agit','agit','agissons','agissez','agissent','agissent'],
+ PC:['ai agi','as agi','a agi','a agi','a agi','avons agi','avez agi','ont agi','ont agi'],
+ IMP:['agissais','agissais','agissait','agissait','agissait','agissions','agissiez','agissaient','agissaient'],
+ FUT:['agirai','agiras','agira','agira','agira','agirons','agirez','agiront','agiront'],
+ SUB:['agisse','agisses','agisse','agisse','agisse','agissions','agissiez','agissent','agissent']},
+{id:186,inf:'aider',level:'b2',
+ PR:['aide','aides','aide','aide','aide','aidons','aidez','aident','aident'],
+ PC:['ai aidé','as aidé','a aidé','a aidé','a aidé','avons aidé','avez aidé','ont aidé','ont aidé'],
+ IMP:['aidais','aidais','aidait','aidait','aidait','aidions','aidiez','aidaient','aidaient'],
+ FUT:['aiderai','aideras','aidera','aidera','aidera','aiderons','aiderez','aideront','aideront'],
+ SUB:['aide','aides','aide','aide','aide','aidions','aidiez','aident','aident']},
+{id:187,inf:'arrêter',level:'b2',
+ PR:['arrête','arrêtes','arrête','arrête','arrête','arrêtons','arrêtez','arrêtent','arrêtent'],
+ PC:['ai arrêté','as arrêté','a arrêté','a arrêté','a arrêté','avons arrêté','avez arrêté','ont arrêté','ont arrêté'],
+ IMP:['arrêtais','arrêtais','arrêtait','arrêtait','arrêtait','arrêtions','arrêtiez','arrêtaient','arrêtaient'],
+ FUT:['arrêterai','arrêteras','arrêtera','arrêtera','arrêtera','arrêterons','arrêterez','arrêteront','arrêteront'],
+ SUB:['arrête','arrêtes','arrête','arrête','arrête','arrêtions','arrêtiez','arrêtent','arrêtent']},
+{id:188,inf:'bâtir',level:'b2',
+ PR:['bâtis','bâtis','bâtit','bâtit','bâtit','bâtissons','bâtissez','bâtissent','bâtissent'],
+ PC:['ai bâti','as bâti','a bâti','a bâti','a bâti','avons bâti','avez bâti','ont bâti','ont bâti'],
+ IMP:['bâtissais','bâtissais','bâtissait','bâtissait','bâtissait','bâtissions','bâtissiez','bâtissaient','bâtissaient'],
+ FUT:['bâtirai','bâtiras','bâtira','bâtira','bâtira','bâtirons','bâtirez','bâtiront','bâtiront'],
+ SUB:['bâtisse','bâtisses','bâtisse','bâtisse','bâtisse','bâtissions','bâtissiez','bâtissent','bâtissent']},
+{id:189,inf:'bavarder',level:'b2',
+ PR:['bavarde','bavardes','bavarde','bavarde','bavarde','bavardons','bavardez','bavardent','bavardent'],
+ PC:['ai bavardé','as bavardé','a bavardé','a bavardé','a bavardé','avons bavardé','avez bavardé','ont bavardé','ont bavardé'],
+ IMP:['bavardais','bavardais','bavardait','bavardait','bavardait','bavardions','bavardiez','bavardaient','bavardaient'],
+ FUT:['bavarderai','bavarderas','bavardera','bavardera','bavardera','bavarderons','bavarderez','bavarderont','bavarderont'],
+ SUB:['bavarde','bavardes','bavarde','bavarde','bavarde','bavardions','bavardiez','bavardent','bavardent']},
+{id:190,inf:'blesser',level:'b2',
+ PR:['blesse','blesses','blesse','blesse','blesse','blessons','blessez','blessent','blessent'],
+ PC:['ai blessé','as blessé','a blessé','a blessé','a blessé','avons blessé','avez blessé','ont blessé','ont blessé'],
+ IMP:['blessais','blessais','blessait','blessait','blessait','blessions','blessiez','blessaient','blessaient'],
+ FUT:['blesserai','blesseras','blessera','blessera','blessera','blesserons','blesserez','blesseront','blesseront'],
+ SUB:['blesse','blesses','blesse','blesse','blesse','blessions','blessiez','blessent','blessent']},
+{id:191,inf:'brûler',level:'b2',
+ PR:['brûle','brûles','brûle','brûle','brûle','brûlons','brûlez','brûlent','brûlent'],
+ PC:['ai brûlé','as brûlé','a brûlé','a brûlé','a brûlé','avons brûlé','avez brûlé','ont brûlé','ont brûlé'],
+ IMP:['brûlais','brûlais','brûlait','brûlait','brûlait','brûlions','brûliez','brûlaient','brûlaient'],
+ FUT:['brûlerai','brûleras','brûlera','brûlera','brûlera','brûlerons','brûlerez','brûleront','brûleront'],
+ SUB:['brûle','brûles','brûle','brûle','brûle','brûlions','brûliez','brûlent','brûlent']},
+{id:192,inf:'cesser',level:'b2',
+ PR:['cesse','cesses','cesse','cesse','cesse','cessons','cessez','cessent','cessent'],
+ PC:['ai cessé','as cessé','a cessé','a cessé','a cessé','avons cessé','avez cessé','ont cessé','ont cessé'],
+ IMP:['cessais','cessais','cessait','cessait','cessait','cessions','cessiez','cessaient','cessaient'],
+ FUT:['cesserai','cesseras','cessera','cessera','cessera','cesserons','cesserez','cesseront','cesseront'],
+ SUB:['cesse','cesses','cesse','cesse','cesse','cessions','cessiez','cessent','cessent']},
+{id:193,inf:'coller',level:'b2',
+ PR:['colle','colles','colle','colle','colle','collons','collez','collent','collent'],
+ PC:['ai collé','as collé','a collé','a collé','a collé','avons collé','avez collé','ont collé','ont collé'],
+ IMP:['collais','collais','collait','collait','collait','collions','colliez','collaient','collaient'],
+ FUT:['collerai','colleras','collera','collera','collera','collerons','collerez','colleront','colleront'],
+ SUB:['colle','colles','colle','colle','colle','collions','colliez','collent','collent']},
+{id:194,inf:'compléter',level:'b2',
+ PR:['complète','complètes','complète','complète','complète','complétons','complétez','complètent','complètent'],
+ PC:['ai complété','as complété','a complété','a complété','a complété','avons complété','avez complété','ont complété','ont complété'],
+ IMP:['complétais','complétais','complétait','complétait','complétait','complétions','complétiez','complétaient','complétaient'],
+ FUT:['compléterai','compléteras','complétera','complétera','complétera','compléterons','compléterez','compléteront','compléteront'],
+ SUB:['complète','complètes','complète','complète','complète','complétions','complétiez','complètent','complètent']},
+{id:195,inf:'comporter',level:'b2',
+ PR:['comporte','comportes','comporte','comporte','comporte','comportons','comportez','comportent','comportent'],
+ PC:['ai comporté','as comporté','a comporté','a comporté','a comporté','avons comporté','avez comporté','ont comporté','ont comporté'],
+ IMP:['comportais','comportais','comportait','comportait','comportait','comportions','comportiez','comportaient','comportaient'],
+ FUT:['comporterai','comporteras','comportera','comportera','comportera','comporterons','comporterez','comporteront','comporteront'],
+ SUB:['comporte','comportes','comporte','comporte','comporte','comportions','comportiez','comportent','comportent']},
+{id:196,inf:'compter',level:'b2',
+ PR:['compte','comptes','compte','compte','compte','comptons','comptez','comptent','comptent'],
+ PC:['ai compté','as compté','a compté','a compté','a compté','avons compté','avez compté','ont compté','ont compté'],
+ IMP:['comptais','comptais','comptait','comptait','comptait','comptions','comptiez','comptaient','comptaient'],
+ FUT:['compterai','compteras','comptera','comptera','comptera','compterons','compterez','compteront','compteront'],
+ SUB:['compte','comptes','compte','compte','compte','comptions','comptiez','comptent','comptent']},
+{id:197,inf:'concerner',level:'b2',
+ PR:['concerne','concernes','concerne','concerne','concerne','concernons','concernez','concernent','concernent'],
+ PC:['ai concerné','as concerné','a concerné','a concerné','a concerné','avons concerné','avez concerné','ont concerné','ont concerné'],
+ IMP:['concernais','concernais','concernait','concernait','concernait','concernions','concerniez','concernaient','concernaient'],
+ FUT:['concernerai','concerneras','concernera','concernera','concernera','concernerons','concernerez','concerneront','concerneront'],
+ SUB:['concerne','concernes','concerne','concerne','concerne','concernions','concerniez','concernent','concernent']},
+{id:198,inf:'conseiller',level:'b2',
+ PR:['conseille','conseilles','conseille','conseille','conseille','conseillons','conseillez','conseillent','conseillent'],
+ PC:['ai conseillé','as conseillé','a conseillé','a conseillé','a conseillé','avons conseillé','avez conseillé','ont conseillé','ont conseillé'],
+ IMP:['conseillais','conseillais','conseillait','conseillait','conseillait','conseillions','conseilliez','conseillaient','conseillaient'],
+ FUT:['conseillerai','conseilleras','conseillera','conseillera','conseillera','conseillerons','conseillerez','conseilleront','conseilleront'],
+ SUB:['conseille','conseilles','conseille','conseille','conseille','conseillions','conseilliez','conseillent','conseillent']},
+{id:199,inf:'durer',level:'b2',
+ PR:['dure','dures','dure','dure','dure','durons','durez','durent','durent'],
+ PC:['ai duré','as duré','a duré','a duré','a duré','avons duré','avez duré','ont duré','ont duré'],
+ IMP:['durais','durais','durait','durait','durait','durions','duriez','duraient','duraient'],
+ FUT:['durerai','dureras','durera','durera','durera','durerons','durerez','dureront','dureront'],
+ SUB:['dure','dures','dure','dure','dure','durions','duriez','durent','durent']},
+{id:200,inf:'exister',level:'b2',
+ PR:['existe','existes','existe','existe','existe','existons','existez','existent','existent'],
+ PC:['ai existé','as existé','a existé','a existé','a existé','avons existé','avez existé','ont existé','ont existé'],
+ IMP:['existais','existais','existait','existait','existait','existions','existiez','existaient','existaient'],
+ FUT:['existerai','existeras','existera','existera','existera','existerons','existerez','existeront','existeront'],
+ SUB:['existe','existes','existe','existe','existe','existions','existiez','existent','existent']},
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentLevel = 'common';
+let selectedVerbs = new Set();
+let selectedTenses = new Set(['PR','PC','IMP','FUT','SUB']);
+let queue = [];
+let qIdx = 0;
+let scoreOk = 0, scoreErr = 0;
+let sessionLog = [];
+// Safe localStorage wrapper for iframe environments
+const safeStorage = {
+  get(key, def=''){try{return localStorage.getItem(key)||def;}catch(e){return def;}},
+  set(key,val){try{localStorage.setItem(key,val);}catch(e){}},
+};
+let masteredSet = new Set(JSON.parse(safeStorage.get('conj_mastered','[]')));
+let activeInput = null;
+
+// ─────────────────────────────────────────────
+// SETUP
+// ─────────────────────────────────────────────
+function getLevelVerbs(lvl){
+  if(lvl==='common') return VERBS.filter(v=>v.level==='common');
+  if(lvl==='b1') return VERBS.filter(v=>v.level==='b1');
+  if(lvl==='b2') return VERBS.filter(v=>v.level==='b2');
+  return VERBS;
+}
+
+function setLevel(lvl){
+  currentLevel = lvl;
+  selectedVerbs.clear();
+  document.querySelectorAll('.level-tab').forEach(t=>t.classList.remove('active'));
+  const tab = document.getElementById('ltab-'+lvl);
+  if(tab) tab.classList.add('active');
+  renderVerbGrid();
+  updateSelCount();
+}
+
+function renderVerbGrid(){
+  const grid = document.getElementById('verbGrid');
+  const verbs = getLevelVerbs(currentLevel);
+  grid.innerHTML = verbs.map(v=>{
+    const sel = selectedVerbs.has(v.id) ? ' selected':'';
+    const mas = masteredSet.has(v.id) ? ' mastered':'';
+    return `<div class="verb-pill${sel}${mas}" data-id="${v.id}" onclick="toggleVerb(${v.id})">${v.inf}${masteredSet.has(v.id)?'✓':''}</div>`;
+  }).join('');
+}
+
+function toggleVerb(id){
+  if(selectedVerbs.has(id)) selectedVerbs.delete(id);
+  else selectedVerbs.add(id);
+  renderVerbGrid();
+  updateSelCount();
+}
+
+function selectAll(){
+  getLevelVerbs(currentLevel).forEach(v=>selectedVerbs.add(v.id));
+  renderVerbGrid(); updateSelCount();
+}
+function selectNone(){
+  selectedVerbs.clear(); renderVerbGrid(); updateSelCount();
+}
+function selectRandom(n){
+  const pool = getLevelVerbs(currentLevel);
+  const shuffled = [...pool].sort(()=>Math.random()-.5).slice(0,n);
+  selectedVerbs.clear();
+  shuffled.forEach(v=>selectedVerbs.add(v.id));
+  renderVerbGrid(); updateSelCount();
+}
+function updateSelCount(){
+  document.getElementById('selCount').textContent = selectedVerbs.size + ' sélectionné(s)';
+}
+
+// Tense checks — use mousedown to prevent label+checkbox double-fire
+document.querySelectorAll('.tense-check').forEach(el=>{
+  el.addEventListener('click', e=>{
+    e.preventDefault(); // prevent checkbox default so we control state manually
+    const t = el.dataset.tense;
+    el.classList.toggle('on');
+    const inp = el.querySelector('input');
+    if(inp) inp.checked = el.classList.contains('on');
+    if(el.classList.contains('on')) selectedTenses.add(t);
+    else selectedTenses.delete(t);
+  });
+});
+
+function startDrill(){
+  const err = document.getElementById('setupError');
+  if(selectedVerbs.size===0){err.textContent='⚠ Sélectionnez au moins un verbe.';err.style.display='block';return;}
+  if(selectedTenses.size===0){err.textContent='⚠ Sélectionnez au moins un temps.';err.style.display='block';return;}
+  err.style.display='none';
+
+  // Build queue
+  const shuffle = document.getElementById('chkShuffle').checked;
+  queue = [];
+  selectedVerbs.forEach(id=>{
+    const verb = VERBS.find(v=>v.id===id);
+    if(!verb) return;
+    selectedTenses.forEach(tense=>{
+      queue.push({verb, tense});
+    });
+  });
+  if(shuffle) queue.sort(()=>Math.random()-.5);
+  qIdx = 0; scoreOk = 0; scoreErr = 0; sessionLog = [];
+
+  document.getElementById('setup').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('drill').style.display='block';
+  document.getElementById('sessionLog').innerHTML='<div class="muted" style="padding:4px">Les résultats apparaîtront ici…</div>';
+
+  renderCard();
+  updateScoreBar();
+}
+
+// ─────────────────────────────────────────────
+// DRILL
+// ─────────────────────────────────────────────
+function renderCard(){
+  if(qIdx >= queue.length){showResults();return;}
+  answersRevealed = false;
+  const {verb, tense} = queue[qIdx];
+  document.getElementById('drillVerb').textContent = verb.inf;
+  document.getElementById('drillTense').textContent = TENSE_LABELS[tense];
+  document.getElementById('drillProg').textContent = (qIdx+1)+' / '+queue.length;
+  document.getElementById('cardFeedback').style.display='none';
+
+  const conjugations = verb[tense];
+  const grid = document.getElementById('pronounGrid');
+  grid.innerHTML = PRONOUNS.map((pr,i)=>`
+    <div class="pronoun-row" id="row-${i}">
+      <span class="pronoun-label">${pr}</span>
+      <div style="flex:1">
+        <input class="conj-input" id="inp-${i}" placeholder="…" autocomplete="off" autocorrect="off" spellcheck="false"
+          onkeydown="handleKey(event,${i})" onfocus="activeInput=this">
+        <div class="conj-answer" id="ans-${i}">${conjugations[i]}</div>
+      </div>
+    </div>`).join('');
+
+  // Focus first input
+  setTimeout(()=>{ const f=document.getElementById('inp-0'); if(f) f.focus(); },50);
+}
+
+function handleKey(e, idx){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const next = document.getElementById('inp-'+(idx+1));
+    if(next) next.focus();
+    else checkAnswers();
+  }
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const next = document.getElementById('inp-'+(idx+1));
+    if(next) next.focus();
+  }
+}
+
+function insertAccent(ch){
+  if(!activeInput) return;
+  const s = activeInput.selectionStart, e = activeInput.selectionEnd;
+  activeInput.value = activeInput.value.slice(0,s)+ch+activeInput.value.slice(e);
+  activeInput.selectionStart = activeInput.selectionEnd = s+ch.length;
+  activeInput.focus();
+}
+
+function normalize(s){ return s.trim().toLowerCase().replace(/\s+/g,' '); }
+
+function checkAnswers(){
+  const {verb, tense} = queue[qIdx];
+  const conjugations = verb[tense];
+  let allOk = true;
+  let wrongCount = 0;
+
+  PRONOUNS.forEach((pr,i)=>{
+    const inp = document.getElementById('inp-'+i);
+    const ans = document.getElementById('ans-'+i);
+    const userVal = inp.value;
+
+    // Accept either full form or short variant stripped of (e)/(s) etc
+    const correct = normalize(conjugations[i]);
+    const user = normalize(userVal);
+    const isOk = user === correct || matchVariant(user, correct);
+
+    inp.classList.remove('correct','wrong','revealed');
+    ans.classList.remove('show');
+    if(userVal.trim()==='') {
+      // blank — show hints if option on
+      if(document.getElementById('chkShowHints').checked){
+        inp.classList.add('revealed');
+        inp.value = conjugations[i];
+        ans.classList.add('show');
+      }
+      allOk = false; wrongCount++;
+    } else if(isOk){
+      inp.classList.add('correct');
+    } else {
+      inp.classList.add('wrong');
+      ans.classList.add('show');
+      allOk = false; wrongCount++;
+    }
+  });
+
+  const fb = document.getElementById('cardFeedback');
+  if(allOk){
+    fb.style.display='block';
+    fb.style.background='#dcfce7'; fb.style.color='#15803d'; fb.style.border='1px solid #86efac';
+    fb.textContent='✅ Parfait ! Toutes les formes sont correctes.';
+    scoreOk++;
+    logEntry(verb.inf, tense, true);
+    markMastered(verb.id);
+  } else {
+    fb.style.display='block';
+    fb.style.background='#fee2e2'; fb.style.color='#dc2626'; fb.style.border='1px solid #fca5a5';
+    fb.textContent=`❌ ${wrongCount} erreur(s). Les corrections s'affichent en orange.`;
+    scoreErr++;
+    logEntry(verb.inf, tense, false);
+  }
+  updateScoreBar();
+}
+
+function matchVariant(user, correct){
+  // strip (e), (s), (e)s variations so "suis allé(e)" matches "suis allée" or "suis allé"
+  const stripped = correct.replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').trim();
+  return user === stripped;
+}
+
+let answersRevealed = false;
+function revealAll(){
+  const {verb, tense} = queue[qIdx];
+  const conjugations = verb[tense];
+  const fb = document.getElementById('cardFeedback');
+  if(answersRevealed){
+    answersRevealed = false;
+    PRONOUNS.forEach((pr,i)=>{
+      const inp = document.getElementById('inp-'+i);
+      const ans = document.getElementById('ans-'+i);
+      if(inp.classList.contains('revealed')){ inp.classList.remove('revealed'); inp.value=''; }
+      ans.classList.remove('show');
+    });
+    fb.style.display='none';
+    return;
+  }
+  answersRevealed = true;
+  PRONOUNS.forEach((pr,i)=>{
+    const inp = document.getElementById('inp-'+i);
+    const ans = document.getElementById('ans-'+i);
+    inp.classList.remove('correct','wrong');
+    inp.classList.add('revealed');
+    inp.value = conjugations[i];
+    ans.classList.add('show');
+  });
+  fb.style.display='block';
+  fb.style.background='#fef3c7'; fb.style.color='#92400e'; fb.style.border='1px solid #fcd34d';
+  fb.textContent='👁 Réponses affichées — cliquez à nouveau pour masquer.';
+  scoreErr++;
+  logEntry(verb.inf, tense, false);
+  updateScoreBar();
+}
+
+function nextCard(){
+  qIdx++;
+  renderCard();
+}
+
+function logEntry(verbInf, tense, ok){
+  sessionLog.push({verbInf, tense, ok});
+  const logEl = document.getElementById('sessionLog');
+  const item = document.createElement('div');
+  item.className = 'log-item ' + (ok?'ok':'err');
+  item.textContent = (ok?'✅':'❌') + ' ' + verbInf + ' — ' + TENSE_LABELS[tense];
+  logEl.prepend(item);
+}
+
+function updateScoreBar(){
+  const total = scoreOk + scoreErr;
+  const pct = total > 0 ? Math.round(scoreOk/total*100) : 0;
+  document.getElementById('scoreOk').textContent = '✅ ' + scoreOk;
+  document.getElementById('scoreErr').textContent = '❌ ' + scoreErr;
+  document.getElementById('scoreBar').style.width = pct + '%';
+}
+
+function endDrill(){ showResults(); }
+
+function markMastered(id){
+  masteredSet.add(id);
+  safeStorage.set('conj_mastered', JSON.stringify([...masteredSet]));
+}
+
+// ─────────────────────────────────────────────
+// RESULTS
+// ─────────────────────────────────────────────
+function showResults(){
+  document.getElementById('drill').style.display='none';
+  document.getElementById('results').style.display='block';
+
+  const total = scoreOk + scoreErr;
+  const pct = total > 0 ? Math.round(scoreOk/total*100) : 0;
+  const emoji = pct>=90?'🏆':pct>=70?'🎉':pct>=50?'🙂':'💪';
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultScore').textContent = scoreOk + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('resultSub').textContent = pct>=90?'Excellent ! Maîtrise parfaite.':pct>=70?'Très bien ! Continuez comme ça.':pct>=50?'Bien essayé. Pratiquez encore ces verbes.':'Ne vous découragez pas — la répétition est la clé !';
+
+  const logEl = document.getElementById('resultLog');
+  logEl.innerHTML = sessionLog.map(e=>`<div class="log-item ${e.ok?'ok':'err'}">${e.ok?'✅':'❌'} <strong>${e.verbInf}</strong> — ${TENSE_LABELS[e.tense]}</div>`).join('');
+}
+
+function restartDrill(){
+  document.getElementById('results').style.display='none';
+  qIdx = 0; scoreOk = 0; scoreErr = 0; sessionLog = [];
+  if(document.getElementById('chkShuffle').checked) queue.sort(()=>Math.random()-.5);
+  document.getElementById('drill').style.display='block';
+  document.getElementById('sessionLog').innerHTML='<div class="muted" style="padding:4px">Les résultats apparaîtront ici…</div>';
+  renderCard(); updateScoreBar();
+}
+
+function showSetup(){
+  document.getElementById('results').style.display='none';
+  document.getElementById('drill').style.display='none';
+  document.getElementById('setup').style.display='block';
+  renderVerbGrid(); updateSelCount();
+}
+
+// ─────────────────────────────────────────────
+// DARK MODE (sync with parent if possible)
+// ─────────────────────────────────────────────
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  safeStorage.set('conj_dark', document.body.classList.contains('dark')?'1':'0');
+}
+if(safeStorage.get('conj_dark')==='1') document.body.classList.add('dark');
+// Try to inherit parent dark state
+try{
+  if(window.parent && window.parent.document.body.classList.contains('dark'))
+    document.body.classList.add('dark');
+} catch(e){}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderVerbGrid();
+updateSelCount();
+</script>
+</body>
+</html>
