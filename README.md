@@ -51,3 +51,6 @@ To the TCF study group members who use and test the application.
 ---
 
 **Good luck with your TCF preparation!** 🇫🇷
+
+Keywords
+TCF writing simulator, TCF Keyboard, TCF writing practice etc
