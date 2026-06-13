@@ -25,16 +25,14 @@ function onFontSlider(){const v=document.getElementById('fontSlider').value;docu
 function wordCount(){return wcOf(editor.value);}
 function updateWordCounter(){const w=wordCount();const el=document.getElementById('wordCounter');const L=[[60,120],[120,150],[0,180]];const[mn,mx]=L[(activeTask||1)-1];let c='';if(w>=mn&&w<=mx)c='ok';else if(w>mx)c='over';else if(w>=mn-20)c='warn';el.textContent=w+' mots'+(w>=mn&&w<=mx?' ✓':'');el.className='word-counter '+c;const f=document.getElementById('focusWC');if(f)f.textContent=w+' mots';}
 setInterval(()=>{saveDraft();const n=new Date();const l=document.getElementById('autosaveLabel');if(l)l.textContent='Sauvegardé à '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');if(wordCount()>=50)bumpStreak();},30000);
-const accents=['é','è','ê','ë','à','â','ä','ç','ù','û','ü','î','ï','ô','œ','æ','É','È','Ê','Ë','À','Â','Ç','Ù','Û','Î','Ï','Ô','Œ','Æ','«','»','—','’'];
-let accentPage=0,PAGE=12;
-function renderAccentPage(){document.getElementById('accentBar').innerHTML=accents.slice(accentPage*PAGE,accentPage*PAGE+PAGE).map(a=>`<button onclick="insertAccent('${a==='\u2019'?'\\u2019':a}')">${a}</button>`).join('');}
-function updateAccentDockVisibility(){const toggleBtn=document.getElementById('accentToggleBtn');if(toggleBtn)toggleBtn.style.display='flex';}
-function toggleAccentDock(){const dock=document.querySelector('.accent-dock');const btn=document.getElementById('accentToggleBtn');if(!dock||!btn)return;dock.classList.toggle('open');btn.classList.toggle('active');}
-function nextAccentPage(){accentPage=(accentPage+1)%Math.ceil(accents.length/PAGE);renderAccentPage();}
-function prevAccentPage(){accentPage=(accentPage-1+Math.ceil(accents.length/PAGE))%Math.ceil(accents.length/PAGE);renderAccentPage();}
-function insertAccent(ch){if(ch==='\\u2019')ch='’';const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
+const accentPages=[['é','è','ê','ë','à','â','ç','ù','û'],['ä','ö','ü','î','ï','ô','æ','œ','«'],['»','—',''','―','‐','–','…','‹','›'],['É','È','Ê','Ë','À','Â','Ç','Ù','Û'],['Ä','Ö','Ü','Î','Ï','Ô','Æ','Œ','‚']];
+let accentCurrentPage=0;
+function renderAccentPage(){const dock=document.querySelector('.accent-dock');if(!dock)return;const page=accentPages[accentCurrentPage]||[];const pageLabel=accentCurrentPage<3?'Minuscules':'MAJUSCULES';document.querySelector('.accent-page-label').textContent=`${pageLabel} (${accentCurrentPage+1}/${accentPages.length})`;const accentBar=document.getElementById('accentBar');accentBar.innerHTML=page.map(a=>`<button onclick="insertAccent('${a}')" title="${a}">${a}</button>`).join('');}
+function updateAccentDockVisibility(){}
+function nextAccentPage(){accentCurrentPage=(accentCurrentPage+1)%accentPages.length;renderAccentPage();}
+function prevAccentPage(){accentCurrentPage=(accentCurrentPage-1+accentPages.length)%accentPages.length;renderAccentPage();}
+function insertAccent(ch){const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
 renderAccentPage();
-let timerRemain=parseInt(localStorage.getItem('tcf_timer')||'3600'),timerTotal=timerRemain,timerInterval=null;
 function onSlider(){document.getElementById('sliderVal').textContent=document.getElementById('timerSlider').value+' min';}
 function startTimer(){timerTotal=parseInt(document.getElementById('timerSlider').value)*60;timerRemain=timerTotal;clearInterval(timerInterval);unfreezeSession();runTimer();}
 function runTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{if(timerRemain>0){timerRemain--;drawTimer();}else{clearInterval(timerInterval);freezeSession();}},1000);}
