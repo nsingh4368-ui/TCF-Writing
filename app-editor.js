@@ -27,12 +27,14 @@ function updateWordCounter(){const w=wordCount();const el=document.getElementByI
 setInterval(()=>{saveDraft();const n=new Date();const l=document.getElementById('autosaveLabel');if(l)l.textContent='Sauvegardé à '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');if(wordCount()>=50)bumpStreak();},30000);
 const accentPages=[['é','è','ê','ë','à','â','ç','ù','û'],['ä','ö','ü','î','ï','ô','æ','œ','«'],['»','—',''','―','‐','–','…','‹','›'],['É','È','Ê','Ë','À','Â','Ç','Ù','Û'],['Ä','Ö','Ü','Î','Ï','Ô','Æ','Œ','‚']];
 let accentCurrentPage=0;
-function renderAccentPage(){const dock=document.querySelector('.accent-dock');if(!dock)return;const page=accentPages[accentCurrentPage]||[];const pageLabel=accentCurrentPage<3?'Minuscules':'MAJUSCULES';document.querySelector('.accent-page-label').textContent=`${pageLabel} (${accentCurrentPage+1}/${accentPages.length})`;const accentBar=document.getElementById('accentBar');accentBar.innerHTML=page.map(a=>`<button onclick="insertAccent('${a}')" title="${a}">${a}</button>`).join('');}
-function updateAccentDockVisibility(){}
+function renderAccentPage(){const page=accentPages[accentCurrentPage]||[];const pageLabel=accentCurrentPage<3?'Minuscules':'MAJUSCULES';const labelEl=document.getElementById('accentPageLabel');if(labelEl)labelEl.textContent=`${pageLabel} (${accentCurrentPage+1}/${accentPages.length})`;const infoEl=document.getElementById('accentPageInfo');if(infoEl)infoEl.textContent=`${accentCurrentPage+1}/${accentPages.length}`;const accentBar=document.getElementById('accentBar');if(accentBar)accentBar.innerHTML=page.map(a=>`<button onclick="insertAccent('${a}')" title="${a}">${a}</button>`).join('');}
 function nextAccentPage(){accentCurrentPage=(accentCurrentPage+1)%accentPages.length;renderAccentPage();}
 function prevAccentPage(){accentCurrentPage=(accentCurrentPage-1+accentPages.length)%accentPages.length;renderAccentPage();}
-function insertAccent(ch){const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
-renderAccentPage();
+function insertAccent(ch){const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;if(!t)return;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
+function updateAccentDockVisibility(){}
+function toggleAccentDock(){}
+setTimeout(()=>renderAccentPage(),100);
+
 function onSlider(){document.getElementById('sliderVal').textContent=document.getElementById('timerSlider').value+' min';}
 function startTimer(){timerTotal=parseInt(document.getElementById('timerSlider').value)*60;timerRemain=timerTotal;clearInterval(timerInterval);unfreezeSession();runTimer();}
 function runTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{if(timerRemain>0){timerRemain--;drawTimer();}else{clearInterval(timerInterval);freezeSession();}},1000);}
