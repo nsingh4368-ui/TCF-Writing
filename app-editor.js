@@ -28,7 +28,7 @@ setInterval(()=>{saveDraft();const n=new Date();const l=document.getElementById(
 const accents=['é','è','ê','ë','à','â','ä','ç','ù','û','ü','î','ï','ô','œ','æ','É','È','Ê','Ë','À','Â','Ç','Ù','Û','Î','Ï','Ô','Œ','Æ','«','»','—','’'];
 let accentPage=0,PAGE=12;
 function renderAccentPage(){document.getElementById('accentBar').innerHTML=accents.slice(accentPage*PAGE,accentPage*PAGE+PAGE).map(a=>`<button onclick="insertAccent('${a==='\u2019'?'\\u2019':a}')">${a}</button>`).join('');}
-function updateAccentDockVisibility(){const dock=document.querySelector('.accent-dock');if(!dock)return;const examActive=document.body.classList.contains('exam-active');dock.style.display=(focusMode||examActive)?'':'none';}
+function updateAccentDockVisibility(){const dock=document.querySelector('.accent-dock');if(!dock)return;const examActive=document.body.classList.contains('exam-active');dock.style.display=(focusMode||examActive)?'flex':'none';if(focusMode||examActive){const isMobile=window.innerWidth<=768;if(isMobile)dock.classList.add('open');}}
 function nextAccentPage(){accentPage=(accentPage+1)%Math.ceil(accents.length/PAGE);renderAccentPage();}
 function prevAccentPage(){accentPage=(accentPage-1+Math.ceil(accents.length/PAGE))%Math.ceil(accents.length/PAGE);renderAccentPage();}
 function insertAccent(ch){if(ch==='\\u2019')ch='’';const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
@@ -109,7 +109,7 @@ out+='=== RÉPONSE ===\n'+reponse+'\n';
 dl(new Blob([out],{type:'text/plain;charset=utf-8'}),'TCF_EE.txt');
 }
 function setFocus(on){focusMode=!!on&&!!combos.length;document.body.classList.toggle('focus-mode',focusMode);updateFocusBar();updateAccentDockVisibility();}
-function toggleFocusMode(){if(!combos.length){loadSujets();if(!combos.length){alert('Chargez un sujet d\'abord.');return;}}setFocus(!focusMode);if(focusMode)editor.focus();}
+function toggleFocusMode(){if(!focusMode){if(!combos.length){loadSujets();if(!combos.length){alert('Chargez un sujet d\'abord.');return;}}const studioView=document.getElementById('view-studio');if(!studioView||studioView.style.display==='none'){showView('studio');setTimeout(()=>setFocus(true),300);return;}setFocus(true);editor.focus();}else{setFocus(false);}}
 function getFocusTopicLabel(){if(!combos.length)return'Mode focus';const c=combos[activeCombIdx];const month=getMonth(activeMonthSlug||document.getElementById('monthSel').value).label;return month+' · C'+c.num+' · Tâche '+activeTask;}
 function getFocusDoneKey(task){if(!combos.length||!activeMonthSlug)return null;const c=combos[activeCombIdx];return 'tcf_focus_done_'+activeMonthSlug+'_c'+(c.num||activeCombIdx)+'_t'+task;}
 function markFocusDone(task){const k=getFocusDoneKey(task);if(k)localStorage.setItem(k,'1');}
@@ -451,3 +451,7 @@ w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+file
 </body></html>`);
 w.document.close();
 }
+
+/* ── Mobile Accent Dock Drawer Handler ── */
+document.addEventListener('DOMContentLoaded',()=>{const dock=document.querySelector('.accent-dock');if(!dock)return;dock.addEventListener('touchstart',e=>{if(e.target.closest('.accent-nav')||e.target.closest('.accent-page button'))return;const touch=e.touches[0];const startY=touch.clientY;let isDragging=false;const handleMove=(moveEvent)=>{const moveTouch=moveEvent.touches[0];const diff=moveTouch.clientY-startY;if(Math.abs(diff)>5)isDragging=true;if(isDragging){dock.style.transition='none';const newBottom=Math.min(0,Math.max(-120,-(120-diff)));dock.style.bottom=newBottom+'px';}};const handleEnd=()=>{dock.style.transition='bottom .25s ease';const isOpen=dock.classList.contains('open');const bottom=parseInt(dock.style.bottom||'0');const shouldOpen=bottom>-60;if(isOpen&&!shouldOpen){dock.classList.remove('open');dock.style.bottom='-120px';}else if(!isOpen&&shouldOpen){dock.classList.add('open');dock.style.bottom='0';}else if(isOpen){dock.style.bottom='0';}else{dock.style.bottom='-120px';}document.removeEventListener('touchmove',handleMove);document.removeEventListener('touchend',handleEnd);isDragging=false;};document.addEventListener('touchmove',handleMove,{passive:true});document.addEventListener('touchend',handleEnd);});dock.addEventListener('click',()=>{if(window.innerWidth<=768){dock.classList.toggle('open');if(dock.classList.contains('open')){dock.style.bottom='0';}else{dock.style.bottom='-120px';}}});});
+

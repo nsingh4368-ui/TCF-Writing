@@ -15,9 +15,10 @@ let customConns=LS('tcf_custom_conns',[]);
 let readingDocs=LS('tcf_reading_docs',[]);
 let activeReadingDoc=0;
 let combos=[],activeCombIdx=0,activeTask=1,activeMonthSlug='',focusMode=false,pendingProduction=null;
-const views=['studio','browse','productions','connectors','vocab','errors','reading','listening','reading_mock','conjugation','favorites','revisit','history','stats','profile'];
+const views=['welcome','studio','browse','productions','connectors','vocab','errors','reading','listening','reading_mock','conjugation','favorites','revisit','history','stats','profile'];
 function showView(v){closeMobileSidebar();views.forEach(x=>{const e=document.getElementById('view-'+x);if(e)e.style.display=(x===v?'':'none');const n=document.getElementById('nav-'+x);if(n)n.classList.toggle('active',x===v);});
-const dock=document.querySelector('.accent-dock');if(dock&&!document.body.classList.contains('exam-active')){dock.style.display=(v==='studio'||v==='browse'||v==='vocab'||v==='errors'||v==='connectors')?'flex':'none';}
+const dock=document.querySelector('.accent-dock');if(dock){const examActive=document.body.classList.contains('exam-active');const accentViews=['vocab','errors','productions'];dock.style.display=(focusMode||examActive||accentViews.includes(v))?'flex':'none';}
+if(v==='welcome')buildWelcome();
 if(v==='browse')buildMonthGrid();if(v==='productions')buildProductions();
 if(v==='connectors'){buildSRS();buildConnList();}
 if(v==='vocab'){renderVocabList();renderSentenceChips();renderSavedSentences();renderThemeBalance();}
@@ -26,6 +27,7 @@ if(v==='history')buildHistList();if(v==='stats')buildStats();if(v==='profile'){l
 function switchVocabTab(t){['list','flash','sent','b2','exercise','presets'].forEach(x=>{const el=document.getElementById('vtab-'+x),tab=document.getElementById('vtab-b-'+x);if(el)el.classList.toggle('active',x===t);if(tab)tab.classList.toggle('active',x===t);});if(t==='flash')renderFlashcards();if(t==='b2')buildSRSV();if(t==='presets')renderPresetsList();}
 function switchConnTab(t){['review','list','import'].forEach(x=>{const b=document.getElementById('ctab-b-'+x);const p=document.getElementById('ctab-'+x);if(b)b.classList.toggle('active',x===t);if(p)p.classList.toggle('active',x===t);});if(t==='review')buildSRS();if(t==='list')buildConnList();if(t==='import')renderCustomConnList();}
 function populateMonthSelect(){document.getElementById('monthSel').innerHTML=allMonths.map(m=>`<option value="${m.slug}">${m.label}</option>`).join('');document.getElementById('bankMonth').innerHTML=allMonths.map(m=>`<option value="${m.slug}">${m.label}</option>`).join('');}
+function buildWelcome(){const prof=profile||{};const name=(prof.prenom||'apprenant').charAt(0).toUpperCase()+(prof.prenom||'apprenant').slice(1);document.getElementById('welcomeName').textContent=name;const bankCount=Object.values(customBank).reduce((a,l)=>a+l.length,0);const prodCount=productions.length;const vocabCount=vocabList.length;const errorCount=myErrors.length;const readCount=readingDocs.length;const totalWords=productions.reduce((a,p)=>a+wcOf(p.text||''),0);document.getElementById('wStatProd').textContent=prodCount;document.getElementById('wStatWords').textContent=totalWords;document.getElementById('wStatStreak').textContent=streak.cur||0;document.getElementById('wStudioCount').textContent=bankCount+' sujet'+(bankCount>1?'s':'');document.getElementById('wBankCount').textContent=bankCount+' sujet'+(bankCount>1?'s':'');document.getElementById('wVocabCount').textContent=vocabCount+' mot'+(vocabCount>1?'s':'');document.getElementById('wErrorCount').textContent=errorCount+' erreur'+(errorCount>1?'s':'');document.getElementById('wProdCount').textContent=prodCount+' production'+(prodCount>1?'s':'');document.getElementById('wReadCount').textContent=readCount+' doc'+(readCount>1?'s':'');}
 function getMonth(s){return allMonths.find(m=>m.slug===s)||allMonths[0];}
 function availableTasks(c){return [c.t1&&c.t1.consigne?1:0,c.t2&&c.t2.consigne?2:0,(c.t3&&(c.t3.doc1||c.t3.doc2))?3:0].filter(Boolean);}
 function loadSujets(){const s=document.getElementById('monthSel').value;activeMonthSlug=s;
@@ -129,3 +131,7 @@ flush();
 SV('tcf_custom_bank',customBank);buildMonthGrid();
 alert(added+' combinaison(s) importée(s) avec succès !');
 }
+
+/* ── Initialize: Show welcome page on app load ── */
+document.addEventListener('DOMContentLoaded',()=>{populateMonthSelect();renderAccentPage();buildWelcome();showView('welcome');});
+
