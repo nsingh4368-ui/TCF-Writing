@@ -28,7 +28,8 @@ setInterval(()=>{saveDraft();const n=new Date();const l=document.getElementById(
 const accents=['é','è','ê','ë','à','â','ä','ç','ù','û','ü','î','ï','ô','œ','æ','É','È','Ê','Ë','À','Â','Ç','Ù','Û','Î','Ï','Ô','Œ','Æ','«','»','—','’'];
 let accentPage=0,PAGE=12;
 function renderAccentPage(){document.getElementById('accentBar').innerHTML=accents.slice(accentPage*PAGE,accentPage*PAGE+PAGE).map(a=>`<button onclick="insertAccent('${a==='\u2019'?'\\u2019':a}')">${a}</button>`).join('');}
-function updateAccentDockVisibility(){const dock=document.querySelector('.accent-dock');if(!dock)return;const examActive=document.body.classList.contains('exam-active');dock.style.display=(focusMode||examActive)?'flex':'none';if(focusMode||examActive){const isMobile=window.innerWidth<=768;if(isMobile)dock.classList.add('open');}}
+function updateAccentDockVisibility(){const toggleBtn=document.getElementById('accentToggleBtn');if(toggleBtn)toggleBtn.style.display='flex';}
+function toggleAccentDock(){const dock=document.querySelector('.accent-dock');const btn=document.getElementById('accentToggleBtn');if(!dock||!btn)return;dock.classList.toggle('open');btn.classList.toggle('active');}
 function nextAccentPage(){accentPage=(accentPage+1)%Math.ceil(accents.length/PAGE);renderAccentPage();}
 function prevAccentPage(){accentPage=(accentPage-1+Math.ceil(accents.length/PAGE))%Math.ceil(accents.length/PAGE);renderAccentPage();}
 function insertAccent(ch){if(ch==='\\u2019')ch='’';const t=document.getElementById('examOverlay').classList.contains('active')?document.getElementById('examEditor'):editor;const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.slice(0,s)+ch+t.value.slice(e);t.selectionStart=t.selectionEnd=s+ch.length;t.focus();if(t===editor)onEditorInput();else onExamInput();}
